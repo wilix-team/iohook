@@ -22,6 +22,17 @@ This module use native library libuiohook and require some installed packages
 - `brew install cmake autoreconf libtool pkg-config`
 - `npm install iohook --save`
 
+### Electron users
+Before install this module, you need specify build runtime.  
+Just add following to your package.json file 
+(if you use two-package-json structure, add to app's package.json, not to build).  
+```json
+"cmake-js": {
+  "runtime": "electron",
+  "runtimeVersion": "1.4.7" // Your electron version here or try remove this property
+}
+```
+
 ## Usage
 Module is pretty simple for use. There is example:  
 
