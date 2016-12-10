@@ -1,0 +1,3 @@
+[submodule "libuiohook"]
+	path = libuiohook
+	url = https://github.com/ayoubserti/libuiohook
