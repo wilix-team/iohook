@@ -11,7 +11,7 @@ static HookProcessWorker* sIOHook = nullptr;
 
 static void dispatch_proc(uiohook_event * const event)
 {
-  if (sIOHook != nullptr && sIOHook->fHookExecution!=nullptr)
+  if (sIOHook != nullptr && sIOHook->fHookExecution != nullptr)
   {
     sIOHook->fHookExecution->Send(event, sizeof(uiohook_event));
   }
@@ -43,46 +43,47 @@ void HookProcessWorker::Stop()
   sIsRunning = false;
 }
 
-void HookProcessWorker::HandleProgressCallback(const uiohook_event *data, size_t size)
+void HookProcessWorker::HandleProgressCallback(const uiohook_event *event, size_t size)
 {
   HandleScope scope(Isolate::GetCurrent());
   v8::Local<v8::Object> obj = Nan::New<v8::Object>();
   
-  Nan::Set(obj, Nan::New("type").ToLocalChecked(), Nan::New((uint16_t)data->type));
-  Nan::Set(obj, Nan::New("mask").ToLocalChecked(), Nan::New((uint16_t)data->mask));
-  if ((data->type >= EVENT_MOUSE_CLICKED) && (data->type < EVENT_MOUSE_WHEEL))
-  {
-    v8::Local<v8::Object> mouse = Nan::New<v8::Object>();
-    Nan::Set(mouse, Nan::New("button").ToLocalChecked(), Nan::New((uint16_t)data->data.mouse.button));
-    Nan::Set(mouse, Nan::New("clicks").ToLocalChecked(), Nan::New((uint16_t)data->data.mouse.clicks));
-    Nan::Set(mouse, Nan::New("x").ToLocalChecked(), Nan::New((int16_t)data->data.mouse.x));
-    Nan::Set(mouse, Nan::New("y").ToLocalChecked(), Nan::New((int16_t)data->data.mouse.y));
+  Nan::Set(obj, Nan::New("event").ToLocalChecked(), Nan::New(event));
   
-    Nan::Set(obj, Nan::New("mouse").ToLocalChecked(), mouse);
-    v8::Local<v8::Value> argv[] = { obj };
-    callback->Call(1, argv);
-  }
-  else if ((data->type >= EVENT_KEY_TYPED) && (data->type <= EVENT_KEY_RELEASED))
-  {
+  Nan::Set(obj, Nan::New("type").ToLocalChecked(), Nan::New((uint16_t)event->type));
+  Nan::Set(obj, Nan::New("mask").ToLocalChecked(), Nan::New((uint16_t)event->mask));
+  Nan::Set(obj, Nan::New("time").ToLocalChecked(), Nan::New((uint16_t)event->time));
+  
+  if ((event->type >= EVENT_KEY_TYPED) && (event->type <= EVENT_KEY_RELEASED)) {
     v8::Local<v8::Object> keyboard = Nan::New<v8::Object>();
-    Nan::Set(keyboard, Nan::New("keychar").ToLocalChecked(), Nan::New((int32_t)data->data.keyboard.keychar));
-    Nan::Set(keyboard, Nan::New("keycode").ToLocalChecked(), Nan::New((uint16_t)data->data.keyboard.keycode));
-    Nan::Set(keyboard, Nan::New("rawcode").ToLocalChecked(), Nan::New((uint16_t)data->data.keyboard.rawcode));
+    if (event->type == EVENT_KEY_TYPED) {
+      Nan::Set(keyboard, Nan::New("keychar").ToLocalChecked(), Nan::New((uint16_t)event->data.keyboard.keychar));
+    }
+    Nan::Set(keyboard, Nan::New("keycode").ToLocalChecked(), Nan::New((uint16_t)event->data.keyboard.keycode));
+    Nan::Set(keyboard, Nan::New("rawcode").ToLocalChecked(), Nan::New((uint16_t)event->data.keyboard.rawcode));
   
     Nan::Set(obj, Nan::New("keyboard").ToLocalChecked(), keyboard);
     v8::Local<v8::Value> argv[] = { obj };
     callback->Call(1, argv);
-  }
-  else if (data->type == EVENT_MOUSE_WHEEL)
-  {
+  } else if ((event->type >= EVENT_MOUSE_CLICKED) && (event->type < EVENT_MOUSE_WHEEL)) {
+    v8::Local<v8::Object> mouse = Nan::New<v8::Object>();
+    Nan::Set(mouse, Nan::New("button").ToLocalChecked(), Nan::New((uint16_t)event->data.mouse.button));
+    Nan::Set(mouse, Nan::New("clicks").ToLocalChecked(), Nan::New((uint16_t)event->data.mouse.clicks));
+    Nan::Set(mouse, Nan::New("x").ToLocalChecked(), Nan::New((int16_t)event->data.mouse.x));
+    Nan::Set(mouse, Nan::New("y").ToLocalChecked(), Nan::New((int16_t)event->data.mouse.y));
+    
+    Nan::Set(obj, Nan::New("mouse").ToLocalChecked(), mouse);
+    v8::Local<v8::Value> argv[] = { obj };
+    callback->Call(1, argv);
+  } else if (event->type == EVENT_MOUSE_WHEEL) {
     v8::Local<v8::Object> wheel = Nan::New<v8::Object>();
-    Nan::Set(wheel, Nan::New("amount").ToLocalChecked(), Nan::New((uint16_t)data->data.wheel.amount));
-    Nan::Set(wheel, Nan::New("clicks").ToLocalChecked(), Nan::New((uint16_t)data->data.wheel.clicks));
-    Nan::Set(wheel, Nan::New("direction").ToLocalChecked(), Nan::New((int16_t)data->data.wheel.direction));
-    Nan::Set(wheel, Nan::New("rotation").ToLocalChecked(), Nan::New((int16_t)data->data.wheel.rotation));
-    Nan::Set(wheel, Nan::New("type").ToLocalChecked(), Nan::New((int16_t)data->data.wheel.type));
-    Nan::Set(wheel, Nan::New("x").ToLocalChecked(), Nan::New((int16_t)data->data.wheel.x));
-    Nan::Set(wheel, Nan::New("y").ToLocalChecked(), Nan::New((int16_t)data->data.wheel.y));
+    Nan::Set(wheel, Nan::New("amount").ToLocalChecked(), Nan::New((uint16_t)event->data.wheel.amount));
+    Nan::Set(wheel, Nan::New("clicks").ToLocalChecked(), Nan::New((uint16_t)event->data.wheel.clicks));
+    Nan::Set(wheel, Nan::New("direction").ToLocalChecked(), Nan::New((int16_t)event->data.wheel.direction));
+    Nan::Set(wheel, Nan::New("rotation").ToLocalChecked(), Nan::New((int16_t)event->data.wheel.rotation));
+    Nan::Set(wheel, Nan::New("type").ToLocalChecked(), Nan::New((int16_t)event->data.wheel.type));
+    Nan::Set(wheel, Nan::New("x").ToLocalChecked(), Nan::New((int16_t)event->data.wheel.x));
+    Nan::Set(wheel, Nan::New("y").ToLocalChecked(), Nan::New((int16_t)event->data.wheel.y));
   
     Nan::Set(obj, Nan::New("wheel").ToLocalChecked(), wheel);
     v8::Local<v8::Value> argv[] = { obj };

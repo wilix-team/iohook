@@ -1,6 +1,6 @@
 {
   "name": "iohook",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Node.js global keyboard and mouse hook",
   "main": "index.js",
   "scripts": {

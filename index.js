@@ -27,12 +27,12 @@ const events = {
 class IOHook extends EventEmitter {
   constructor() {
     super();
-    this.status = "stoped";
+    this.status = "stopped";
     this.active = false;
   }
 
   start() {
-    if (this.status == "stoped") {
+    if (this.status == "stopped") {
       NodeHookAddon.startHook(this.handler.bind(this));
       this.status = "started";
       this.active = true;
@@ -49,6 +49,8 @@ class IOHook extends EventEmitter {
 
   stop() {
     NodeHookAddon.stopHook();
+    this.active = false;
+    this.status = "stopped";
   }
 
   handler(msg) {
@@ -59,7 +61,7 @@ class IOHook extends EventEmitter {
     if (!msg) {
       return;
     }
-    
+
     if (events[msg.type]) {
       let event = msg.mouse || msg.keyboard || msg.wheel;
       event.type = events[msg.type];
