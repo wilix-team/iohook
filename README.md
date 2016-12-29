@@ -29,9 +29,10 @@ Just add following to your package.json file
 ```json
 "cmake-js": {
   "runtime": "electron",
-  "runtimeVersion": "1.4.7" // Your electron version here or try remove this property
+  "runtimeVersion": "1.4.7"
 }
 ```
+**NOTE: Please don't forget type your version of electron**
 
 ## Usage
 Module is pretty simple for use. There is example:  
@@ -54,6 +55,8 @@ ioHook.on("mousemove", event => {
 //Register and stark hook
 ioHook.start();
 ```
+If type ```ioHook.start(true);``` you can enable debug logger in native lib. Use it if you have troubles with this module
+
 
 ### Available events
 

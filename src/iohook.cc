@@ -3,9 +3,14 @@
 #include "uiohook.h"
 #include <iostream>
 
+#if defined(__APPLE__) && defined(__MACH__)
+#include <CoreFoundation/CoreFoundation.h>
+#endif
+
 using namespace v8;
 using Callback = Nan::Callback;
-static bool sIsRunning = false; 
+static bool sIsRunning = false;
+static bool sIsDebug = false;
 
 static HookProcessWorker* sIOHook = nullptr;
 
@@ -19,7 +24,28 @@ static void dispatch_proc(uiohook_event * const event)
 
 static bool logger_proc(unsigned int level, const char *format, ...)
 {
-  return true;
+  if (!sIsDebug) {
+    return false;
+  }
+  bool status = false;
+  va_list args;
+  switch (level) {
+    case LOG_LEVEL_DEBUG:
+    case LOG_LEVEL_INFO:
+      va_start(args, format);
+      status = vfprintf(stdout, format, args) >= 0;
+      va_end(args);
+      break;
+    
+    case LOG_LEVEL_WARN:
+    case LOG_LEVEL_ERROR:
+      va_start(args, format);
+      status = vfprintf(stderr, format, args) >= 0;
+      va_end(args);
+      break;
+  }
+  
+  return status;
 }
 
 HookProcessWorker::HookProcessWorker(Nan::Callback * callback) :
@@ -34,7 +60,74 @@ void HookProcessWorker::Execute(const Nan::AsyncProgressWorkerBase<uiohook_event
   hook_set_logger_proc(&logger_proc);
   hook_set_dispatch_proc(&dispatch_proc);
   fHookExecution = &progress;
-  hook_run();
+  int status = hook_run();
+  
+  switch (status) {
+    case UIOHOOK_SUCCESS:
+      #if defined(__APPLE__) && defined(__MACH__)
+      // NOTE Darwin requires that you start your own runloop from main.
+      CFRunLoopRun();
+      #endif
+      break;
+
+    // System level errors.
+    case UIOHOOK_ERROR_OUT_OF_MEMORY:
+      logger_proc(LOG_LEVEL_ERROR, "Failed to allocate memory. (%#X)\n", status);
+      break;
+
+    // X11 specific errors.
+    case UIOHOOK_ERROR_X_OPEN_DISPLAY:
+      logger_proc(LOG_LEVEL_ERROR, "Failed to open X11 display. (%#X)\n", status);
+      break;
+
+    case UIOHOOK_ERROR_X_RECORD_NOT_FOUND:
+      logger_proc(LOG_LEVEL_ERROR, "Unable to locate XRecord extension. (%#X)\n", status);
+      break;
+
+    case UIOHOOK_ERROR_X_RECORD_ALLOC_RANGE:
+      logger_proc(LOG_LEVEL_ERROR, "Unable to allocate XRecord range. (%#X)\n", status);
+      break;
+
+    case UIOHOOK_ERROR_X_RECORD_CREATE_CONTEXT:
+      logger_proc(LOG_LEVEL_ERROR, "Unable to allocate XRecord context. (%#X)\n", status);
+      break;
+
+    case UIOHOOK_ERROR_X_RECORD_ENABLE_CONTEXT:
+      logger_proc(LOG_LEVEL_ERROR, "Failed to enable XRecord context. (%#X)\n", status);
+      break;
+
+    // Windows specific errors.
+    case UIOHOOK_ERROR_SET_WINDOWS_HOOK_EX:
+      logger_proc(LOG_LEVEL_ERROR, "Failed to register low level windows hook. (%#X)\n", status);
+      break;
+
+    // Darwin specific errors.
+    case UIOHOOK_ERROR_AXAPI_DISABLED:
+      logger_proc(LOG_LEVEL_ERROR, "Failed to enable access for assistive devices. (%#X)\n", status);
+      break;
+
+    case UIOHOOK_ERROR_CREATE_EVENT_PORT:
+      logger_proc(LOG_LEVEL_ERROR, "Failed to create apple event port. (%#X)\n", status);
+      break;
+
+    case UIOHOOK_ERROR_CREATE_RUN_LOOP_SOURCE:
+      logger_proc(LOG_LEVEL_ERROR, "Failed to create apple run loop source. (%#X)\n", status);
+      break;
+
+    case UIOHOOK_ERROR_GET_RUNLOOP:
+      logger_proc(LOG_LEVEL_ERROR, "Failed to acquire apple run loop. (%#X)\n", status);
+      break;
+
+    case UIOHOOK_ERROR_CREATE_OBSERVER:
+      logger_proc(LOG_LEVEL_ERROR, "Failed to create apple run loop observer. (%#X)\n", status);
+      break;
+
+    // Default error.
+    case UIOHOOK_FAILURE:
+    default:
+      logger_proc(LOG_LEVEL_ERROR, "An unknown hook error occurred. (%#X)\n", status);
+      break;
+  }
 }
 
 void HookProcessWorker::Stop()
@@ -93,10 +186,17 @@ void HookProcessWorker::HandleProgressCallback(const uiohook_event *event, size_
 
 NAN_METHOD(StartHook) {
   //allow one single execution
-  if(sIsRunning == false)
+  if (sIsRunning == false)
   {
-    if(info.Length() > 0)
+    if (info.Length() > 0)
     {
+      if (info.Length() == 2) {
+        if (info[1]->IsTrue()) {
+          sIsDebug = true;
+        } else {
+          sIsDebug = false;
+        }
+      }
       if (info[0]->IsFunction())
       {
         Callback* callback = new Callback(info[0].As<Function>());

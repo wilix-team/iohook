@@ -31,29 +31,47 @@ class IOHook extends EventEmitter {
     this.active = false;
   }
 
-  start() {
+  /**
+   * Start hook process
+   * @param enableLogger Turn on debug logging 
+   */
+  start(enableLogger) {
     if (this.status == "stopped") {
-      NodeHookAddon.startHook(this.handler.bind(this));
+      NodeHookAddon.startHook(this._handler.bind(this), enableLogger || false);
       this.status = "started";
       this.active = true;
     }
   }
 
+  /**
+   * Pause in events call. Just don't fire any new events
+   */
   pause() {
     this.active = false;
   }
 
+  /**
+   * Resume events call.
+   */
   resume() {
     this.active = true;
   }
 
+  /**
+   * Shutdown event hook 
+   */
   stop() {
     NodeHookAddon.stopHook();
     this.active = false;
     this.status = "stopped";
   }
 
-  handler(msg) {
+  /**
+   * Local event handler. Don't use it in your code!
+   * @param msg Raw event message
+   * @private
+   */
+  _handler(msg) {
     if (this.active == false) {
       return;
     }

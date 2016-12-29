@@ -1,0 +1,19 @@
+const {app} = require('electron');
+const ioHook = require('iohook');
+
+function eventHandler(event) {
+  console.log(event);
+}
+
+app.on('ready', () => {
+  ioHook.start();
+  ioHook.on('mouseclick', eventHandler);
+  ioHook.on('keypress', eventHandler);
+  ioHook.on('mousewheel', eventHandler);
+  ioHook.on('mousemove', eventHandler);
+  console.log('Try move your mouse or press any key');
+});
+
+app.on('before-quit', () => {
+  ioHook.stop();
+});

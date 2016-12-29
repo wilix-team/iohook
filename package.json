@@ -6,6 +6,7 @@
   "scripts": {
     "preinstall" : "git submodule update --init",
     "install": "cmake-js compile",
+    "compile": "cmake-js compile",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
