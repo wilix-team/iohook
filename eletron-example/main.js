@@ -1,3 +1,5 @@
+'use strict';
+
 const {app} = require('electron');
 const ioHook = require('iohook');
 
@@ -6,7 +8,7 @@ function eventHandler(event) {
 }
 
 app.on('ready', () => {
-  ioHook.start();
+  ioHook.start(true);
   ioHook.on('mouseclick', eventHandler);
   ioHook.on('keypress', eventHandler);
   ioHook.on('mousewheel', eventHandler);

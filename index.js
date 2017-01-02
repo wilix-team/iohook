@@ -1,16 +1,8 @@
 'use strict';
 
-const NodeHookAddon = require("bindings")("iohook");
 const EventEmitter = require('events');
-
+const NodeHookAddon = require("bindings")("iohook");
 const SegfaultHandler = require('segfault-handler');
-
-SegfaultHandler.registerHandler("crash.log"); // With no argument, SegfaultHandler will generate a generic log file name
-
-// Optionally specify a callback function for custom logging. This feature is currently only supported for Node.js >= v0.12 running on Linux.
-SegfaultHandler.registerHandler("crash.log", function(signal, address, stack) {
-  console.log(arguments);
-});
 
 const events = {
   3: 'keypress',
@@ -29,6 +21,9 @@ class IOHook extends EventEmitter {
     super();
     this.status = "stopped";
     this.active = false;
+    this.debug = false;
+
+    SegfaultHandler.registerHandler("iohook-crash.log");
   }
 
   /**
@@ -37,7 +32,8 @@ class IOHook extends EventEmitter {
    */
   start(enableLogger) {
     if (this.status == "stopped") {
-      NodeHookAddon.startHook(this._handler.bind(this), enableLogger || false);
+      this.debug = enableLogger;
+      NodeHookAddon.startHook(this._handler.bind(this), this.debug || false);
       this.status = "started";
       this.active = true;
     }

@@ -18,6 +18,6 @@ ioHook.on("mousemove",function(msg){console.log(msg)});
 ioHook.on("mousedrag",function(msg){console.log(msg)});
 
 //start ioHook
-ioHook.start();
+ioHook.start(true);
 
 console.log('Hook started');
