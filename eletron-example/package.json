@@ -12,11 +12,10 @@
   "license": "MIT",
   "dependencies": {
     "electron": "^1.4.13",
-    "electron-rebuild": "^1.4.0",
-    "iohook": "0.0.3"
+    "electron-rebuild": "^1.4.0"
   },
   "cmake-js": {
     "runtime": "electron",
-    "runtimeVersion": "1.4.7"
+    "runtimeVersion": "1.4.13"
   }
 }

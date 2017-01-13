@@ -1,4 +1,5 @@
 'use strict';
+
 const ioHook = require('./index.js');
 
 ioHook.on("mousedown",function(msg){console.log(msg);});
@@ -18,6 +19,6 @@ ioHook.on("mousemove",function(msg){console.log(msg)});
 ioHook.on("mousedrag",function(msg){console.log(msg)});
 
 //start ioHook
-ioHook.start(true);
+ioHook.start();
 
-console.log('Hook started');
+console.log('Hook started. Try type something or move mouse');

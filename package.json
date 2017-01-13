@@ -4,8 +4,7 @@
   "description": "Node.js global keyboard and mouse hook",
   "main": "index.js",
   "scripts": {
-    "preinstall" : "git submodule update --init",
-    "install": "cmake-js compile",
+    "install": "node ./install install",
     "compile": "cmake-js compile",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -31,9 +30,6 @@
   },
   "homepage": "https://github.com/WilixLead/iohook#readme",
   "dependencies": {
-    "bindings": "^1.2.1",
-    "cmake-js": "^3.3.1",
-    "nan": "^2.4.0",
-    "segfault-handler": "^1.0.0"
+    "bindings": "^1.2.1"
   }
 }
