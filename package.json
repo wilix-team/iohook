@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "install": "node ./install install",
+    "postinstall": "node ./install clean",
     "compile": "cmake-js compile",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
