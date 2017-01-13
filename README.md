@@ -11,7 +11,8 @@ Already tested in:
 - Windows (NOT TESTED YET)
 
 ## Installation
-This module use native library libuiohook and require some installed packages
+This module use native library libuiohook and require some installed packages.  
+I really hope find way for use build systems for online build or download prebuild packages.
 
 `npm install iohook --save`
 

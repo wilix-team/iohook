@@ -11,7 +11,7 @@ let currentPlatform = 'iohook_';
 // }
 
 currentPlatform += os.platform() + '_' + os.arch();
-console.log('Used platform', currentPlatform);
+// console.log('Used platform', currentPlatform);
 try {
   NodeHookAddon = require("bindings")(currentPlatform);
 } catch (e) {
