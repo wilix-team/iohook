@@ -2,6 +2,8 @@
 Node.js global native keyboard and mouse listener.  
 This module can handle keyboard and mouse events via native hooks.  
 
+If you like this module or interesting for updates, follow me in Twiller [https://twitter.com/wilixlead](https://twitter.com/wilixlead)
+
 ## OS Support
 Already tested in:
 - Ubuntu 16.04
@@ -39,7 +41,7 @@ Module is pretty simple for use. There is example:
 
 ```javascript
 'use strict';
-const ioHook = require('./index.js');
+const ioHook = require('iohook');
 
 ioHook.on("mousemove", event => {
   console.log(event);
@@ -52,7 +54,7 @@ ioHook.on("mousemove", event => {
    */
 });
 
-//Register and stark hook
+//Register and start hook
 ioHook.start();
 ```
 If type ```ioHook.start(true);``` you can enable debug logger in native lib. Use it if you have troubles with this module

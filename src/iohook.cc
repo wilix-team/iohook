@@ -1,13 +1,5 @@
-
 #include "iohook.h"
 #include "uiohook.h"
-#include <iostream>
-#include <inttypes.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -18,6 +10,7 @@
 
 #include <pthread.h>
 #endif
+#include <queue>
 
 using namespace v8;
 using Callback = Nan::Callback;
@@ -25,6 +18,8 @@ static bool sIsRunning = false;
 static bool sIsDebug = false;
 
 static HookProcessWorker* sIOHook = nullptr;
+
+static std::queue<uiohook_event *> zqueue;
 
 // Native thread errors.
 #define UIOHOOK_ERROR_THREAD_CREATE				0x10
@@ -44,8 +39,38 @@ static pthread_mutex_t hook_control_mutex;
 static pthread_cond_t hook_control_cond;
 #endif
 
-static void dispatch_proc(uiohook_event * const event)
-{
+bool logger_proc(unsigned int level, const char *format, ...) {
+  if (!sIsDebug) {
+    return false;
+  }
+  bool status = false;
+  va_list args;
+  switch (level) {
+    case LOG_LEVEL_DEBUG:
+    case LOG_LEVEL_INFO:
+      va_start(args, format);
+      status = vfprintf(stdout, format, args) >= 0;
+      va_end(args);
+      break;
+    
+    case LOG_LEVEL_WARN:
+    case LOG_LEVEL_ERROR:
+      va_start(args, format);
+      status = vfprintf(stderr, format, args) >= 0;
+      va_end(args);
+      break;
+  }
+  
+  return status;
+}
+
+// NOTE: The following callback executes on the same thread that hook_run() is called 
+// from.  This is important because hook_run() attaches to the operating systems
+// event dispatcher and may delay event delivery to the target application.
+// Furthermore, some operating systems may choose to disable your hook if it 
+// takes to long to process.  If you need to do any extended processing, please 
+// do so by copying the event to your own queued dispatch thread.
+void dispatch_proc(uiohook_event * const event) {
   switch (event->type) {
     case EVENT_HOOK_ENABLED:
       // Lock the running mutex so we know if the hook is enabled.
@@ -87,6 +112,7 @@ static void dispatch_proc(uiohook_event * const event)
       pthread_mutex_unlock(&hook_running_mutex);
       #endif
       break;
+    
     case EVENT_KEY_PRESSED:
     case EVENT_KEY_RELEASED:
     case EVENT_KEY_TYPED:
@@ -96,46 +122,10 @@ static void dispatch_proc(uiohook_event * const event)
     case EVENT_MOUSE_MOVED:
     case EVENT_MOUSE_DRAGGED:
     case EVENT_MOUSE_WHEEL:
-      if (sIOHook != nullptr && sIOHook->fHookExecution != nullptr) {
-        sIOHook->fHookExecution->Send(event, sizeof(uiohook_event));
-      }
-      break;
-    default:
+      zqueue.push(event);
+      sIOHook->fHookExecution->Send(event, sizeof(event));
       break;
   }
-}
-
-static bool logger_proc(unsigned int level, const char *format, ...)
-{
-  if (!sIsDebug) {
-    return false;
-  }
-  bool status = false;
-  va_list args;
-  switch (level) {
-    case LOG_LEVEL_DEBUG:
-    case LOG_LEVEL_INFO:
-      va_start(args, format);
-      status = vfprintf(stdout, format, args) >= 0;
-      va_end(args);
-      break;
-    
-    case LOG_LEVEL_WARN:
-    case LOG_LEVEL_ERROR:
-      va_start(args, format);
-      status = vfprintf(stderr, format, args) >= 0;
-      va_end(args);
-      break;
-  }
-  
-  return status;
-}
-
-HookProcessWorker::HookProcessWorker(Nan::Callback * callback) :
-Nan::AsyncProgressWorkerBase<uiohook_event>(callback),
-fHookExecution(nullptr)
-{
-
 }
 
 #ifdef _WIN32
@@ -185,7 +175,7 @@ int hook_enable() {
   // Create the thread attribute.
   pthread_attr_t hook_thread_attr;
   pthread_attr_init(&hook_thread_attr);
-  
+
   // Get the policy and priority for the thread attr.
   int policy;
   pthread_attr_getschedpolicy(&hook_thread_attr, &policy);
@@ -234,7 +224,7 @@ int hook_enable() {
     #else
     pthread_cond_wait(&hook_control_cond, &hook_control_mutex);
     #endif
-  
+
     #ifdef _WIN32
     if (WaitForSingleObject(hook_running_mutex, 0) != WAIT_TIMEOUT) {
     #else
@@ -278,8 +268,7 @@ int hook_enable() {
   return status;
 }
 
-void HookProcessWorker::Execute(const Nan::AsyncProgressWorkerBase<uiohook_event>::ExecutionProgress& progress)
-{
+void run() {
   // Lock the thread control mutex.  This will be unlocked when the
   // thread has finished starting, or when it has fully stopped.
   #ifdef _WIN32
@@ -292,11 +281,15 @@ void HookProcessWorker::Execute(const Nan::AsyncProgressWorkerBase<uiohook_event
   pthread_mutex_init(&hook_control_mutex, NULL);
   pthread_cond_init(&hook_control_cond, NULL);
   #endif
-
-  hook_set_logger_proc(&logger_proc);
-  hook_set_dispatch_proc(&dispatch_proc);
-  fHookExecution = &progress;
   
+  // Set the logger callback for library output.
+  hook_set_logger_proc(&logger_proc);
+  
+  // Set the event callback for uiohook events.
+  hook_set_dispatch_proc(&dispatch_proc);
+
+  // Start the hook and block.
+  // NOTE If EVENT_HOOK_ENABLED was delivered, the status will always succeed.
   int status = hook_enable();
   switch (status) {
     case UIOHOOK_SUCCESS:
@@ -317,6 +310,7 @@ void HookProcessWorker::Execute(const Nan::AsyncProgressWorkerBase<uiohook_event
     case UIOHOOK_ERROR_OUT_OF_MEMORY:
       logger_proc(LOG_LEVEL_ERROR, "Failed to allocate memory. (%#X)\n", status);
       break;
+
 
     // X11 specific errors.
     case UIOHOOK_ERROR_X_OPEN_DISPLAY:
@@ -339,10 +333,12 @@ void HookProcessWorker::Execute(const Nan::AsyncProgressWorkerBase<uiohook_event
       logger_proc(LOG_LEVEL_ERROR, "Failed to enable XRecord context. (%#X)\n", status);
       break;
 
+
     // Windows specific errors.
     case UIOHOOK_ERROR_SET_WINDOWS_HOOK_EX:
       logger_proc(LOG_LEVEL_ERROR, "Failed to register low level windows hook. (%#X)\n", status);
       break;
+
 
     // Darwin specific errors.
     case UIOHOOK_ERROR_AXAPI_DISABLED:
@@ -373,8 +369,26 @@ void HookProcessWorker::Execute(const Nan::AsyncProgressWorkerBase<uiohook_event
   }
 }
 
-void HookProcessWorker::Stop()
-{
+void stop() {
+  int status = hook_stop();
+  switch (status) {
+    // System level errors.
+    case UIOHOOK_ERROR_OUT_OF_MEMORY:
+      logger_proc(LOG_LEVEL_ERROR, "Failed to allocate memory. (%#X)", status);
+      break;
+
+    case UIOHOOK_ERROR_X_RECORD_GET_CONTEXT:
+      // NOTE This is the only platform specific error that occurs on hook_stop().
+      logger_proc(LOG_LEVEL_ERROR, "Failed to get XRecord context. (%#X)", status);
+      break;
+
+    // Default error.
+    case UIOHOOK_FAILURE:
+    default:
+      logger_proc(LOG_LEVEL_ERROR, "An unknown hook error occurred. (%#X)", status);
+      break;
+  }
+  
   #ifdef _WIN32
   // Create event handles for the thread hook.
   CloseHandle(hook_thread);
@@ -386,57 +400,81 @@ void HookProcessWorker::Stop()
   pthread_mutex_destroy(&hook_control_mutex);
   pthread_cond_destroy(&hook_control_cond); 
   #endif
-  
-  hook_stop();
-  sIsRunning = false;
+}
+
+HookProcessWorker::HookProcessWorker(Nan::Callback * callback) :
+Nan::AsyncProgressWorkerBase<uiohook_event>(callback),
+fHookExecution(nullptr)
+{
+
+}
+
+v8::Local<v8::Object> fillEventObject(uiohook_event *event) {
+  v8::Local<v8::Object> obj = Nan::New<v8::Object>();
+
+  obj->Set(Nan::New("type").ToLocalChecked(), Nan::New((uint16_t)event->type));
+  obj->Set(Nan::New("mask").ToLocalChecked(), Nan::New((uint16_t)event->mask));
+  obj->Set(Nan::New("time").ToLocalChecked(), Nan::New((uint16_t)event->time));
+
+  if ((event->type >= EVENT_KEY_TYPED) && (event->type <= EVENT_KEY_RELEASED)) {
+    v8::Local<v8::Object> keyboard = Nan::New<v8::Object>();
+    if (event->type == EVENT_KEY_TYPED) {
+      keyboard->Set(Nan::New("keychar").ToLocalChecked(), Nan::New((uint16_t)event->data.keyboard.keychar));
+    }
+    keyboard->Set(Nan::New("keycode").ToLocalChecked(), Nan::New((uint16_t)event->data.keyboard.keycode));
+    keyboard->Set(Nan::New("rawcode").ToLocalChecked(), Nan::New((uint16_t)event->data.keyboard.rawcode));
+
+    obj->Set(Nan::New("keyboard").ToLocalChecked(), keyboard);
+  } else if ((event->type >= EVENT_MOUSE_CLICKED) && (event->type < EVENT_MOUSE_WHEEL)) {
+    v8::Local<v8::Object> mouse = Nan::New<v8::Object>();
+    mouse->Set(Nan::New("button").ToLocalChecked(), Nan::New((uint16_t)event->data.mouse.button));
+    mouse->Set(Nan::New("clicks").ToLocalChecked(), Nan::New((uint16_t)event->data.mouse.clicks));
+    mouse->Set(Nan::New("x").ToLocalChecked(), Nan::New((int16_t)event->data.mouse.x));
+    mouse->Set(Nan::New("y").ToLocalChecked(), Nan::New((int16_t)event->data.mouse.y));
+
+    obj->Set(Nan::New("mouse").ToLocalChecked(), mouse);
+  } else if (event->type == EVENT_MOUSE_WHEEL) {
+    v8::Local<v8::Object> wheel = Nan::New<v8::Object>();
+    wheel->Set(Nan::New("amount").ToLocalChecked(), Nan::New((uint16_t)event->data.wheel.amount));
+    wheel->Set(Nan::New("clicks").ToLocalChecked(), Nan::New((uint16_t)event->data.wheel.clicks));
+    wheel->Set(Nan::New("direction").ToLocalChecked(), Nan::New((int16_t)event->data.wheel.direction));
+    wheel->Set(Nan::New("rotation").ToLocalChecked(), Nan::New((int16_t)event->data.wheel.rotation));
+    wheel->Set(Nan::New("type").ToLocalChecked(), Nan::New((int16_t)event->data.wheel.type));
+    wheel->Set(Nan::New("x").ToLocalChecked(), Nan::New((int16_t)event->data.wheel.x));
+    wheel->Set(Nan::New("y").ToLocalChecked(), Nan::New((int16_t)event->data.wheel.y));
+
+    obj->Set(Nan::New("wheel").ToLocalChecked(), wheel);
+  }
+  return obj;
 }
 
 void HookProcessWorker::HandleProgressCallback(const uiohook_event *event, size_t size)
 {
-  HandleScope scope(Isolate::GetCurrent());
-  v8::Local<v8::Object> obj = Nan::New<v8::Object>();
-  
-  Nan::Set(obj, Nan::New("event").ToLocalChecked(), Nan::New(event));
-  
-  Nan::Set(obj, Nan::New("type").ToLocalChecked(), Nan::New((uint16_t)event->type));
-  Nan::Set(obj, Nan::New("mask").ToLocalChecked(), Nan::New((uint16_t)event->mask));
-  Nan::Set(obj, Nan::New("time").ToLocalChecked(), Nan::New((uint16_t)event->time));
-  
-  if ((event->type >= EVENT_KEY_TYPED) && (event->type <= EVENT_KEY_RELEASED)) {
-    v8::Local<v8::Object> keyboard = Nan::New<v8::Object>();
-    if (event->type == EVENT_KEY_TYPED) {
-      Nan::Set(keyboard, Nan::New("keychar").ToLocalChecked(), Nan::New((uint16_t)event->data.keyboard.keychar));
-    }
-    Nan::Set(keyboard, Nan::New("keycode").ToLocalChecked(), Nan::New((uint16_t)event->data.keyboard.keycode));
-    Nan::Set(keyboard, Nan::New("rawcode").ToLocalChecked(), Nan::New((uint16_t)event->data.keyboard.rawcode));
-  
-    Nan::Set(obj, Nan::New("keyboard").ToLocalChecked(), keyboard);
-    v8::Local<v8::Value> argv[] = { obj };
-    callback->Call(1, argv);
-  } else if ((event->type >= EVENT_MOUSE_CLICKED) && (event->type < EVENT_MOUSE_WHEEL)) {
-    v8::Local<v8::Object> mouse = Nan::New<v8::Object>();
-    Nan::Set(mouse, Nan::New("button").ToLocalChecked(), Nan::New((uint16_t)event->data.mouse.button));
-    Nan::Set(mouse, Nan::New("clicks").ToLocalChecked(), Nan::New((uint16_t)event->data.mouse.clicks));
-    Nan::Set(mouse, Nan::New("x").ToLocalChecked(), Nan::New((int16_t)event->data.mouse.x));
-    Nan::Set(mouse, Nan::New("y").ToLocalChecked(), Nan::New((int16_t)event->data.mouse.y));
+  uiohook_event *ev;
+  while (!zqueue.empty()) {
+    ev = zqueue.front();
     
-    Nan::Set(obj, Nan::New("mouse").ToLocalChecked(), mouse);
+    HandleScope scope(Isolate::GetCurrent());
+                    
+    v8::Local<v8::Object> obj = fillEventObject(ev);
+    
     v8::Local<v8::Value> argv[] = { obj };
     callback->Call(1, argv);
-  } else if (event->type == EVENT_MOUSE_WHEEL) {
-    v8::Local<v8::Object> wheel = Nan::New<v8::Object>();
-    Nan::Set(wheel, Nan::New("amount").ToLocalChecked(), Nan::New((uint16_t)event->data.wheel.amount));
-    Nan::Set(wheel, Nan::New("clicks").ToLocalChecked(), Nan::New((uint16_t)event->data.wheel.clicks));
-    Nan::Set(wheel, Nan::New("direction").ToLocalChecked(), Nan::New((int16_t)event->data.wheel.direction));
-    Nan::Set(wheel, Nan::New("rotation").ToLocalChecked(), Nan::New((int16_t)event->data.wheel.rotation));
-    Nan::Set(wheel, Nan::New("type").ToLocalChecked(), Nan::New((int16_t)event->data.wheel.type));
-    Nan::Set(wheel, Nan::New("x").ToLocalChecked(), Nan::New((int16_t)event->data.wheel.x));
-    Nan::Set(wheel, Nan::New("y").ToLocalChecked(), Nan::New((int16_t)event->data.wheel.y));
-  
-    Nan::Set(obj, Nan::New("wheel").ToLocalChecked(), wheel);
-    v8::Local<v8::Value> argv[] = { obj };
-    callback->Call(1, argv);
+
+    zqueue.pop();
   }
+}
+
+void HookProcessWorker::Execute(const Nan::AsyncProgressWorkerBase<uiohook_event>::ExecutionProgress& progress)
+{
+  fHookExecution = &progress;
+  run();
+}
+
+void HookProcessWorker::Stop()
+{
+  stop();
+  sIsRunning = false;
 }
 
 NAN_METHOD(StartHook) {

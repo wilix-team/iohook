@@ -1,7 +1,22 @@
 'use strict';
-
+const os = require('os');
 const EventEmitter = require('events');
-const NodeHookAddon = require("bindings")("iohook");
+
+let NodeHookAddon;
+
+const OsSystem = os.platform() + '_' + os.arch();
+switch (OsSystem) {
+  case 'darwin_x64': 
+    NodeHookAddon = require("bindings")("iohook.darwin");
+    break;
+  case 'win32_x64':
+    NodeHookAddon = require("bindings")("iohook.win");
+    break;
+  case 'linux_x64':
+    NodeHookAddon = require("bindings")("iohook.linux");
+    break;
+}
+
 const SegfaultHandler = require('segfault-handler');
 
 const events = {
@@ -75,13 +90,13 @@ class IOHook extends EventEmitter {
     if (!msg) {
       return;
     }
-
+    
     if (events[msg.type]) {
       let event = msg.mouse || msg.keyboard || msg.wheel;
       event.type = events[msg.type];
       this.emit(events[msg.type], event);
     } else {
-      console.debug('Unregistered iohook event', msg);
+      console.warn('Unregistered iohook event', msg);
     }
   }
 }

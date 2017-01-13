@@ -1,7 +1,6 @@
 logs
 *.log
 npm-debug.log*
-build/Release
 node_modules
 stacktrace*
 .idea

@@ -14,13 +14,15 @@
     "url": "git+https://github.com/WilixLead/iohook.git"
   },
   "keywords": [
-    "shortcut",
-    "global",
-    "keyup",
-    "keypress",
-    "mousemove",
+    "hook",
+    "electron",
+    "nw.js",
     "listener",
-    "hook"
+    "mousemove",
+    "keypress",
+    "keyup",
+    "global keypress",
+    "shortcut"
   ],
   "author": "Aloyan Dmitry",
   "license": "MIT",
