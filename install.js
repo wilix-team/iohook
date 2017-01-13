@@ -10,14 +10,13 @@ if (process.argv[2] == 'install') {
     // Need compile
     console.log('Recompiling iohook for your environment');
     proc.execSync('git submodule update --init');
-    let npm = proc.execSync('npm install nan cmake-js');
-    console.log(npm.toString());
-    proc.execFileSync(path.join(__dirname, 'node_modules', '.bin', 'cmake-js'));
+    proc.execSync('npm install nan cmake-js');
+    proc.execSync('npm run compile');
   }
 } else {
-  // proc.execSync('npm remove nan cmake-js');
-  // deleteFolderRecursive(path.join(__dirname, 'libuiohook'));
-  // deleteFolderRecursive(path.join(__dirname, 'build', 'CMakeFiles'));
+  proc.execSync('npm remove nan cmake-js');
+  deleteFolderRecursive(path.join(__dirname, 'libuiohook'));
+  deleteFolderRecursive(path.join(__dirname, 'build', 'CMakeFiles'));
 }
 
 function deleteFolderRecursive(path) {
