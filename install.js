@@ -20,15 +20,11 @@ if (process.argv[2] == 'install') {
     
     currentPlatform += os.platform() + '_' + os.arch();
     console.log('Platform is:', currentPlatform);
-    
-    if (fs.existsSync(path.join(__dirname, 'libuiohook'))) {
-      if (!checkLibuiohookSource()) {
-        proc.execSync('git submodule update --init');
-        if (!checkLibuiohookSource()) {
-          deleteFolderRecursive(path.join(__dirname, 'libuiohook'));
-          proc.execSync('git clone https://github.com/kwhat/libuiohook.git');
-        }
-      }
+
+    proc.execSync('git submodule update --init');
+    if (!checkLibuiohookSource()) {
+      deleteFolderRecursive(path.join(__dirname, 'libuiohook'));
+      proc.execSync('git clone https://github.com/kwhat/libuiohook.git');
     }
     
     proc.execSync('npm install nan cmake-js');
