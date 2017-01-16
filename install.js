@@ -33,12 +33,12 @@ if (process.argv[2] == 'install') {
     
     proc.execSync('npm install nan cmake-js');
     proc.execSync('npm run compile');
-    if (fs.existsSync(path.join(__dirname, 'build', 'Release', 'iohook.node'))) {
-      fs.renameSync(
-        path.join(__dirname, 'build', 'Release', 'iohook.node'),
-        path.join(__dirname, 'build', 'Release', currentPlatform + '.node')
-      );
-    }
+    // if (fs.existsSync(path.join(__dirname, 'build', 'Release', 'iohook.node'))) {
+    //   fs.renameSync(
+    //     path.join(__dirname, 'build', 'Release', 'iohook.node'),
+    //     path.join(__dirname, 'build', 'Release', currentPlatform + '.node')
+    //   );
+    // }
   }
 } else {
   proc.execSync('npm remove nan cmake-js');

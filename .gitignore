@@ -5,5 +5,4 @@ node_modules
 stacktrace*
 .idea
 *.iml
-build/CMakeFiles
-
+build
