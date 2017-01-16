@@ -6,9 +6,9 @@ let NodeHookAddon;
 let currentPlatform = 'iohook_';
 
 // TODO need make prebuilds for Electron users, but it can require too many prebuilds
-// if (process.versions['electron']) {
-//   currentPlatform += 'electron.' + process.versions['electron'] + '_';
-// }
+if (process.versions['electron']) {
+  currentPlatform += 'electron.' + process.versions['electron'] + '_';
+}
 
 currentPlatform += os.platform() + '_' + os.arch();
 // console.log('Used platform', currentPlatform);

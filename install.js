@@ -13,10 +13,24 @@ if (process.argv[2] == 'install') {
     console.log('Recompiling iohook for your environment');
 
     let currentPlatform = 'iohook_';
+    
+    if (process.versions['electron']) {
+      currentPlatform += 'electron.' + process.versions['electron'] + '_';
+    }
+    
     currentPlatform += os.platform() + '_' + os.arch();
     console.log('Platform is:', currentPlatform);
     
-    proc.execSync('git submodule update --init');
+    if (fs.existsSync(path.join(__dirname, 'libuiohook'))) {
+      if (!checkLibuiohookSource()) {
+        proc.execSync('git submodule update --init');
+        if (!checkLibuiohookSource()) {
+          deleteFolderRecursive(path.join(__dirname, 'libuiohook'));
+          proc.execSync('git clone https://github.com/kwhat/libuiohook.git');
+        }
+      }
+    }
+    
     proc.execSync('npm install nan cmake-js');
     proc.execSync('npm run compile');
     if (fs.existsSync(path.join(__dirname, 'build', 'Release', 'iohook.node'))) {
@@ -28,11 +42,15 @@ if (process.argv[2] == 'install') {
   }
 } else {
   proc.execSync('npm remove nan cmake-js');
-  deleteFolderRecursive(path.join(__dirname, 'libuiohook'));
+  deleteFolderRecursive(path.join(__dirname, 'libuiohook'), true);
   deleteFolderRecursive(path.join(__dirname, 'build', 'CMakeFiles'));
 }
 
-function deleteFolderRecursive(path) {
+function checkLibuiohookSource() {
+  return fs.existsSync(path.join(__dirname, 'libuiohook', 'include', 'uiohook.h'));
+}
+
+function deleteFolderRecursive(path, keepRoot) {
   if( fs.existsSync(path) ) {
     fs.readdirSync(path).forEach(function(file, index){
       let curPath = path + "/" + file;
@@ -42,6 +60,8 @@ function deleteFolderRecursive(path) {
         fs.unlinkSync(curPath);
       }
     });
-    fs.rmdirSync(path);
+    if (!keepRoot) {
+      fs.rmdirSync(path);
+    }
   }
 }
