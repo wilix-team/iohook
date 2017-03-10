@@ -22,7 +22,7 @@ I really hope find way for use build systems for online build or download prebui
 - `npm install iohook --save`
 
 ### macOS
-- `brew install cmake autoreconf libtool pkg-config`
+- `brew install cmake automake libtool pkg-config`
 - `npm install iohook --save`
 
 ### Electron users
