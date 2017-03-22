@@ -28,6 +28,8 @@ var run = function (args, cb) {
     }
     return arg
   })
+  args.push('--directory')
+  args.push('libuiohook')
   var proc = spawn(cmakeJsPath, args, {
     env: process.env
   })
