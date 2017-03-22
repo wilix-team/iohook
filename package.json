@@ -32,5 +32,9 @@
   "homepage": "https://github.com/WilixLead/iohook#readme",
   "dependencies": {
     "bindings": "^1.2.1"
+  },
+  "devDependencies": {
+    "cmake-js": "^3.4.1",
+    "prebuild": "^6.1.0"
   }
 }
