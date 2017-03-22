@@ -7,20 +7,6 @@ var path = require('path')
 
 var cmakeJsPath = path.join(__dirname, 'node_modules', '.bin', process.platform === 'darwin' ? 'cmake-js' : 'cmake-js.cmd')
 
-// function configure(cb) {
-//   var proc = spawn(cmakeJsPath, ['configure'], {
-//     env: process.env
-//   })
-//   proc.stdout.pipe(process.stdout)
-//   proc.stderr.pipe(process.stderr)
-//   proc.on('exit', function (code, sig) {
-//     if (code === 1) {
-//       return cb(new Error('Failed to configure...'))
-//     }
-//     cb()
-//   })
-// }
-
 var run = function (args, cb) {
   args = args.map(function (arg) {
     if (arg.indexOf('--target') > -1) {
@@ -28,8 +14,8 @@ var run = function (args, cb) {
     }
     return arg
   })
-  args.push('--directory')
-  args.push('libuiohook')
+  // args.push('--directory')
+  // args.push('libuiohook')
   var proc = spawn(cmakeJsPath, args, {
     env: process.env
   })
@@ -122,7 +108,4 @@ function onbuilderror (err) {
   process.exit(2)
 }
 
-// configure(function (err) {
-  // if (err) return console.error(err)
-  compile()
-// })
+compile()
