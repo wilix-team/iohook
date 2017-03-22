@@ -3,6 +3,7 @@ var upload = require('prebuild/upload')
 var spawn = require('child_process').spawn
 var async = require('async')
 var extend = require('xtend')
+var path = require('path')
 
 const run = function (args, cb) {
   args = args.map(function (arg) {
@@ -11,7 +12,7 @@ const run = function (args, cb) {
     }
     return arg
   })
-  const proc = spawn('./node_modules/.bin/cmake-js', args, { env: process.env })
+  const proc = spawn(path.join(__dirname, 'node_modules', '.bin', 'cmake-js'), args, { env: process.env })
   proc.stdout.pipe(process.stdout)
   proc.stderr.pipe(process.stderr)
   proc.on('exit', function (code, sig) {
