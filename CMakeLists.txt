@@ -25,7 +25,7 @@ if(WIN32 OR WIN64)
                                 "${CMAKE_CURRENT_SOURCE_DIR}/src/windows/post_event.c"
                                 "${CMAKE_CURRENT_SOURCE_DIR}/src/windows/system_properties.c")
   add_library( "uiohook" STATIC ${SOURCE_UIHOOK_FILES} )
-  set_target_properties("uiohook"  PROPERTIES COMPILE_FLAGS "-DHAVE_CONFIG_H=0 -Dinline=__inline -D_CRT_SECURE_NO_WARNINGS")
+  set_target_properties("uiohook"  PROPERTIES COMPILE_FLAGS "-Dinline=__inline -D_CRT_SECURE_NO_WARNINGS")
   target_include_directories("uiohook" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/include" "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/src" "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/windows")
 elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
 
