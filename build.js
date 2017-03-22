@@ -12,7 +12,7 @@ var run = function (args, cb) {
     }
     return arg
   })
-  var cmakeJsPath = path.join(__dirname, 'node_modules', 'cmake-js', 'bin', 'cmake-js' + process.platform === 'darwin' ? '' : '.cmd')
+  var cmakeJsPath = path.join(__dirname, 'node_modules', 'cmake-js', 'bin', process.platform === 'darwin' ? 'cmake-js' : 'cmake-js.cmd')
   var proc = spawn(cmakeJsPath, args, {
     env: process.env
   })
