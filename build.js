@@ -65,7 +65,7 @@ var opts = {
   },
   pkg: require('./package.json'),
   gyp: cmakeWrap,
-  prebuild: require('node-abi').supportedTargets,
+  prebuild: require('node-abi').supportedTargets.reverse(),
 }
 console.log(opts)
 
