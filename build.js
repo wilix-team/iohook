@@ -17,7 +17,7 @@ const run = function (args, cb) {
   proc.stderr.pipe(process.stderr)
   proc.on('exit', function (code, sig) {
     if (code === 1) {
-      return cb(new Error(`Failed with signal: ${sig}`))
+      return cb(new Error('Failed to build...'))
     }
     cb()
   })
