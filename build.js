@@ -5,6 +5,8 @@ var async = require('async')
 var extend = require('xtend')
 var path = require('path')
 
+var cmakeJsPath = path.join(__dirname, 'node_modules', '.bin', process.platform === 'darwin' ? 'cmake-js' : 'cmake-js.cmd')
+
 function configure(cb) {
   var proc = spawn(cmakeJsPath, ['configure'], {
     env: process.env
@@ -26,7 +28,6 @@ var run = function (args, cb) {
     }
     return arg
   })
-  var cmakeJsPath = path.join(__dirname, 'node_modules', '.bin', process.platform === 'darwin' ? 'cmake-js' : 'cmake-js.cmd')
   var proc = spawn(cmakeJsPath, args, {
     env: process.env
   })
