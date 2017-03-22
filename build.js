@@ -4,8 +4,8 @@ var spawn = require('child_process').spawn
 var async = require('async')
 var extend = require('xtend')
 
-const run = (args, cb) => {
-  args = args.map(arg => {
+const run = function (args, cb) {
+  args = args.map(function (arg) {
     if (arg.indexOf('--target') > -1) {
       return arg.replace('--target', '--runtime-version')
     }
@@ -14,7 +14,7 @@ const run = (args, cb) => {
   const proc = spawn('./node_modules/.bin/cmake-js', args, { env: process.env })
   proc.stdout.pipe(process.stdout)
   proc.stderr.pipe(process.stderr)
-  proc.on('exit', (code, sig) => {
+  proc.on('exit', function (code, sig) {
     if (code === 1) {
       return cb(new Error(`Failed with signal: ${sig}`))
     }
