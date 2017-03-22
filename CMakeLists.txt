@@ -16,7 +16,7 @@ use_c99()
 project(iohook)
 
 if(WIN32 OR WIN64)
-  set(_config_headers "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/include/config.h")
+  #set(_config_headers "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/include/config.h")
   file(GLOB SOURCE_UIHOOK_FILES "${CMAKE_CURRENT_SOURCE_DIR}libuiohook/include/uiohook.h"
                               "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/src/logger.c"
                               "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/src/logger.h"
