@@ -16,7 +16,17 @@ use_c99()
 project(iohook)
 
 if(WIN32 OR WIN64)
-  add_subdirectory(libuiohook ${CMAKE_CURRENT_SOURCE_DIR}/build/libuiohook)
+  set(_config_headers "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/include/config.h")
+  file(GLOB SOURCE_UIHOOK_FILES "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/src/logger.c"
+                                "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/src/logger.h"
+                                "${CMAKE_CURRENT_SOURCE_DIR}/src/windows/input_helper.h"
+                                "${CMAKE_CURRENT_SOURCE_DIR}/src/windows/input_helper.c"
+                                "${CMAKE_CURRENT_SOURCE_DIR}/src/windows/input_hook.c"
+                                "${CMAKE_CURRENT_SOURCE_DIR}/src/windows/post_event.c"
+                                "${CMAKE_CURRENT_SOURCE_DIR}/src/windows/system_properties.c")
+  add_library( "uiohook" STATIC ${SOURCE_UIHOOK_FILES} )
+  set_target_properties("uiohook"  PROPERTIES COMPILE_FLAGS "-DHAVE_CONFIG_H=1 -Dinline=__inline -D_CRT_SECURE_NO_WARNINGS")
+  target_include_directories("uiohook" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/include" "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/src" "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/windows")
 elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
 
   #bootstrap and configure
