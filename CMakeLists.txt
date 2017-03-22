@@ -20,17 +20,16 @@ if(WIN32 OR WIN64)
   file(GLOB SOURCE_UIHOOK_FILES "${CMAKE_CURRENT_SOURCE_DIR}libuiohook/include/uiohook.h"
                               "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/src/logger.c"
                               "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/src/logger.h"
-                              "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/src/x11/*.c"
-                              "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/src/x11/*.h"
+                              "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/src/windows/*.c"
+                              "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/src/windows/*.h"
                               "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/include/config.h" )
-
   add_library( "uiohook" STATIC ${SOURCE_UIHOOK_FILES} )
-  target_include_directories("uiohook" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_SOURCE_DIR}/src" "${CMAKE_CURRENT_SOURCE_DIR}/windows")
   if("$MSVC_VERSION" VERSION_LESS "1900")
     SET_TARGET_PROPERTIES("uiohook"  PROPERTIES COMPILE_FLAGS "-DHAVE_CONFIG_H=1 -Dinline=__inline -D_CRT_SECURE_NO_WARNINGS -Dsnprintf=_snprintf")
   else()
     SET_TARGET_PROPERTIES("uiohook"  PROPERTIES COMPILE_FLAGS "-DHAVE_CONFIG_H=1 -Dinline=__inline -D_CRT_SECURE_NO_WARNINGS")
   endif()
+  target_include_directories("uiohook" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_SOURCE_DIR}/src" "${CMAKE_CURRENT_SOURCE_DIR}/windows")
 elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
 
   #bootstrap and configure
