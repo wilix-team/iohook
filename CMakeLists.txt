@@ -23,7 +23,8 @@ if(WIN32 OR WIN64)
                       COMMAND "./configure"
                       WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook")
 
-  file(GLOB SOURCE_UIHOOK_FILES "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/src/logger.c"
+  file(GLOB SOURCE_UIHOOK_FILES "${CMAKE_CURRENT_SOURCE_DIR}/include/uiohook.h"
+                                "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/src/logger.c"
                                 "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/src/logger.h"
                                 "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/src/windows/*.c"
                                 "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/src/windows/*.h"
