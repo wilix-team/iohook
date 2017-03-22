@@ -5,14 +5,17 @@ var async = require('async')
 var extend = require('xtend')
 var path = require('path')
 
-const run = function (args, cb) {
+var run = function (args, cb) {
   args = args.map(function (arg) {
     if (arg.indexOf('--target') > -1) {
       return arg.replace('--target', '--runtime-version')
     }
     return arg
   })
-  const proc = spawn(path.join(__dirname, 'node_modules', 'cmake-js', 'bin', 'cmake-js', process.platform === 'darwin' ? '' : '.cmd'), args, { env: process.env })
+  var cmakeJsPath = path.join(__dirname, 'node_modules', 'cmake-js', 'bin', 'cmake-js' + process.platform === 'darwin' ? '' : '.cmd')
+  var proc = spawn(cmakeJsPath, args, {
+    env: process.env
+  })
   proc.stdout.pipe(process.stdout)
   proc.stderr.pipe(process.stderr)
   proc.on('exit', function (code, sig) {
@@ -23,7 +26,7 @@ const run = function (args, cb) {
   })
 }
 
-const cmakeWrap = {
+var cmakeWrap = {
   todo: [],
   parseArgv: function (argv) {
     this.todo.push({
