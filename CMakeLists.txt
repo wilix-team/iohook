@@ -17,12 +17,11 @@ project(iohook)
 
 if(WIN32 OR WIN64)
   set(_config_headers "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/include/config.h")
-  file(GLOB SOURCE_UIHOOK_FILES "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/include/config.h"
-                                "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/include/uiohook.h"
-                                "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/src/logger.c"
+  file(GLOB SOURCE_UIHOOK_FILES "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/src/logger.c"
                                 "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/src/logger.h"
                                 "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/src/windows/*.c"
-                                "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/src/windows/*.h" )
+                                "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/src/windows/*.h"
+                                "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/include/config.h" )
   add_library( "uiohook" STATIC ${SOURCE_UIHOOK_FILES} )
   if("$MSVC_VERSION" VERSION_LESS "1900")
     SET_TARGET_PROPERTIES("uiohook"  PROPERTIES COMPILE_FLAGS "-DHAVE_CONFIG_H=1 -Dinline=__inline -D_CRT_SECURE_NO_WARNINGS -Dsnprintf=_snprintf")
