@@ -20,7 +20,7 @@ install:
   - set PATH=%APPDATA%\npm;%APPVEYOR_BUILD_FOLDER%\node_modules\.bin;%PATH%
   - npm i --ignore-scripts
   - for /f %%i in ('node -v') do set exact_nodejs_version=%%i
-  - node build %exact_nodejs_version%
+  - node build %APPVEYOR_BUILD_FOLDER% %exact_nodejs_version%
 
 #on_success:
 #  - for %%i in (prebuilds\*) do appveyor PushArtifact %%i
