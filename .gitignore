@@ -6,3 +6,4 @@ stacktrace*
 .idea
 *.iml
 build
+prebuilds
