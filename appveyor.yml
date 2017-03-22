@@ -1,4 +1,4 @@
-image: Visual Studio 2015
+os: Previous Visual Studio 2013
 version: "{build}"
 build: off
 skip_tags: true
@@ -15,6 +15,7 @@ install:
   - ps: Install-Product node $env:nodejs_version $env:platform
   - npm -g i npm@latest
   - set PATH=%APPDATA%\npm;%APPVEYOR_BUILD_FOLDER%\node_modules\.bin;%PATH%
+  - set PATH=C:\Program Files (x86)\MSBuild\12.0\Bin;%PATH%
   - npm i --ignore-scripts
   - for /f %%i in ('node -v') do set exact_nodejs_version=%%i
   - git submodule update --init --recursive
