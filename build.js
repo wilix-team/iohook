@@ -5,6 +5,20 @@ var async = require('async')
 var extend = require('xtend')
 var path = require('path')
 
+function configure(cb) {
+  var proc = spawn(cmakeJsPath, ['configure'], {
+    env: process.env
+  })
+  proc.stdout.pipe(process.stdout)
+  proc.stderr.pipe(process.stderr)
+  proc.on('exit', function (code, sig) {
+    if (code === 1) {
+      return cb(new Error('Failed to configure...'))
+    }
+    cb()
+  })
+}
+
 var run = function (args, cb) {
   args = args.map(function (arg) {
     if (arg.indexOf('--target') > -1) {
@@ -64,37 +78,39 @@ var opts = {
   gyp: cmakeWrap,
   prebuild: require('node-abi').supportedTargets,
 }
-console.log(opts.prebuild)
+console.log(opts)
 
-var files = []
-async.eachSeries(opts.prebuild, function (target, next) {
-  prebuild(opts, target.target, target.runtime, function (err, tarGz) {
-    if (err) return next(err)
-    files.push(tarGz)
-    next()
-  })
-}, function (err) {
-  if (err) return onbuilderror(err)
-  uploadFiles(files)
-})
-
-function uploadFiles (files) {
-  console.log('Uploading ' + files.length + ' prebuilds(s) to Github releases')
-  upload(extend(opts, {files: files}), function (err, result) {
+function compile() {
+  var files = []
+  async.eachSeries(opts.prebuild, function (target, next) {
+    prebuild(opts, target.target, target.runtime, function (err, tarGz) {
+      if (err) return next(err)
+      files.push(tarGz)
+      next()
+    })
+  }, function (err) {
     if (err) return onbuilderror(err)
-    console.log('Found ' + result.old.length + ' prebuild(s) on Github')
-    if (result.old.length) {
-      result.old.forEach(function (build) {
-        console.log('-> ' + build)
-      })
-    }
-    console.log('Uploaded ' + result.new.length + ' new prebuild(s) to Github')
-    if (result.new.length) {
-      result.new.forEach(function (build) {
-        console.log('-> ' + build)
-      })
-    }
+    uploadFiles(files)
   })
+
+  function uploadFiles (files) {
+    console.log('Uploading ' + files.length + ' prebuilds(s) to Github releases')
+    upload(extend(opts, {files: files}), function (err, result) {
+      if (err) return onbuilderror(err)
+      console.log('Found ' + result.old.length + ' prebuild(s) on Github')
+      if (result.old.length) {
+        result.old.forEach(function (build) {
+          console.log('-> ' + build)
+        })
+      }
+      console.log('Uploaded ' + result.new.length + ' new prebuild(s) to Github')
+      if (result.new.length) {
+        result.new.forEach(function (build) {
+          console.log('-> ' + build)
+        })
+      }
+    })
+  }
 }
 
 function onbuilderror (err) {
@@ -102,3 +118,8 @@ function onbuilderror (err) {
   console.error(err)
   process.exit(2)
 }
+
+configure(function (err) {
+  if (err) return console.error(err)
+  compile()
+})
