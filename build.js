@@ -12,7 +12,7 @@ const run = function (args, cb) {
     }
     return arg
   })
-  const proc = spawn(path.join(__dirname, 'node_modules', '.bin', 'cmake-js'), args, { env: process.env })
+  const proc = spawn(path.join(__dirname, 'node_modules', 'cmake-js', 'bin', 'cmake-js'), args, { env: process.env })
   proc.stdout.pipe(process.stdout)
   proc.stderr.pipe(process.stderr)
   proc.on('exit', function (code, sig) {
