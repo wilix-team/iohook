@@ -2,22 +2,7 @@
 const os = require('os');
 const EventEmitter = require('events');
 
-let NodeHookAddon;
-let currentPlatform = 'iohook_';
-
-// TODO need make prebuilds for Electron users, but it can require too many prebuilds
-if (process.versions['electron']) {
-  currentPlatform += 'electron.' + process.versions['electron'] + '_';
-}
-
-currentPlatform += os.platform() + '_' + os.arch();
-// console.log('Used platform', currentPlatform);
-try {
-  NodeHookAddon = require("bindings")(currentPlatform);
-} catch (e) {
-  console.log('Try use default');
-  NodeHookAddon = require("bindings")('iohook');
-}
+let NodeHookAddon = require('bindings')('iohook')
 
 // Try to remove this handler. I hope...
 // const SegfaultHandler = require('segfault-handler');
@@ -46,7 +31,7 @@ class IOHook extends EventEmitter {
 
   /**
    * Start hook process
-   * @param enableLogger Turn on debug logging 
+   * @param enableLogger Turn on debug logging
    */
   start(enableLogger) {
     if (this.status == "stopped") {
@@ -72,7 +57,7 @@ class IOHook extends EventEmitter {
   }
 
   /**
-   * Shutdown event hook 
+   * Shutdown event hook
    */
   stop() {
     NodeHookAddon.stopHook();
@@ -89,11 +74,11 @@ class IOHook extends EventEmitter {
     if (this.active == false) {
       return;
     }
-    
+
     if (!msg) {
       return;
     }
-    
+
     if (events[msg.type]) {
       let event = msg.mouse || msg.keyboard || msg.wheel;
       event.type = events[msg.type];
