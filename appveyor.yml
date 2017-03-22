@@ -20,9 +20,7 @@ install:
   - set PATH=%APPDATA%\npm;%APPVEYOR_BUILD_FOLDER%\node_modules\.bin;%PATH%
   - npm i --ignore-scripts
   - for /f %%i in ('node -v') do set exact_nodejs_version=%%i
-  - dir .\node_modules\.bin
-  - dir .\node_modules\cmake-js\bin
-  - node build %APPVEYOR_BUILD_FOLDER% %exact_nodejs_version%
+  - node build %exact_nodejs_version%
 
 # - cmd: npm config set -g cafile=package.json
 # - cmd: npm config set -g strict-ssl=false
