@@ -184,7 +184,7 @@ int hook_enable() {
 
   #if defined(_WIN32)
   DWORD hook_thread_id;
-  DWORD *hook_thread_status = (void *) malloc(sizeof(DWORD));
+  DWORD *hook_thread_status = (DWORD *) malloc(sizeof(DWORD));
   hook_thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE) hook_thread_proc, hook_thread_status, 0, &hook_thread_id);
   if (hook_thread != INVALID_HANDLE_VALUE) {
   #else
