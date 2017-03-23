@@ -72,7 +72,7 @@ install:
       }
       bash "pacman --sync --noconfirm --needed mingw-w64-$arch-SDL"
       bash "pwd"
-      bash "cd libuihook && ./bootstrap.sh && ./configure"
+      bash "cd libuiohook && ./bootstrap.sh && ./configure"
   - node build %exact_nodejs_version%
 
 on_success:
