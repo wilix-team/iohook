@@ -68,7 +68,6 @@ var opts = {
   gyp: cmakeWrap,
   prebuild: require('node-abi').supportedTargets.filter(function (target) { return target.target !== '0.10.48' }),
 }
-console.log(opts)
 
 function compile() {
   var files = []
