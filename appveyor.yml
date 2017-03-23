@@ -70,8 +70,6 @@ install:
         bash "pacman --sync --noconfirm --needed msys2-devel"
         bash "pacman --sync --noconfirm --needed mingw-w64-$arch-toolchain"
       }
-      bash "pacman --sync --noconfirm --needed mingw-w64-$arch-SDL"
-      bash "pwd"
       bash "cd libuiohook && ./bootstrap.sh && ./configure"
   - node build %exact_nodejs_version%
 
