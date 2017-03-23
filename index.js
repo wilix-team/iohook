@@ -2,7 +2,11 @@
 const os = require('os');
 const EventEmitter = require('events');
 
-let NodeHookAddon = require('bindings')('iohook')
+const runtime = process.versions['electron'] ? 'electron' : 'node'
+const abi = require('node-abi').getAbi(process.versions[runtime], runtime)
+const essential = runtime + '-v' + abi + '-' + os.platform() + '-' + os.arch()
+console.log('./lib/' + essential + '/build/Release/iohook.node')
+let NodeHookAddon = require('./lib/' + essential + '/build/Release/iohook.node')
 
 // Try to remove this handler. I hope...
 // const SegfaultHandler = require('segfault-handler');
