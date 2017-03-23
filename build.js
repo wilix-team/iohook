@@ -4,16 +4,32 @@ var spawn = require('child_process').spawn
 var async = require('async')
 var extend = require('xtend')
 var path = require('path')
+var abi = require('node-abi')
 
 var cmakeJsPath = path.join(__dirname, 'node_modules', '.bin', process.platform === 'darwin' ? 'cmake-js' : 'cmake-js.cmd')
 
+var allTargets = abi.supportedTargets.concat(abi.deprecatedTargets.map(function (dt) {
+  dt.runtime = dt.runtime === 'node' ? 'iojs' : 'electron'
+  return dt
+}))
+// console.log(allTargets)
+
 var run = function (args, cb) {
+  var extraArgs = []
   args = args.map(function (arg) {
-    if (arg.indexOf('--target') > -1) {
-      return arg.replace('--target', '--runtime-version')
+    if (arg.indexOf('--target=') > -1) {
+      allTargets.forEach(function (target) {
+        if (target.target === arg.split('=')[1]) {
+          extraArgs.push('--runtime=' + target.runtime)
+        }
+      })
+      return arg.replace('--target=', '--runtime-version=')
     }
     return arg
-  })
+  }).concat(extraArgs)
+
+  console.log(cmakeJsPath + ' ' + args.join(' '))
+
   var proc = spawn(cmakeJsPath, args, {
     env: process.env
   })
@@ -64,12 +80,24 @@ var opts = {
   },
   pkg: require('./package.json'),
   gyp: cmakeWrap,
-  prebuild: require('node-abi').supportedTargets.filter(function (target) { return target.target !== '0.10.48' }),
+  prebuild: allTargets.filter(function (target) {
+    return target.target !== '0.10.48'
+      && target.target !== '0.2.0'
+      && target.target !== '0.9.1'
+      && target.target !== '0.10.0'
+      && target.target !== '0.11.0'
+      && target.target !== '0.11.10'
+      && target.target !== '8.0.0'
+      && target.target !== '0.30.0'
+      && target.target !== '0.31.0'
+      && target.target !== '0.33.0'
+  })
 }
 
 function compile() {
   var files = []
   async.eachSeries(opts.prebuild, function (target, next) {
+    console.log(target)
     prebuild(opts, target.target, target.runtime, function (err, tarGz) {
       if (err) return next(err)
       files.push(tarGz)

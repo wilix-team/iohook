@@ -8,6 +8,7 @@ var pump = require('pump')
 var tfs = require('tar-fs')
 var zlib = require('zlib')
 var pkg = require('./package.json')
+var abi = require('node-abi')
 
 function onerror(err) {
   console.error(err)
@@ -56,11 +57,22 @@ function install(runtime, abi, platform, arch, cb) {
 if (process.argv.indexOf('--all') > -1 || process.env.npm_config_targets) {
   let chain = Promise.resolve()
   if (process.argv.indexOf('--all') > -1 || process.env.npm_config_targets === 'all') {
-    var targets = require('node-abi')
-      .supportedTargets
-      .filter(function (target) {
-        return target.target !== '0.10.48'
-      })
+    var targets = abi.supportedTargets.concat(abi.deprecatedTargets.map(function (dt) {
+      dt.runtime = dt.runtime === 'node' ? 'iojs' : 'electron'
+      return dt
+    }))
+    .filter(function (target) {
+      return target.target !== '0.10.48'
+        && target.target !== '0.2.0'
+        && target.target !== '0.9.1'
+        && target.target !== '0.10.0'
+        && target.target !== '0.11.0'
+        && target.target !== '0.11.10'
+        && target.target !== '8.0.0'
+        && target.target !== '0.30.0'
+        && target.target !== '0.31.0'
+        && target.target !== '0.33.0'
+    })
     targets.forEach(function (target) {
       ['win32', 'darwin'].forEach(function (platform) {
         ['x64', 'ia32'].forEach(function (arch) {
