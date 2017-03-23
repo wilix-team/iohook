@@ -1,6 +1,6 @@
 {
   "name": "iohook-prebuild-test",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Node.js global keyboard and mouse hook",
   "main": "index.js",
   "scripts": {
@@ -33,6 +33,7 @@
   "homepage": "https://github.com/WilixLead/iohook#readme",
   "dependencies": {
     "bindings": "^1.2.1",
+    "node-abi": "^2.0.0",
     "pump": "^1.0.2",
     "simple-get": "^2.4.0",
     "tar-fs": "^1.15.2"
