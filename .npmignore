@@ -1,0 +1,6 @@
+lib/
+CMakeFiles/
+libuiohook/
+build/
+electron-example/
+prebuilds/
