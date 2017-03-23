@@ -7,12 +7,14 @@ environment:
   matrix:
     - arch: x86_64
       bits: 64
+      nodejs_version: 7
     - arch: i686
       bits: 32
-#
-# platform:
-#   - x86
-#   - x64
+      nodejs_version: 7
+
+platform:
+  - x64
+  # - x86
 
 install:
   - ps: Install-Product node $env:nodejs_version $env:platform
