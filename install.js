@@ -15,9 +15,6 @@ function onerror(err) {
 }
 
 function install(runtime, abi, platform, arch, cb) {
-  // example prebuild files:
-  // - iohook-prebuild-test-v0.1.4-electron-v47-darwin-x64.tar.gz
-  // - iohook-prebuild-test-v0.1.4-node-v51-darwin-x64.tar.gz
   const essential = runtime + '-v' + abi + '-' + platform + '-' + arch
   const pkgVersion = pkg.version
   const currentPlatform = pkg.name + '-v' + pkgVersion + '-' + essential
@@ -41,7 +38,6 @@ function install(runtime, abi, platform, arch, cb) {
         var targetFile = path.join(__dirname, 'builds', essential)
         var extract = tfs.extract(targetFile, options)
           .on('entry', updateName)
-
         pump(fs.createReadStream(tempFile), zlib.createGunzip(), extract, function (err) {
           if (err) return onerror(err)
           cb()

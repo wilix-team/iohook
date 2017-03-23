@@ -13,6 +13,12 @@ function mode(octal) {
   return parseInt(octal, 8)
 }
 
+var arch = process.env.ARCH
+  ? process.env.ARCH
+    .replace('i686', 'ia32')
+    .replace('x86_64', 'x64')
+  : process.arch
+
 var cmakeJsPath = path.join(
   __dirname,
   'node_modules',
@@ -45,7 +51,7 @@ function build(runtime, version) {
     var args = [
       'rebuild',
       '--runtime-version=' + version,
-      '--target_arch=' + process.arch,
+      '--target_arch=' + arch,
       '--runtime=' + runtime
     ]
     var proc = spawn(cmakeJsPath, args, {
@@ -66,7 +72,7 @@ function tarGz(runtime, version) {
   return new Promise(function (resolve) {
     var filename = 'build/Release/iohook.node'
     var abi = abis[runtime][version]
-    var tarPath = 'prebuilds/' + pkg.name + '-v' + pkg.version + '-' + runtime + '-v' + abi + '-' + process.platform + '-' + process.arch + '.tar.gz'
+    var tarPath = 'prebuilds/' + pkg.name + '-v' + pkg.version + '-' + runtime + '-v' + abi + '-' + process.platform + '-' + arch + '.tar.gz'
     files.push(tarPath)
     mkdirp(path.dirname(tarPath), function () {
       fs.stat(filename, function (err, st) {
