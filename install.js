@@ -58,7 +58,7 @@ function install(runtime, abi, platform, arch, cb) {
 try {
   require('./index.js');
 } catch (e) {
-  if (process.argv.indexOf('--all') > -1) {
+  if (process.argv.indexOf('--all') > -1 || process.env.IOHOOK_INSTALL_ALL) {
     const targets = require('node-abi').supportedTargets.filter(function (target) { return target.target !== '0.10.48' })
     let chain = Promise.resolve()
     targets.forEach(function (target) {
