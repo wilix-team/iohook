@@ -20,15 +20,13 @@ function install(runtime, abi, platform, arch, cb) {
   const essential = runtime + '-v' + abi + '-' + platform + '-' + arch
   const pkgVersion = pkg.version
   const currentPlatform = pkg.name + '-v' + pkgVersion + '-' + essential
-  console.log('Platform is:', currentPlatform);
+  console.log('Downloading prebuild for platform:', currentPlatform);
   const downloadUrl = 'https://github.com/vespakoen/iohook/releases/download/v' + pkgVersion + '/' + currentPlatform + '.tar.gz'
   var reqOpts = { url: downloadUrl }
   var tempFile = path.join(os.tmpdir(), 'prebuild.tar.gz')
   var req = get(reqOpts, function (err, res) {
     if (err) return onerror(err)
-    console.log(res.statusCode, downloadUrl)
     if (res.statusCode !== 200) return onerror()
-      console.log('downloading to @', tempFile)
       pump(res, fs.createWriteStream(tempFile), function (err) {
         var options = {
           readable: true,
@@ -55,14 +53,15 @@ function install(runtime, abi, platform, arch, cb) {
   })
 }
 
-try {
-  require('./index.js');
-} catch (e) {
-  if (process.argv.indexOf('--all') > -1 || process.env.IOHOOK_INSTALL_ALL) {
-    const targets = require('node-abi').supportedTargets.filter(function (target) { return target.target !== '0.10.48' })
-    let chain = Promise.resolve()
+if (process.argv.indexOf('--all') > -1 || process.env.npm_package_config_targets) {
+  let chain = Promise.resolve()
+  if (process.argv.indexOf('--all') > -1 || process.env.npm_package_config_targets === 'all') {
+    var targets = require('node-abi')
+      .supportedTargets
+      .filter(function (target) {
+        return target.target !== '0.10.48'
+      })
     targets.forEach(function (target) {
-      console.log(target);
       ['win32', 'darwin'].forEach(function (platform) {
         ['x64', 'ia32'].forEach(function (arch) {
           if (platform === 'darwin' && arch === 'ia32') return
@@ -75,10 +74,20 @@ try {
       })
     })
   } else {
-    const runtime = process.versions['electron'] ? 'electron' : 'node'
-    const abi = require('node-abi').getAbi(process.versions[runtime], runtime)
-    const platform = os.platform()
-    const arch = os.arch()
-    install(runtime, abi, platform, arch, function () {})
+    var targets = process.env.npm_package_config_targets.split(',')
+    targets.forEach(function (targetStr) {
+      var parts = targetStr.split('-')
+      chain = chain.then(function () {
+        return new Promise(function (resolve) {
+          install(parts[0], parts[1], parts[2], parts[3], resolve)
+        })
+      })
+    })
   }
+} else {
+  const runtime = process.versions['electron'] ? 'electron' : 'node'
+  const abi = require('node-abi').getAbi(process.versions[runtime], runtime)
+  const platform = os.platform()
+  const arch = os.arch()
+  install(runtime, abi, platform, arch, function () {})
 }
