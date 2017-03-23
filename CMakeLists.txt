@@ -33,7 +33,7 @@ elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
                                 "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/include/config.h" )
 
   add_library( "uiohook" STATIC ${SOURCE_UIHOOK_FILES} )
-  set_target_properties("uiohook"  PROPERTIES COMPILE_FLAGS "-DHAVE_CONFIG_H=1")
+  set_target_properties("uiohook"  PROPERTIES COMPILE_FLAGS "-DHAVE_CONFIG_H=1 -fPIC")
   add_dependencies( "uiohook" "prepare_iuhook")
   target_include_directories("uiohook" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/include/" "${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/src" ${CMAKE_CURRENT_SOURCE_DIR}/libuiohook/src/x11 )
 else()

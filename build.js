@@ -49,6 +49,7 @@ var cmakeWrap = {
 }
 
 var opts = {
+  upload: process.env.GITHUB_ACCESS_TOKEN,
   target: process.versions.node,
   runtime: 'node',
   arch: process.arch,
