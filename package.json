@@ -1,6 +1,6 @@
 {
   "name": "iohook-prebuild-test",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "Node.js global keyboard and mouse hook",
   "main": "index.js",
   "scripts": {
