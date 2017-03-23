@@ -8,7 +8,7 @@ var pump = require('pump')
 var tfs = require('tar-fs')
 var zlib = require('zlib')
 var pkg = require('./package.json')
-var abi = require('node-abi')
+var support = require('./support')
 
 function onerror(err) {
   console.error(err)
@@ -56,50 +56,38 @@ function install(runtime, abi, platform, arch, cb) {
 
 if (process.argv.indexOf('--all') > -1 || process.env.npm_config_targets) {
   let chain = Promise.resolve()
-  if (process.argv.indexOf('--all') > -1 || process.env.npm_config_targets === 'all') {
-    var targets = abi.supportedTargets.concat(abi.deprecatedTargets.map(function (dt) {
-      dt.runtime = dt.runtime === 'node' ? 'iojs' : 'electron'
-      return dt
-    }))
-    .filter(function (target) {
-      return target.target !== '0.10.48'
-        && target.target !== '0.2.0'
-        && target.target !== '0.9.1'
-        && target.target !== '0.10.0'
-        && target.target !== '0.11.0'
-        && target.target !== '0.11.10'
-        && target.target !== '8.0.0'
-        && target.target !== '0.30.0'
-        && target.target !== '0.31.0'
-        && target.target !== '0.33.0'
-    })
-    targets.forEach(function (target) {
-      ['win32', 'darwin'].forEach(function (platform) {
-        ['x64', 'ia32'].forEach(function (arch) {
-          if (platform === 'darwin' && arch === 'ia32') return
-          chain = chain.then(function () {
-            return new Promise(function (resolve) {
-              install(target.runtime, target.abi, platform, arch, resolve)
-            })
+  let targets
+  if (process.env.npm_config_targets === 'all') {
+    targets = support.targets
+  } else {
+    targets = process.env.npm_config_targets
+      .split(',')
+      .map(function (targetStr) {
+        return targetStr.split('-')
+      })
+  }
+  var platforms = process.env.npm_config_platforms ? process.env.npm_config_platforms.split(',') : ['win32', 'darwin']
+  var arches = process.env.npm_config_arches ? process.env.npm_config_arches.split(',') : ['x64', 'ia32']
+  targets.forEach(function (parts) {
+    var runtime = parts[0]
+    var version = parts[1]
+    platforms.forEach(function (platform) {
+      arches.forEach(function (arch) {
+        if (platform === 'darwin' && arch === 'ia32') return
+        chain = chain.then(function () {
+          return new Promise(function (resolve) {
+            var abi = support.abis[runtime][version]
+            console.log(runtime, abi, platform, arch)
+            install(runtime, abi, platform, arch, resolve)
           })
         })
       })
     })
-  } else {
-    var targets = process.env.npm_config_targets.split(',')
-    targets.forEach(function (targetStr) {
-      var parts = targetStr.split('-')
-      chain = chain.then(function () {
-        return new Promise(function (resolve) {
-          install(parts[0], parts[1], parts[2], parts[3], resolve)
-        })
-      })
-    })
-  }
+  })
 } else {
   const runtime = process.versions['electron'] ? 'electron' : 'node'
-  const abi = require('node-abi').getAbi(process.versions[runtime], runtime)
-  const platform = os.platform()
-  const arch = os.arch()
+  const abi = process.versions.modules
+  const platform = process.platform
+  const arch = process.arch
   install(runtime, abi, platform, arch, function () {})
 }

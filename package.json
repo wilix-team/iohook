@@ -40,7 +40,9 @@
   },
   "devDependencies": {
     "cmake-js": "^3.4.1",
+    "mkdirp": "^0.5.1",
     "nan": "^2.5.1",
-    "prebuild": "^6.1.0"
+    "prebuild": "^6.1.0",
+    "tar-stream": "^1.5.2"
   }
 }
