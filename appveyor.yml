@@ -36,7 +36,7 @@ install:
       function bash($command, $dieOnError = $true) {
         ""
         Write-Host $command
-        & "C:\$msys\usr\bin\bash" --login -c "MSYSTEM=$mingwUpper . /etc/profile && cd $posixBuildFolder && $command"
+        & "C:\$msys\usr\bin\bash" --login -c "ARCH=$arch MSYSTEM=$mingwUpper . /etc/profile && cd $posixBuildFolder && $command"
         if ($LASTEXITCODE -eq 0) {
           Write-Host "'$command' succeeded. While its output might be red, it exited with '0'." -ForegroundColor Green
         } else {

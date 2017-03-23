@@ -52,7 +52,7 @@ var opts = {
   upload: process.env.GITHUB_ACCESS_TOKEN,
   target: process.versions.node,
   runtime: 'node',
-  arch: process.arch,
+  arch: process.env.ARCH ? process.env.ARCH.replace('i686', 'ia32').replace('x86_64', 'x64') : process.arch,
   libc: process.env.LIBC,
   platform: process.platform,
   all: false,
