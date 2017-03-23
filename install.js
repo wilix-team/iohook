@@ -79,6 +79,6 @@ try {
     const abi = require('node-abi').getAbi(process.versions[runtime], runtime)
     const platform = os.platform()
     const arch = os.arch()
-    install(runtime, abi, platform, arch)
+    install(runtime, abi, platform, arch, function () {})
   }
 }
