@@ -20,7 +20,9 @@ var run = function (args, cb) {
     if (arg.indexOf('--target=') > -1) {
       allTargets.forEach(function (target) {
         if (target.target === arg.split('=')[1]) {
-          extraArgs.push('--runtime=' + target.runtime)
+          if (args.indexOf('--runtime=' + target.runtime) === -1) {
+            extraArgs.push('--runtime=' + target.runtime)
+          }
         }
       })
       return arg.replace('--target=', '--runtime-version=')
