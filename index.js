@@ -1,16 +1,9 @@
 'use strict';
 
-var os = require('os');
 var util = require('util');
 var EventEmitter = require('events');
 var runtime = process.versions['electron'] ? 'electron' : 'node'
-var version = process.versions[runtime]
-var abi = require('node-abi').getAbi(version, runtime)
-var major = version.split('.')[0]
-if (['1', '2', '3'].indexOf(major) > -1) {
-  runtime = 'iojs'
-}
-var essential = runtime + '-v' + abi + '-' + os.platform() + '-' + os.arch()
+var essential = runtime + '-v' + process.versions.modules + '-' + process.platform + '-' + process.arch
 console.log('Loading native binary: ./builds/' + essential + '/build/Release/iohook.node')
 var NodeHookAddon = require('./builds/' + essential + '/build/Release/iohook.node')
 
