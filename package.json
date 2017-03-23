@@ -1,6 +1,6 @@
 {
   "name": "iohook",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Node.js global keyboard and mouse hook",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/WilixLead/iohook.git"
+    "url": "git+https://github.com/vespakoen/iohook.git"
   },
   "keywords": [
     "hook",
