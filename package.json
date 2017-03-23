@@ -4,7 +4,7 @@
   "description": "Node.js global keyboard and mouse hook",
   "main": "index.js",
   "scripts": {
-    "install": "prebuild-install || cmake-js rebuild",
+    "install": "prebuild-install",
     "compile": "cmake-js compile",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
