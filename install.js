@@ -53,9 +53,9 @@ function install(runtime, abi, platform, arch, cb) {
   })
 }
 
-if (process.argv.indexOf('--all') > -1 || process.env.npm_package_config_targets) {
+if (process.argv.indexOf('--all') > -1 || process.env.npm_config_targets) {
   let chain = Promise.resolve()
-  if (process.argv.indexOf('--all') > -1 || process.env.npm_package_config_targets === 'all') {
+  if (process.argv.indexOf('--all') > -1 || process.env.npm_config_targets === 'all') {
     var targets = require('node-abi')
       .supportedTargets
       .filter(function (target) {
@@ -74,7 +74,7 @@ if (process.argv.indexOf('--all') > -1 || process.env.npm_package_config_targets
       })
     })
   } else {
-    var targets = process.env.npm_package_config_targets.split(',')
+    var targets = process.env.npm_config_targets.split(',')
     targets.forEach(function (targetStr) {
       var parts = targetStr.split('-')
       chain = chain.then(function () {
