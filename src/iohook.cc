@@ -52,7 +52,7 @@ bool logger_proc(unsigned int level, const char *format, ...) {
       status = vfprintf(stdout, format, args) >= 0;
       va_end(args);
       break;
-    
+
     case LOG_LEVEL_WARN:
     case LOG_LEVEL_ERROR:
       va_start(args, format);
@@ -60,15 +60,15 @@ bool logger_proc(unsigned int level, const char *format, ...) {
       va_end(args);
       break;
   }
-  
+
   return status;
 }
 
-// NOTE: The following callback executes on the same thread that hook_run() is called 
+// NOTE: The following callback executes on the same thread that hook_run() is called
 // from.  This is important because hook_run() attaches to the operating systems
 // event dispatcher and may delay event delivery to the target application.
-// Furthermore, some operating systems may choose to disable your hook if it 
-// takes to long to process.  If you need to do any extended processing, please 
+// Furthermore, some operating systems may choose to disable your hook if it
+// takes to long to process.  If you need to do any extended processing, please
 // do so by copying the event to your own queued dispatch thread.
 void dispatch_proc(uiohook_event * const event) {
   switch (event->type) {
@@ -79,8 +79,8 @@ void dispatch_proc(uiohook_event * const event) {
       #else
       pthread_mutex_lock(&hook_running_mutex);
       #endif
-      
-      
+
+
       #ifdef _WIN32
       // Signal the control event.
       SetEvent(hook_control_cond);
@@ -90,7 +90,7 @@ void dispatch_proc(uiohook_event * const event) {
       pthread_mutex_unlock(&hook_control_mutex);
       #endif
       break;
-      
+
     case EVENT_HOOK_DISABLED:
       // Lock the control mutex until we exit.
       #ifdef _WIN32
@@ -98,7 +98,7 @@ void dispatch_proc(uiohook_event * const event) {
       #else
       pthread_mutex_lock(&hook_control_mutex);
       #endif
-      
+
       // Unlock the running mutex so we know if the hook is disabled.
       #ifdef _WIN32
       ReleaseMutex(hook_running_mutex);
@@ -108,11 +108,11 @@ void dispatch_proc(uiohook_event * const event) {
       // Stop the main runloop so that this program ends.
       CFRunLoopStop(CFRunLoopGetMain());
       #endif
-      
+
       pthread_mutex_unlock(&hook_running_mutex);
       #endif
       break;
-    
+
     case EVENT_KEY_PRESSED:
     case EVENT_KEY_RELEASED:
     case EVENT_KEY_TYPED:
@@ -142,19 +142,19 @@ void *hook_thread_proc(void *arg) {
     *(int *) arg = status;
     #endif
   }
-  
+
   // Make sure we signal that we have passed any exception throwing code for
   // the waiting hook_enable().
   #ifdef _WIN32
   SetEvent(hook_control_cond);
-  
+
   return status;
   #else
   // Make sure we signal that we have passed any exception throwing code for
   // the waiting hook_enable().
   pthread_cond_signal(&hook_control_cond);
   pthread_mutex_unlock(&hook_control_mutex);
-  
+
   return arg;
   #endif
 }
@@ -167,10 +167,10 @@ int hook_enable() {
   #else
   pthread_mutex_lock(&hook_control_mutex);
   #endif
-  
+
   // Set the initial status.
   int status = UIOHOOK_FAILURE;
-  
+
   #ifndef _WIN32
   // Create the thread attribute.
   pthread_attr_t hook_thread_attr;
@@ -181,10 +181,10 @@ int hook_enable() {
   pthread_attr_getschedpolicy(&hook_thread_attr, &policy);
   int priority = sched_get_priority_max(policy);
   #endif
-  
+
   #if defined(_WIN32)
   DWORD hook_thread_id;
-  DWORD *hook_thread_status = malloc(sizeof(DWORD));
+  DWORD *hook_thread_status = (void *) malloc(sizeof(DWORD));
   hook_thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE) hook_thread_proc, hook_thread_status, 0, &hook_thread_id);
   if (hook_thread != INVALID_HANDLE_VALUE) {
   #else
@@ -199,7 +199,7 @@ int hook_enable() {
           hook_thread	, (unsigned long) GetLastError());
     }
     #elif (defined(__APPLE__) && defined(__MACH__)) || _POSIX_C_SOURCE >= 200112L
-    // Some POSIX revisions do not support pthread_setschedprio so we will 
+    // Some POSIX revisions do not support pthread_setschedprio so we will
     // use pthread_setschedparam instead.
     struct sched_param param = { .sched_priority = priority };
     if (pthread_setschedparam(hook_thread, SCHED_OTHER, &param) != 0) {
@@ -213,10 +213,10 @@ int hook_enable() {
           __FUNCTION__, __LINE__, priority, (unsigned long) hook_thread);
     }
     #endif
-    
-    
-    // Wait for the thread to indicate that it has passed the 
-    // initialization portion by blocking until either a EVENT_HOOK_ENABLED 
+
+
+    // Wait for the thread to indicate that it has passed the
+    // initialization portion by blocking until either a EVENT_HOOK_ENABLED
     // event is received or the thread terminates.
     // NOTE This unlocks the hook_control_mutex while we wait.
     #ifdef _WIN32
@@ -230,9 +230,9 @@ int hook_enable() {
     #else
     if (pthread_mutex_trylock(&hook_running_mutex) == 0) {
     #endif
-      // Lock Successful; The hook is not running but the hook_control_cond 
+      // Lock Successful; The hook is not running but the hook_control_cond
       // was signaled!  This indicates that there was a startup problem!
-      
+
       // Get the status back from the thread.
       #ifdef _WIN32
       WaitForSingleObject(hook_thread,  INFINITE);
@@ -244,27 +244,27 @@ int hook_enable() {
     }
     else {
       // Lock Failure; The hook is currently running and wait was signaled
-      // indicating that we have passed all possible start checks.  We can 
+      // indicating that we have passed all possible start checks.  We can
       // always assume a successful startup at this point.
       status = UIOHOOK_SUCCESS;
     }
-    
+
     free(hook_thread_status);
-  
+
     logger_proc(LOG_LEVEL_DEBUG,	"%s [%u]: Thread Result: (%#X).\n",
         __FUNCTION__, __LINE__, status);
   }
   else {
     status = UIOHOOK_ERROR_THREAD_CREATE;
   }
-  
+
   // Make sure the control mutex is unlocked.
   #ifdef _WIN32
   ReleaseMutex(hook_control_mutex);
   #else
   pthread_mutex_unlock(&hook_control_mutex);
   #endif
-  
+
   return status;
 }
 
@@ -281,10 +281,10 @@ void run() {
   pthread_mutex_init(&hook_control_mutex, NULL);
   pthread_cond_init(&hook_control_cond, NULL);
   #endif
-  
+
   // Set the logger callback for library output.
   hook_set_logger_proc(&logger_proc);
-  
+
   // Set the event callback for uiohook events.
   hook_set_dispatch_proc(&dispatch_proc);
 
@@ -301,7 +301,7 @@ void run() {
       // NOTE Darwin requires that you start your own runloop from main.
       CFRunLoopRun();
       #endif
-      
+
       pthread_join(hook_thread, NULL);
       #endif
       break;
@@ -388,7 +388,7 @@ void stop() {
       logger_proc(LOG_LEVEL_ERROR, "An unknown hook error occurred. (%#X)", status);
       break;
   }
-  
+
   #ifdef _WIN32
   // Create event handles for the thread hook.
   CloseHandle(hook_thread);
@@ -398,7 +398,7 @@ void stop() {
   #else
   pthread_mutex_destroy(&hook_running_mutex);
   pthread_mutex_destroy(&hook_control_mutex);
-  pthread_cond_destroy(&hook_control_cond); 
+  pthread_cond_destroy(&hook_control_cond);
   #endif
 }
 
@@ -453,11 +453,11 @@ void HookProcessWorker::HandleProgressCallback(const uiohook_event *event, size_
   uiohook_event *ev;
   while (!zqueue.empty()) {
     ev = zqueue.front();
-    
+
     HandleScope scope(Isolate::GetCurrent());
-                    
+
     v8::Local<v8::Object> obj = fillEventObject(ev);
-    
+
     v8::Local<v8::Value> argv[] = { obj };
     callback->Call(1, argv);
 
@@ -512,7 +512,7 @@ NAN_METHOD(StopHook) {
 NAN_MODULE_INIT(Init) {
   Nan::Set(target, Nan::New<String>("startHook").ToLocalChecked(),
   Nan::GetFunction(Nan::New<FunctionTemplate>(StartHook)).ToLocalChecked());
-  
+
   Nan::Set(target, Nan::New<String>("stopHook").ToLocalChecked(),
   Nan::GetFunction(Nan::New<FunctionTemplate>(StopHook)).ToLocalChecked());
 }
