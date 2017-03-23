@@ -1,17 +1,18 @@
 'use strict';
-const os = require('os');
-const EventEmitter = require('events');
 
-const runtime = process.versions['electron'] ? 'electron' : 'node'
-const abi = require('node-abi').getAbi(process.versions[runtime], runtime)
-const essential = runtime + '-v' + abi + '-' + os.platform() + '-' + os.arch()
-console.log('./lib/' + essential + '/build/Release/iohook.node')
-let NodeHookAddon = require('./lib/' + essential + '/build/Release/iohook.node')
+var os = require('os');
+var util = require('util');
+var EventEmitter = require('events');
+var runtime = process.versions['electron'] ? 'electron' : 'node'
+var abi = require('node-abi').getAbi(process.versions[runtime], runtime)
+var essential = runtime + '-v' + abi + '-' + os.platform() + '-' + os.arch()
+console.log('Loading native binary: ./builds/' + essential + '/build/Release/iohook.node')
+var NodeHookAddon = require('./builds/' + essential + '/build/Release/iohook.node')
 
 // Try to remove this handler. I hope...
 // const SegfaultHandler = require('segfault-handler');
 
-const events = {
+var events = {
   3: 'keypress',
   4: 'keydown',
   5: 'keyup',
@@ -23,73 +24,67 @@ const events = {
   11: 'mousewheel'
 };
 
-class IOHook extends EventEmitter {
-  constructor() {
-    super();
-    this.status = "stopped";
-    this.active = false;
-    this.debug = false;
+function IOHook() {
+  EventEmitter.call(this, 'IOHook')
+  this.status = 'stopped'
+  this.active = false
+  this.debug = false
+}
 
-    // SegfaultHandler.registerHandler("iohook-crash.log");
-  }
+util.inherits(IOHook, EventEmitter)
 
-  /**
-   * Start hook process
-   * @param enableLogger Turn on debug logging
-   */
-  start(enableLogger) {
-    if (this.status == "stopped") {
-      this.debug = enableLogger;
-      NodeHookAddon.startHook(this._handler.bind(this), this.debug || false);
-      this.status = "started";
-      this.active = true;
-    }
-  }
-
-  /**
-   * Pause in events call. Just don't fire any new events
-   */
-  pause() {
-    this.active = false;
-  }
-
-  /**
-   * Resume events call.
-   */
-  resume() {
+IOHook.prototype.start = function(enableLogger) {
+  if (this.status == "stopped") {
+    this.debug = enableLogger;
+    NodeHookAddon.startHook(this._handler.bind(this), this.debug || false);
+    this.status = "started";
     this.active = true;
   }
+}
 
-  /**
-   * Shutdown event hook
-   */
-  stop() {
-    NodeHookAddon.stopHook();
-    this.active = false;
-    this.status = "stopped";
+/**
+ * Pause in events call. Just don't fire any new events
+ */
+IOHook.prototype.pause = function() {
+  this.active = false;
+}
+
+/**
+ * Resume events call.
+ */
+IOHook.prototype.resume = function() {
+  this.active = true;
+}
+
+/**
+ * Shutdown event hook
+ */
+IOHook.prototype.stop = function() {
+  NodeHookAddon.stopHook();
+  this.active = false;
+  this.status = "stopped";
+}
+
+/**
+ * Local event handler. Don't use it in your code!
+ * @param msg Raw event message
+ * @private
+ */
+IOHook.prototype._handler = function(msg) {
+  if (this.active == false) {
+    return;
   }
 
-  /**
-   * Local event handler. Don't use it in your code!
-   * @param msg Raw event message
-   * @private
-   */
-  _handler(msg) {
-    if (this.active == false) {
-      return;
-    }
+  if (!msg) {
+    return;
+  }
 
-    if (!msg) {
-      return;
-    }
-
-    if (events[msg.type]) {
-      let event = msg.mouse || msg.keyboard || msg.wheel;
-      event.type = events[msg.type];
-      this.emit(events[msg.type], event);
-    } else {
-      console.warn('Unregistered iohook event', msg);
-    }
+  if (events[msg.type]) {
+    let event = msg.mouse || msg.keyboard || msg.wheel;
+    event.type = events[msg.type];
+    this.emit(events[msg.type], event);
+  } else {
+    console.warn('Unregistered iohook event', msg);
   }
 }
 

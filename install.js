@@ -37,7 +37,7 @@ function install(runtime, abi, platform, arch, cb) {
         var updateName = function (entry) {
           if (/\.node$/i.test(entry.name)) binaryName = entry.name
         }
-        var targetFile = path.join(__dirname, 'lib', essential)
+        var targetFile = path.join(__dirname, 'builds', essential)
         var extract = tfs.extract(targetFile, options)
           .on('entry', updateName)
 
