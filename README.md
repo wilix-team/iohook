@@ -105,6 +105,6 @@ module crash with "Segmentation fault: 11". Looks like it is problem in my nativ
 but I still can't find a problem. Will be happy if somebody helps with it.
 
 ## Credits
-Thanks for libuiohook project!
-Thank you @ayoubserti for first iohook prototype
+Thanks for libuiohook project!  
+Thank you [ayoubserti](https://github.com/ayoubserti) for first iohook prototype
 
