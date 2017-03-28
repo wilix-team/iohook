@@ -16,8 +16,7 @@ use_c99()
 project(iohook)
 
 if(WIN32 OR WIN64)
-  add_subdirectory(libuiohook ${CMAKE_CURRENT_SOURCE_DIR}/build/libuiohook)
-
+    add_subdirectory(libuiohook ${CMAKE_CURRENT_SOURCE_DIR}/libuiohook)
 elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
 
   #bootstrap and configure

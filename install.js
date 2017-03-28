@@ -1,63 +1,93 @@
 'use strict';
 
-const proc = require('child_process');
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
+var get = require('simple-get');
+var pump = require('pump');
+var tfs = require('tar-fs');
+var zlib = require('zlib');
+var pkg = require('./package.json');
+var support = require('./support');
 
-if (process.argv[2] == 'install') {
-  try {
-    require('./index.js');
-  } catch (e) {
-    // Need compile
-    console.log('Recompiling iohook for your environment');
+function onerror(err) {
+  console.error(err)
+}
 
-    let currentPlatform = 'iohook_';
-    
-    if (process.versions['electron']) {
-      currentPlatform += 'electron.' + process.versions['electron'] + '_';
-    }
-    
-    currentPlatform += os.platform() + '_' + os.arch();
-    console.log('Platform is:', currentPlatform);
+function install(runtime, abi, platform, arch, cb) {
+  const essential = runtime + '-v' + abi + '-' + platform + '-' + arch;
+  const pkgVersion = pkg.version;
+  const currentPlatform = pkg.name + '-v' + pkgVersion + '-' + essential;
+  console.log('Downloading prebuild for platform:', currentPlatform);
+  const downloadUrl = 'https://github.com/vespakoen/iohook/releases/download/v' + pkgVersion + '/' + currentPlatform + '.tar.gz';
+  let reqOpts = { url: downloadUrl };
+  let tempFile = path.join(os.tmpdir(), 'prebuild.tar.gz');
+  let req = get(reqOpts, function (err, res) {
+    if (err) return onerror(err);
+    if (res.statusCode !== 200) return onerror();
+      pump(res, fs.createWriteStream(tempFile), function (err) {
+        let options = {
+          readable: true,
+          writable: true,
+          hardlinkAsFilesFallback: true
+        };
+        let binaryName;
+        let updateName = function (entry) {
+          if (/\.node$/i.test(entry.name)) binaryName = entry.name
+        }
+        let targetFile = path.join(__dirname, 'builds', essential);
+        let extract = tfs.extract(targetFile, options)
+          .on('entry', updateName)
+        pump(fs.createReadStream(tempFile), zlib.createGunzip(), extract, function (err) {
+          if (err) {
+            return onerror(err);
+          }
+          cb()
+        })
+    })
+  })
 
-    proc.execSync('git submodule update --init');
-    if (!checkLibuiohookSource()) {
-      deleteFolderRecursive(path.join(__dirname, 'libuiohook'));
-      proc.execSync('git clone https://github.com/kwhat/libuiohook.git');
-    }
-    
-    proc.execSync('npm install nan cmake-js');
-    proc.execSync('npm run compile');
-    // if (fs.existsSync(path.join(__dirname, 'build', 'Release', 'iohook.node'))) {
-    //   fs.renameSync(
-    //     path.join(__dirname, 'build', 'Release', 'iohook.node'),
-    //     path.join(__dirname, 'build', 'Release', currentPlatform + '.node')
-    //   );
-    // }
+  req.setTimeout(30 * 1000, function () {
+    req.abort()
+  })
+}
+
+if (process.argv.indexOf('--all') > -1 || process.env.npm_config_targets) {
+  let chain = Promise.resolve();
+  let targets;
+  if (process.env.npm_config_targets === 'all') {
+    targets = support.targets
+  } else {
+    targets = process.env.npm_config_targets
+      .split(',')
+      .map(function (targetStr) {
+        return targetStr.split('-')
+      })
   }
+  let platforms = process.env.npm_config_platforms ? process.env.npm_config_platforms.split(',') : ['win32', 'darwin'];
+  let arches = process.env.npm_config_arches ? process.env.npm_config_arches.split(',') : ['x64', 'ia32'];
+  targets.forEach(function (parts) {
+    let runtime = parts[0];
+    let version = parts[1];
+    platforms.forEach(function (platform) {
+      arches.forEach(function (arch) {
+        if (platform === 'darwin' && arch === 'ia32') {
+          return;
+        }
+        chain = chain.then(function () {
+          return new Promise(function (resolve) {
+            let abi = support.abis[runtime][version];
+            console.log(runtime, abi, platform, arch);
+            install(runtime, abi, platform, arch, resolve)
+          })
+        })
+      })
+    })
+  })
 } else {
-  proc.execSync('npm remove nan cmake-js');
-  deleteFolderRecursive(path.join(__dirname, 'libuiohook'), true);
-  deleteFolderRecursive(path.join(__dirname, 'build', 'CMakeFiles'));
-}
-
-function checkLibuiohookSource() {
-  return fs.existsSync(path.join(__dirname, 'libuiohook', 'include', 'uiohook.h'));
-}
-
-function deleteFolderRecursive(path, keepRoot) {
-  if( fs.existsSync(path) ) {
-    fs.readdirSync(path).forEach(function(file, index){
-      let curPath = path + "/" + file;
-      if(fs.lstatSync(curPath).isDirectory()) { // recurse
-        deleteFolderRecursive(curPath);
-      } else { // delete file
-        fs.unlinkSync(curPath);
-      }
-    });
-    if (!keepRoot) {
-      fs.rmdirSync(path);
-    }
-  }
+  const runtime = process.versions['electron'] ? 'electron' : 'node';
+  const abi = process.versions.modules;
+  const platform = process.platform;
+  const arch = process.arch;
+  install(runtime, abi, platform, arch, function () {})
 }
