@@ -3,49 +3,61 @@
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
-var get = require('simple-get');
-var pump = require('pump');
-var tfs = require('tar-fs');
-var zlib = require('zlib');
-var pkg = require('./package.json');
-var support = require('./support');
+const get = require('simple-get');
+const pump = require('pump');
+const tfs = require('tar-fs');
+const zlib = require('zlib');
+const pkg = require('./package.json');
+const support = require('./support');
 
 function onerror(err) {
-  console.error(err)
+  throw err;
 }
 
 function install(runtime, abi, platform, arch, cb) {
   const essential = runtime + '-v' + abi + '-' + platform + '-' + arch;
   const pkgVersion = pkg.version;
   const currentPlatform = pkg.name + '-v' + pkgVersion + '-' + essential;
+  
   console.log('Downloading prebuild for platform:', currentPlatform);
-  const downloadUrl = 'https://github.com/vespakoen/iohook/releases/download/v' + pkgVersion + '/' + currentPlatform + '.tar.gz';
+  
+  // let downloadUrl = 'https://github.com/vespakoen/iohook/releases/download/v' + pkgVersion + '/' + currentPlatform + '.tar.gz';
+  let downloadUrl = 'https://github.com/vespakoen/iohook/releases/download/v0.1.16/iohook-prebuild-test-v0.1.16-' + essential +'.tar.gz';
+  console.log('Url:', downloadUrl);
+  
   let reqOpts = { url: downloadUrl };
   let tempFile = path.join(os.tmpdir(), 'prebuild.tar.gz');
   let req = get(reqOpts, function (err, res) {
-    if (err) return onerror(err);
-    if (res.statusCode !== 200) return onerror();
-      pump(res, fs.createWriteStream(tempFile), function (err) {
-        let options = {
-          readable: true,
-          writable: true,
-          hardlinkAsFilesFallback: true
-        };
-        let binaryName;
-        let updateName = function (entry) {
-          if (/\.node$/i.test(entry.name)) binaryName = entry.name
+    if (err) {
+      return onerror(err);
+    }
+    if (res.statusCode !== 200) {
+      return onerror('Bad response from prebuild server. Code: ' + res.statusCode);
+    }
+    pump(res, fs.createWriteStream(tempFile), function (err) {
+      if (err) {
+        throw err;
+      }
+      let options = {
+        readable: true,
+        writable: true,
+        hardlinkAsFilesFallback: true
+      };
+      let binaryName;
+      let updateName = function (entry) {
+        if (/\.node$/i.test(entry.name)) binaryName = entry.name
+      };
+      let targetFile = path.join(__dirname, 'builds', essential);
+      let extract = tfs.extract(targetFile, options)
+        .on('entry', updateName);
+      pump(fs.createReadStream(tempFile), zlib.createGunzip(), extract, function (err) {
+        if (err) {
+          return onerror(err);
         }
-        let targetFile = path.join(__dirname, 'builds', essential);
-        let extract = tfs.extract(targetFile, options)
-          .on('entry', updateName)
-        pump(fs.createReadStream(tempFile), zlib.createGunzip(), extract, function (err) {
-          if (err) {
-            return onerror(err);
-          }
-          cb()
-        })
+        cb()
+      })
     })
-  })
+  });
 
   req.setTimeout(30 * 1000, function () {
     req.abort()

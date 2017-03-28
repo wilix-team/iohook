@@ -6,3 +6,5 @@ stacktrace*
 .idea
 *.iml
 build
+.env
+
