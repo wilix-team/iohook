@@ -7,4 +7,6 @@ stacktrace*
 *.iml
 build
 .env
+prebuilds
+builds
 

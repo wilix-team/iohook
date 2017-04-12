@@ -22,7 +22,7 @@ let cmakeJsPath = path.join(
   __dirname,
   'node_modules',
   '.bin',
-  process.platform === 'darwin' ? 'cmake-js' : 'cmake-js.cmd'
+  process.platform === 'windows' ? 'cmake-js.cmd' : 'cmake-js'
 );
 
 let support = require('./support');

@@ -20,10 +20,7 @@ function install(runtime, abi, platform, arch, cb) {
   const currentPlatform = pkg.name + '-v' + pkgVersion + '-' + essential;
   
   console.log('Downloading prebuild for platform:', currentPlatform);
-  
-  // let downloadUrl = 'https://github.com/vespakoen/iohook/releases/download/v' + pkgVersion + '/' + currentPlatform + '.tar.gz';
-  let downloadUrl = 'https://github.com/vespakoen/iohook/releases/download/v0.1.16/iohook-prebuild-test-v0.1.16-' + essential +'.tar.gz';
-  console.log('Url:', downloadUrl);
+  let downloadUrl = 'https://github.com/WilixLead/iohook/releases/download/v' + pkgVersion + '/' + currentPlatform + '.tar.gz';
   
   let reqOpts = { url: downloadUrl };
   let tempFile = path.join(os.tmpdir(), 'prebuild.tar.gz');
@@ -32,6 +29,14 @@ function install(runtime, abi, platform, arch, cb) {
       return onerror(err);
     }
     if (res.statusCode !== 200) {
+      if (res.statusCode === 400) {
+        console.error('Prebuild for current platform (' + currentPlatform + ') not found!');
+        console.error('Try to compile for your platform:');
+        console.error('# cd node_modules/iohook;');
+        console.error('# npm run compile');
+        console.error('');
+        return onerror('Prebuild for current platform (' + currentPlatform + ') not found!');
+      }
       return onerror('Bad response from prebuild server. Code: ' + res.statusCode);
     }
     pump(res, fs.createWriteStream(tempFile), function (err) {

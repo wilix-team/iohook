@@ -1,7 +1,8 @@
 CMakeFiles/
 libuiohook/
 build/
-electron-example/
+electron-example
 prebuilds/
 builds/
 .env
+
