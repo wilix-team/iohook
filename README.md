@@ -25,17 +25,28 @@ I really hope find way for use build systems for online build or download prebui
 - `brew install cmake automake libtool pkg-config`
 - `npm install iohook --save`
 
-### Electron users
-Before install this module, you need specify build runtime.  
+### Electron users [optional]
+Before install this module, you need specify build runtime. 
 Just add following to your package.json file 
 (if you use two-package-json structure, add to app's package.json, not to build).  
 ```json
-"cmake-js": {
-  "runtime": "electron",
-  "runtimeVersion": "1.4.7"
+"iohook": {
+  "targets": [
+    "node-v51"
+    "electron-v53"
+  ],
+  "platforms": [
+    'win32', 
+    'darwin',
+    'linux'
+  ],
+  "arches": [
+    'x64', 
+    'ia32'
+  ]
 }
 ```
-**NOTE: Please don't forget type your version of electron**
+**NOTE: Please remember, when you install iohook, it try to use current node environment NOT ELECTRON OR NW.js**
 
 ## Usage
 Module is pretty simple for use. There is example:  

@@ -14,6 +14,14 @@ function onerror(err) {
   throw err;
 }
 
+/**
+ * Download and Install prebuild
+ * @param runtime
+ * @param abi
+ * @param platform
+ * @param arch
+ * @param cb Callback
+ */
 function install(runtime, abi, platform, arch, cb) {
   const essential = runtime + '-v' + abi + '-' + platform + '-' + arch;
   const pkgVersion = pkg.version;
@@ -69,20 +77,45 @@ function install(runtime, abi, platform, arch, cb) {
   })
 }
 
-if (process.argv.indexOf('--all') > -1 || process.env.npm_config_targets) {
+/**
+ * Return options for iohook from package.json
+ * @return {Object}
+ */
+function optionsFromPackage() {
+  const packageFile = path.join(process.cwd(), 'package.json');
+  const content = fs.readFileSync(packageFile, 'utf-8');
+  const packageJson = JSON.parse(content);
+
+  return packageJson.iohook || {
+    targets: [],
+    platforms: [],
+    arches: []
+  };
+}
+
+const options = optionsFromPackage();
+if (process.env.npm_config_targets) {
+  options.targets = options.targets.concat(process.env.npm_config_targets.split(','));
+}
+if (process.env.npm_config_platforms) {
+  options.platforms = options.platforms.concat(process.env.npm_config_platforms.split(','));
+}
+if (process.env.npm_config_arches) {
+  options.arches = options.arches.concat(process.env.npm_config_arches.split(','));
+}
+
+// Choice prebuilds for install 
+if (process.argv.indexOf('--all') > -1 || options.targets) {
   let chain = Promise.resolve();
   let targets;
-  if (process.env.npm_config_targets === 'all') {
+  if (process.env.npm_config_targets === 'all') { // If need install all targets
     targets = support.targets
   } else {
-    targets = process.env.npm_config_targets
-      .split(',')
-      .map(function (targetStr) {
-        return targetStr.split('-')
-      })
+    targets = options.targets.map(targetStr => targetStr.split('-'));
   }
-  let platforms = process.env.npm_config_platforms ? process.env.npm_config_platforms.split(',') : ['win32', 'darwin'];
-  let arches = process.env.npm_config_arches ? process.env.npm_config_arches.split(',') : ['x64', 'ia32'];
+  let platforms = options.platforms ? options.platforms : ['win32', 'darwin', 'linux'];
+  let arches = options.arches ? options.arches : ['x64', 'ia32'];
+  
   targets.forEach(function (parts) {
     let runtime = parts[0];
     let version = parts[1];
