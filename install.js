@@ -82,14 +82,14 @@ function install(runtime, abi, platform, arch, cb) {
  * @return {Object}
  */
 function optionsFromPackage(attempts) {
-  attempts = attempts || 1;
+  attempts = attempts || 2;
   if (attempts > 5) {
     throw new Error('Can\'t resolve main package.json file');
   }
   let mainPath = Array(attempts).join("../");
   console.log(mainPath);
   try {
-    const content = fs.readFileSync(path.join(mainPath, 'package.json'), 'utf-8');
+    const content = fs.readFileSync(path.join(__dirname, mainPath, 'package.json'), 'utf-8');
     const packageJson = JSON.parse(content);
 
     console.log(packageJson);
