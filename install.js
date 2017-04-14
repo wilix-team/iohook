@@ -81,16 +81,26 @@ function install(runtime, abi, platform, arch, cb) {
  * Return options for iohook from package.json
  * @return {Object}
  */
-function optionsFromPackage() {
-  const packageFile = path.join(process.cwd(), 'package.json');
-  const content = fs.readFileSync(packageFile, 'utf-8');
-  const packageJson = JSON.parse(content);
+function optionsFromPackage(attempts) {
+  attempts = attempts || 1;
+  if (attempts > 5) {
+    throw new Error('Can\'t resolve main package.json file');
+  }
+  let mainPath = attempts === 1 ? './' : Array(attempts).join("../");
+  console.log(mainPath);
+  try {
+    const content = fs.readFileSync(path.join(mainPath, 'package.json'), 'utf-8');
+    const packageJson = JSON.parse(content);
 
-  return packageJson.iohook || {
-    targets: [],
-    platforms: [],
-    arches: []
-  };
+    console.log(packageJson);
+    return packageJson.iohook || {
+        targets: [],
+        platforms: [],
+        arches: []
+      };
+  } catch (e) {
+    return optionsFromPackage(attempts + 1);
+  }
 }
 
 const options = optionsFromPackage();
