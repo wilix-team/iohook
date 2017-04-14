@@ -86,7 +86,7 @@ function optionsFromPackage(attempts) {
   if (attempts > 5) {
     throw new Error('Can\'t resolve main package.json file');
   }
-  let mainPath = attempts === 1 ? './' : Array(attempts).join("../");
+  let mainPath = Array(attempts).join("../");
   console.log(mainPath);
   try {
     const content = fs.readFileSync(path.join(mainPath, 'package.json'), 'utf-8');
