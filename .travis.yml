@@ -16,7 +16,7 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew list pkg-config &>/dev/null || brew install pkg-config; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install libx11-dev libxtst-dev libxt-dev libx11-xcb-dev; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install libxkbcommon-dev libxkbcommon-x11-dev; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install libxcb-xkb1 libxkbcommon-dev libxkbcommon-x11-0 libxkbcommon-x11-dev libxkbcommon0; fi
   - git submodule update --init --recursive
   
 install:
