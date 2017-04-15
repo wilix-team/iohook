@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/ph54iicf29ipy8wm?svg=true)](https://ci.appveyor.com/project/WilixLead/iohook)
+
 # iohook
 Node.js global native keyboard and mouse listener.  
 This module can handle keyboard and mouse events via native hooks.  
@@ -116,6 +118,7 @@ module crash with "Segmentation fault: 11". Looks like it is problem in my nativ
 but I still can't find a problem. Will be happy if somebody helps with it.
 
 ## Credits
-Thanks for libuiohook project!  
-Thank you [ayoubserti](https://github.com/ayoubserti) for first iohook prototype
+Thanks for libuiohook project!    
+Thank you [ayoubserti](https://github.com/ayoubserti) for first iohook prototype  
+Thank you @vespakoen for prebuild system implementation
 
