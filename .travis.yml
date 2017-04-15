@@ -10,10 +10,13 @@ node_js:
 
 before_script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install cmake automake libtool pkg-config; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then apt update; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt install libx11-dev libxtst-dev libxt-dev libx11-xcb-dev; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt install libxkbcommon-dev libxkbcommon-x11-dev; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew list cmake &>/dev/null || brew install cmake; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew list automake &>/dev/null || brew install automake; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew list libtool &>/dev/null || brew install libtool; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew list pkg-config &>/dev/null || brew install pkg-config; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then apt-get update; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install libx11-dev libxtst-dev libxt-dev libx11-xcb-dev; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install libxkbcommon-dev libxkbcommon-x11-dev; fi
   - git submodule update --init --recursive
   
 install:
