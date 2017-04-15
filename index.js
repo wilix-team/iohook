@@ -92,4 +92,26 @@ class IOHook extends EventEmitter {
   }
 }
 
-module.exports = new IOHook();
+const iohook = new IOHook();
+
+// Cleanup handler
+
+// do app specific cleaning before exiting
+process.on('exit', iohook.stop.bind(iohook));
+
+// catch ctrl+c event and exit normally
+process.on('SIGINT', function () {
+  iohook.stop();
+  // console.log('Ctrl-C...');
+  process.exit(2);
+});
+
+//catch uncaught exceptions, trace, then exit normally
+process.on('uncaughtException', function(e) {
+  console.log('Uncaught Exception...');
+  console.log(e.stack);
+  iohook.stop();
+  process.exit(99);
+});
+
+module.exports = iohook;
