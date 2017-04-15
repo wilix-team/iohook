@@ -1,0 +1,29 @@
+language: node_js
+
+matrix:
+  include:
+    - os: linux
+    - os: osx
+
+node_js:
+  - node
+
+before_script:
+  - git submodule update --init --recursive
+  
+install:
+  - npm i --ignore-scripts
+  
+script: 
+  - npm run deploy
+
+addons:
+  apt:
+    packages:
+    - cmake
+    - libx11-dev
+    - libxtst-dev
+    - libxt-dev
+    - libx11-xcb-dev
+    - libxkbcommon-dev
+    - libxkbcommon-x11-dev

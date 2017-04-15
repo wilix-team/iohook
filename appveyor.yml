@@ -71,7 +71,8 @@ install:
         bash "pacman --sync --noconfirm --needed mingw-w64-$arch-toolchain"
       }
       bash "cd libuiohook && ./bootstrap.sh && ./configure"
-  - node build %exact_nodejs_version%
+#  - node build %exact_nodejs_version%
+  - npm run deploy
 
-on_success:
- - for %%i in (prebuilds\*) do appveyor PushArtifact %%i
+#on_success:
+# - for %%i in (prebuilds\*) do appveyor PushArtifact %%i
