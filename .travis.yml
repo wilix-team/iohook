@@ -1,6 +1,6 @@
 language: node_js
-sudo: required
 dist: precise
+sudo: required
 
 matrix:
   include:
@@ -19,15 +19,16 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew list libtool &>/dev/null || brew install libtool; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew list pkg-config &>/dev/null || brew install pkg-config; fi
 #  64 bit version
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install libx11-dev libxtst-dev libxt-dev libx11-xcb-dev; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install libxkbcommon-dev libxkbcommon-x11-dev; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get -qq update; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libx11-dev libxtst-dev libxt-dev libx11-xcb-dev; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libxkbcommon-dev; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libxkbcommon-x11-dev; fi
 #  32 bit version
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ] && [ "$ARCH" == "x32" ]]; then NVER=`node -v`; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ] && [ "$ARCH" == "x32" ]]; then wget http://nodejs.org/dist/${NVER}/node-${NVER}-linux-x86.tar.gz; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ] && [ "$ARCH" == "x32" ]]; then tar xf node-${NVER}-linux-x86.tar.gz; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ] && [ "$ARCH" == "x32" ]]; then export PATH=$(pwd)/node-${NVER}-linux-x86/bin:$PATH; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ] && [ "$ARCH" == "x32" ]]; then sudo apt-get -y install gcc-multilib g++-multilib; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "x32" ]]; then NVER=`node -v`; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "x32" ]]; then wget http://nodejs.org/dist/${NVER}/node-${NVER}-linux-x86.tar.gz; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "x32" ]]; then tar xf node-${NVER}-linux-x86.tar.gz; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "x32" ]]; then export PATH=$(pwd)/node-${NVER}-linux-x86/bin:$PATH; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "x32" ]]; then sudo apt-get -y install gcc-multilib g++-multilib; fi
 #  all versions
   - git submodule update --init --recursive
   
