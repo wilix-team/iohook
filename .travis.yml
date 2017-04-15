@@ -1,8 +1,8 @@
 language: node_js
+sudo: required
 
 matrix:
   include:
-    - os: linux
     - os: osx
 
 node_js:
