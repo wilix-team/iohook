@@ -37,7 +37,7 @@ function install(runtime, abi, platform, arch, cb) {
       return onerror(err);
     }
     if (res.statusCode !== 200) {
-      if (res.statusCode === 400) {
+      if (res.statusCode === 404) {
         console.error('Prebuild for current platform (' + currentPlatform + ') not found!');
         console.error('Try to compile for your platform:');
         console.error('# cd node_modules/iohook;');

@@ -21,14 +21,3 @@ install:
   
 script: 
   - npm run deploy
-
-addons:
-  apt:
-    packages:
-    - cmake
-    - libx11-dev
-    - libxtst-dev
-    - libxt-dev
-    - libx11-xcb-dev
-    - libxkbcommon-dev
-    - libxkbcommon-x11-dev

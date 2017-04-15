@@ -1,6 +1,5 @@
 const upload = require('prebuild/upload');
 const spawn = require('child_process').spawn;
-const async = require('async');
 const fs = require('fs');
 const path = require('path');
 const mkdirp = require('mkdirp');

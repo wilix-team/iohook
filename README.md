@@ -18,15 +18,6 @@ I really hope find way for use build systems for online build or download prebui
 
 `npm install iohook --save`
 
-### Ubuntu 16
-- `sudo apt install libx11-dev libxtst-dev libxt-dev libx11-xcb-dev`
-- `sudo apt install libxkbcommon-dev libxkbcommon-x11-dev`
-- `npm install iohook --save`
-
-### macOS
-- `brew install cmake automake libtool pkg-config`
-- `npm install iohook --save`
-
 ### Electron users [optional]
 Before install this module, you need specify build runtime. 
 Just add following to your package.json file 
@@ -49,6 +40,22 @@ Just add following to your package.json file
 }
 ```
 **NOTE: Please remember, when you install iohook, it try to use current node environment NOT ELECTRON OR NW.js**
+
+## Manual compilation for your version of environment  
+iohook have prebuild binaries, it downloads when you try to install it.  
+But if you use specified version of node.js/nw.js/io.js/electron/etc. you can try compile it.  
+All what you need install os dependencies and start compilation:
+  
+### Ubuntu 16
+- `sudo apt install libx11-dev libxtst-dev libxt-dev libx11-xcb-dev`
+- `sudo apt install libxkbcommon-dev libxkbcommon-x11-dev`
+- `cd node_modules/iohook`
+- `npm run build`
+
+### macOS
+- `brew install cmake automake libtool pkg-config`
+- `cd node_modules/iohook`
+- `npm run build`
 
 ## Usage
 Module is pretty simple for use. There is example:  
@@ -76,7 +83,7 @@ If type ```ioHook.start(true);``` you can enable debug logger in native lib. Use
 
 ### Available events
 
-### keypress
+### keypress (NOT WORKING AT THIS MOMENT, USE keydown/keyup)
 Calls when user press and release a key. Event contain next object:  
 `{keychar: 'f', keycode: 19, rawcode: 15, type: 'keypress'}`
 
