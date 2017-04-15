@@ -31,16 +31,23 @@ let abis = support.abis;
 let files = [];
 
 let chain = Promise.resolve();
+
 targets.forEach(parts => {
   let runtime = parts[0];
   let version = parts[1];
-  chain = chain.then(function () {
-    return build(runtime, version)
-  })
+  chain = chain
+    .then(function () {
+      return build(runtime, version)
+    })
     .then(function () {
       return tarGz(runtime, version)
     })
+    .catch(err => {
+      console.error(err);
+      process.exit(1);
+    })
 });
+
 chain = chain.then(function () {
   return uploadFiles(files)
 });
@@ -110,7 +117,9 @@ function uploadFiles (files) {
       upload: process.env.GITHUB_ACCESS_TOKEN
     };
     upload(opts, function (err, result) {
-      if (err) return reject(err);
+      if (err) {
+        return reject(err);
+      }
       console.log('Found ' + result.old.length + ' prebuild(s) on Github');
       if (result.old.length) {
         result.old.forEach(function (build) {
