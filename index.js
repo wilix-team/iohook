@@ -1,11 +1,13 @@
 'use strict';
 const os = require('os');
 const EventEmitter = require('events');
+const path = require('path');
 
-let runtime = process.versions['electron'] ? 'electron' : 'node';
-let essential = runtime + '-v' + process.versions.modules + '-' + process.platform + '-' + process.arch;
-console.log('Loading native binary: ./builds/' + essential + '/build/Release/iohook.node');
-let NodeHookAddon = require('./builds/' + essential + '/build/Release/iohook.node');
+const runtime = process.versions['electron'] ? 'electron' : 'node';
+const essential = runtime + '-v' + process.versions.modules + '-' + process.platform + '-' + process.arch;
+const modulePath = path.join(__dirname, 'builds', essential, 'build', 'Release', 'iohook.node');
+console.log('Loading native binary:', modulePath);
+let NodeHookAddon = require(modulePath);
 
 // Try to remove this handler. I hope...
 // const SegfaultHandler = require('segfault-handler');

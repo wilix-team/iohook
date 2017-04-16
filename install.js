@@ -87,12 +87,10 @@ function optionsFromPackage(attempts) {
     throw new Error('Can\'t resolve main package.json file');
   }
   let mainPath = Array(attempts).join("../");
-  console.log(mainPath);
   try {
     const content = fs.readFileSync(path.join(__dirname, mainPath, 'package.json'), 'utf-8');
     const packageJson = JSON.parse(content);
-
-    console.log(packageJson);
+    
     return packageJson.iohook || {
         targets: [],
         platforms: [],
