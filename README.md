@@ -1,4 +1,5 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/ph54iicf29ipy8wm?svg=true)](https://ci.appveyor.com/project/WilixLead/iohook)
+[![Build Status](https://travis-ci.org/WilixLead/iohook.svg?branch=master)](https://travis-ci.org/WilixLead/iohook)
 
 # iohook
 Node.js global native keyboard and mouse listener.  
@@ -40,6 +41,24 @@ Just add following to your package.json file
 }
 ```
 **NOTE: Please remember, when you install iohook, it try to use current node environment NOT ELECTRON OR NW.js**
+
+### Prebuild support  
+iohook support prebuilded binaries for next environment versions:  
+- electron:
+  - [47] 1.0.2
+  - [48] 1.2.8
+  - [49] 1.3.13
+  - [50] 1.4.15
+  - [51] 1.5.0
+  - [53] 1.6.0
+
+- node: 
+  - [46] 4.6.1
+  - [47] 5.12.0
+  - [48] 6.9.4
+  - [51] 7.4.0
+
+Support for node.js v0.12, io.js, nw.js is planed.
 
 ## Manual compilation for your version of environment  
 iohook have prebuild binaries, it downloads when you try to install it.  
