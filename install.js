@@ -113,7 +113,7 @@ if (process.env.npm_config_arches) {
 }
 
 // Choice prebuilds for install 
-if (process.argv.indexOf('--all') > -1 || options.targets) {
+if (process.argv.indexOf('--all') > -1 || options.targets.length > 0) {
   let chain = Promise.resolve();
   let targets;
   if (process.env.npm_config_targets === 'all') { // If need install all targets
