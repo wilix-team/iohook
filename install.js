@@ -26,10 +26,10 @@ function install(runtime, abi, platform, arch, cb) {
   const essential = runtime + '-v' + abi + '-' + platform + '-' + arch;
   const pkgVersion = pkg.version;
   const currentPlatform = pkg.name + '-v' + pkgVersion + '-' + essential;
-  
+
   console.log('Downloading prebuild for platform:', currentPlatform);
   let downloadUrl = 'https://github.com/WilixLead/iohook/releases/download/v' + pkgVersion + '/' + currentPlatform + '.tar.gz';
-  
+
   let reqOpts = { url: downloadUrl };
   let tempFile = path.join(os.tmpdir(), 'prebuild.tar.gz');
   let req = get(reqOpts, function (err, res) {
@@ -90,12 +90,13 @@ function optionsFromPackage(attempts) {
   try {
     const content = fs.readFileSync(path.join(__dirname, mainPath, 'package.json'), 'utf-8');
     const packageJson = JSON.parse(content);
-    
-    return packageJson.iohook || {
-        targets: [],
-        platforms: [],
-        arches: []
-      };
+    const opts = packageJson.iohook || {}
+    if (!opts.targets) {
+      opts.targets = []
+    }
+    if (!opts.platforms) opts.platforms = [process.platform]
+    if (!opts.arches) opts.arches = [process.arch]
+    return opts
   } catch (e) {
     return optionsFromPackage(attempts + 1);
   }
@@ -105,6 +106,12 @@ const options = optionsFromPackage();
 if (process.env.npm_config_targets) {
   options.targets = options.targets.concat(process.env.npm_config_targets.split(','));
 }
+options.targets = options.targets.map(targetStr => targetStr.split('-'));
+if (process.env.npm_config_targets === 'all') {
+  options.targets = support.targets
+  options.platforms = ['win32', 'darwin', 'linux']
+  options.arches = ['x64', 'ia32']
+}
 if (process.env.npm_config_platforms) {
   options.platforms = options.platforms.concat(process.env.npm_config_platforms.split(','));
 }
@@ -112,23 +119,14 @@ if (process.env.npm_config_arches) {
   options.arches = options.arches.concat(process.env.npm_config_arches.split(','));
 }
 
-// Choice prebuilds for install 
-if (process.argv.indexOf('--all') > -1 || options.targets) {
+// Choice prebuilds for install
+if (options.targets.length > 0) {
   let chain = Promise.resolve();
-  let targets;
-  if (process.env.npm_config_targets === 'all') { // If need install all targets
-    targets = support.targets
-  } else {
-    targets = options.targets.map(targetStr => targetStr.split('-'));
-  }
-  let platforms = options.platforms ? options.platforms : ['win32', 'darwin', 'linux'];
-  let arches = options.arches ? options.arches : ['x64', 'ia32'];
-  
-  targets.forEach(function (parts) {
+  options.targets.forEach(function (parts) {
     let runtime = parts[0];
     let version = parts[1];
-    platforms.forEach(function (platform) {
-      arches.forEach(function (arch) {
+    options.platforms.forEach(function (platform) {
+      options.arches.forEach(function (arch) {
         if (platform === 'darwin' && arch === 'ia32') {
           return;
         }
