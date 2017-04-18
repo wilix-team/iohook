@@ -1,10 +1,11 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/ph54iicf29ipy8wm?svg=true)](https://ci.appveyor.com/project/WilixLead/iohook)
+[![Build Status](https://travis-ci.org/WilixLead/iohook.svg?branch=master)](https://travis-ci.org/WilixLead/iohook)
 
 # iohook
 Node.js global native keyboard and mouse listener.  
 This module can handle keyboard and mouse events via native hooks.  
 
-If you like this module or interesting for updates, follow me in Twiller [https://twitter.com/wilixlead](https://twitter.com/wilixlead)
+If you like this module or are interested in updates, follow me on Twitter [https://twitter.com/wilixlead](https://twitter.com/wilixlead)
 
 ## OS Support
 Already tested in:
@@ -19,8 +20,8 @@ I really hope find way for use build systems for online build or download prebui
 `npm install iohook --save`
 
 ### Electron users [optional]
-Before install this module, you need specify build runtime. 
-Just add following to your package.json file 
+Before install this module, you need specify build runtime.
+Just add following to your package.json file
 (if you use two-package-json structure, add to app's package.json, not to build).  
 ```json
 "iohook": {
@@ -29,23 +30,41 @@ Just add following to your package.json file
     "electron-v53"
   ],
   "platforms": [
-    'win32', 
-    'darwin',
-    'linux'
+    "win32",
+    "darwin",
+    "linux"
   ],
   "arches": [
-    'x64', 
-    'ia32'
+    "x64",
+    "ia32"
   ]
 }
 ```
 **NOTE: Please remember, when you install iohook, it try to use current node environment NOT ELECTRON OR NW.js**
 
+### Prebuild support  
+iohook support prebuilded binaries for next environment versions:  
+- electron:
+  - [47] 1.0.2
+  - [48] 1.2.8
+  - [49] 1.3.13
+  - [50] 1.4.15
+  - [51] 1.5.0
+  - [53] 1.6.0
+
+- node:
+  - [46] 4.6.1
+  - [47] 5.12.0
+  - [48] 6.9.4
+  - [51] 7.4.0
+
+Support for node.js v0.12, io.js, nw.js is planed.
+
 ## Manual compilation for your version of environment  
 iohook have prebuild binaries, it downloads when you try to install it.  
 But if you use specified version of node.js/nw.js/io.js/electron/etc. you can try compile it.  
 All what you need install os dependencies and start compilation:
-  
+
 ### Ubuntu 16
 - `sudo apt install libx11-dev libxtst-dev libxt-dev libx11-xcb-dev`
 - `sudo apt install libxkbcommon-dev libxkbcommon-x11-dev`
@@ -125,7 +144,6 @@ module crash with "Segmentation fault: 11". Looks like it is problem in my nativ
 but I still can't find a problem. Will be happy if somebody helps with it.
 
 ## Credits
-Thanks for libuiohook project!    
+Thanks for [libuiohook](https://github.com/kwhat/libuiohook) project!    
 Thank you [ayoubserti](https://github.com/ayoubserti) for first iohook prototype  
-Thank you @vespakoen for prebuild system implementation
-
+Thank you [vespakoen](https://github.com/vespakoen) for prebuild system implementation
