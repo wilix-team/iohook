@@ -30,9 +30,9 @@ function install(runtime, abi, platform, arch, cb) {
   console.log('Downloading prebuild for platform:', currentPlatform);
   let downloadUrl = 'https://github.com/WilixLead/iohook/releases/download/v' + pkgVersion + '/' + currentPlatform + '.tar.gz';
 
-  let reqOpts = { url: downloadUrl };
+  let reqOpts = {url: downloadUrl};
   let tempFile = path.join(os.tmpdir(), 'prebuild.tar.gz');
-  let req = get(reqOpts, function (err, res) {
+  let req = get(reqOpts, function(err, res) {
     if (err) {
       return onerror(err);
     }
@@ -47,7 +47,7 @@ function install(runtime, abi, platform, arch, cb) {
       }
       return onerror('Bad response from prebuild server. Code: ' + res.statusCode);
     }
-    pump(res, fs.createWriteStream(tempFile), function (err) {
+    pump(res, fs.createWriteStream(tempFile), function(err) {
       if (err) {
         throw err;
       }
@@ -57,13 +57,13 @@ function install(runtime, abi, platform, arch, cb) {
         hardlinkAsFilesFallback: true
       };
       let binaryName;
-      let updateName = function (entry) {
+      let updateName = function(entry) {
         if (/\.node$/i.test(entry.name)) binaryName = entry.name
       };
       let targetFile = path.join(__dirname, 'builds', essential);
       let extract = tfs.extract(targetFile, options)
         .on('entry', updateName);
-      pump(fs.createReadStream(tempFile), zlib.createGunzip(), extract, function (err) {
+      pump(fs.createReadStream(tempFile), zlib.createGunzip(), extract, function(err) {
         if (err) {
           return onerror(err);
         }
@@ -72,7 +72,7 @@ function install(runtime, abi, platform, arch, cb) {
     })
   });
 
-  req.setTimeout(30 * 1000, function () {
+  req.setTimeout(30 * 1000, function() {
     req.abort()
   })
 }
@@ -90,12 +90,12 @@ function optionsFromPackage(attempts) {
   try {
     const content = fs.readFileSync(path.join(__dirname, mainPath, 'package.json'), 'utf-8');
     const packageJson = JSON.parse(content);
-    const opts = packageJson.iohook || {}
+    const opts = packageJson.iohook || {};
     if (!opts.targets) {
       opts.targets = []
     }
-    if (!opts.platforms) opts.platforms = [process.platform]
-    if (!opts.arches) opts.arches = [process.arch]
+    if (!opts.platforms) opts.platforms = [process.platform];
+    if (!opts.arches) opts.arches = [process.arch];
     return opts
   } catch (e) {
     return optionsFromPackage(attempts + 1);
@@ -108,8 +108,8 @@ if (process.env.npm_config_targets) {
 }
 options.targets = options.targets.map(targetStr => targetStr.split('-'));
 if (process.env.npm_config_targets === 'all') {
-  options.targets = support.targets
-  options.platforms = ['win32', 'darwin', 'linux']
+  options.targets = support.targets;
+  options.platforms = ['win32', 'darwin', 'linux'];
   options.arches = ['x64', 'ia32']
 }
 if (process.env.npm_config_platforms) {
@@ -122,16 +122,16 @@ if (process.env.npm_config_arches) {
 // Choice prebuilds for install
 if (options.targets.length > 0) {
   let chain = Promise.resolve();
-  options.targets.forEach(function (parts) {
+  options.targets.forEach(function(parts) {
     let runtime = parts[0];
     let version = parts[1];
-    options.platforms.forEach(function (platform) {
-      options.arches.forEach(function (arch) {
+    options.platforms.forEach(function(platform) {
+      options.arches.forEach(function(arch) {
         if (platform === 'darwin' && arch === 'ia32') {
           return;
         }
-        chain = chain.then(function () {
-          return new Promise(function (resolve) {
+        chain = chain.then(function() {
+          return new Promise(function(resolve) {
             let abi = support.abis[runtime][version];
             console.log(runtime, abi, platform, arch);
             install(runtime, abi, platform, arch, resolve)
@@ -145,5 +145,6 @@ if (options.targets.length > 0) {
   const abi = process.versions.modules;
   const platform = process.platform;
   const arch = process.arch;
-  install(runtime, abi, platform, arch, function () {})
+  install(runtime, abi, platform, arch, function() {
+  })
 }
