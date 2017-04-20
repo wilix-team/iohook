@@ -2,15 +2,15 @@
 const os = require('os');
 const EventEmitter = require('events');
 const path = require('path');
+const SegfaultHandler = require('segfault-handler');
+
+SegfaultHandler.registerHandler("iohook-crash.log");
 
 const runtime = process.versions['electron'] ? 'electron' : 'node';
 const essential = runtime + '-v' + process.versions.modules + '-' + process.platform + '-' + process.arch;
 const modulePath = path.join(__dirname, 'builds', essential, 'build', 'Release', 'iohook.node');
 console.log('Loading native binary:', modulePath);
 let NodeHookAddon = require(modulePath);
-
-// Try to remove this handler. I hope...
-// const SegfaultHandler = require('segfault-handler');
 
 const events = {
   3: 'keypress',
@@ -101,25 +101,5 @@ class IOHook extends EventEmitter {
 }
 
 const iohook = new IOHook();
-
-// Cleanup handler
-
-// do app specific cleaning before exiting
-process.on('exit', iohook.unload.bind(iohook));
-
-// catch ctrl+c event and exit normally
-process.on('SIGINT', function () {
-  iohook.unload();
-  // console.log('Ctrl-C...');
-  process.exit(2);
-});
-
-//catch uncaught exceptions, trace, then exit normally
-process.on('uncaughtException', function(e) {
-  console.log('Uncaught Exception...');
-  console.log(e.stack);
-  iohook.unload();
-  process.exit(99);
-});
 
 module.exports = iohook;
