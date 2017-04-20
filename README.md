@@ -26,8 +26,8 @@ Just add following to your package.json file
 ```json
 "iohook": {
   "targets": [
-    "node-v51"
-    "electron-v53"
+    "node-51"
+    "electron-53"
   ],
   "platforms": [
     "win32",

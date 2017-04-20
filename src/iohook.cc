@@ -477,6 +477,13 @@ void HookProcessWorker::Stop()
   sIsRunning = false;
 }
 
+NAN_METHOD(DebugEnable) {
+  if (info.Length() > 0)
+  {
+    sIsDebug = info[0]->IsTrue();
+  }
+}
+
 NAN_METHOD(StartHook) {
   //allow one single execution
   if (sIsRunning == false)
@@ -515,6 +522,9 @@ NAN_MODULE_INIT(Init) {
 
   Nan::Set(target, Nan::New<String>("stopHook").ToLocalChecked(),
   Nan::GetFunction(Nan::New<FunctionTemplate>(StopHook)).ToLocalChecked());
+  
+  Nan::Set(target, Nan::New<String>("debugEnable").ToLocalChecked(),
+  Nan::GetFunction(Nan::New<FunctionTemplate>(DebugEnable)).ToLocalChecked());
 }
 
 NODE_MODULE(nodeHook, Init)
