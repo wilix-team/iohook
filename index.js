@@ -92,7 +92,7 @@ class IOHook extends EventEmitter {
     if (!msg) {
       return;
     }
-    
+
     if (events[msg.type]) {
       let event = msg.mouse || msg.keyboard || msg.wheel;
       event.type = events[msg.type];

@@ -20,5 +20,6 @@ ioHook.on("mousedrag",function(msg){console.log(msg)});
 
 //start ioHook
 ioHook.start();
+// ioHook.setDebug(true); // Uncomment this line for see all debug information from iohook
 
 console.log('Hook started. Try type something or move mouse');
