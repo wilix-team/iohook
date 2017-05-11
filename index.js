@@ -3,14 +3,17 @@ const os = require('os');
 const EventEmitter = require('events');
 const path = require('path');
 
+// Try use handler if runtime and ABI is compatible  
+try {
+  const SegfaultHandler = require('segfault-handler');
+  SegfaultHandler.registerHandler("iohook-crash.log");
+} catch (e) {}
+
 const runtime = process.versions['electron'] ? 'electron' : 'node';
 const essential = runtime + '-v' + process.versions.modules + '-' + process.platform + '-' + process.arch;
 const modulePath = path.join(__dirname, 'builds', essential, 'build', 'Release', 'iohook.node');
 console.log('Loading native binary:', modulePath);
 let NodeHookAddon = require(modulePath);
-
-// Try to remove this handler. I hope...
-// const SegfaultHandler = require('segfault-handler');
 
 const events = {
   3: 'keypress',
@@ -27,11 +30,10 @@ const events = {
 class IOHook extends EventEmitter {
   constructor() {
     super();
-    this.status = "stopped";
     this.active = false;
-    this.debug = false;
-
-    // SegfaultHandler.registerHandler("iohook-crash.log");
+    
+    this.load();
+    this.setDebug(false);
   }
 
   /**
@@ -39,51 +41,58 @@ class IOHook extends EventEmitter {
    * @param enableLogger Turn on debug logging 
    */
   start(enableLogger) {
-    if (this.status == "stopped") {
-      this.debug = enableLogger;
-      NodeHookAddon.startHook(this._handler.bind(this), this.debug || false);
-      this.status = "started";
+    if (!this.active) {
       this.active = true;
+      this.setDebug(enableLogger);
     }
-  }
-
-  /**
-   * Pause in events call. Just don't fire any new events
-   */
-  pause() {
-    this.active = false;
-  }
-
-  /**
-   * Resume events call.
-   */
-  resume() {
-    this.active = true;
   }
 
   /**
    * Shutdown event hook 
    */
   stop() {
-    NodeHookAddon.stopHook();
-    this.active = false;
-    this.status = "stopped";
+    if (this.active) {
+      this.active = false;
+    }
   }
 
+  /**
+   * Load native module
+   */
+  load() {
+    NodeHookAddon.startHook(this._handler.bind(this), this.debug || false);
+  }
+  
+  /**
+   * Unload native module and stop hook
+   */
+  unload() {
+    this.stop();
+    NodeHookAddon.stopHook();
+  }
+
+  /**
+   * Enable or disable native debug output
+   * @param {Boolean} mode
+   */
+  setDebug(mode) {
+    NodeHookAddon.debugEnable(mode ? true : false);
+  }
+  
   /**
    * Local event handler. Don't use it in your code!
    * @param msg Raw event message
    * @private
    */
   _handler(msg) {
-    if (this.active == false) {
+    if (this.active === false) {
       return;
     }
     
     if (!msg) {
       return;
     }
-    
+
     if (events[msg.type]) {
       let event = msg.mouse || msg.keyboard || msg.wheel;
       event.type = events[msg.type];
@@ -95,25 +104,5 @@ class IOHook extends EventEmitter {
 }
 
 const iohook = new IOHook();
-
-// Cleanup handler
-
-// do app specific cleaning before exiting
-process.on('exit', iohook.stop.bind(iohook));
-
-// catch ctrl+c event and exit normally
-process.on('SIGINT', function () {
-  iohook.stop();
-  // console.log('Ctrl-C...');
-  process.exit(2);
-});
-
-//catch uncaught exceptions, trace, then exit normally
-process.on('uncaughtException', function(e) {
-  console.log('Uncaught Exception...');
-  console.log(e.stack);
-  iohook.stop();
-  process.exit(99);
-});
 
 module.exports = iohook;

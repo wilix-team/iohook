@@ -84,7 +84,12 @@ function install(runtime, abi, platform, arch, cb) {
 function optionsFromPackage(attempts) {
   attempts = attempts || 2;
   if (attempts > 5) {
-    throw new Error('Can\'t resolve main package.json file');
+    console.log('Can\'t resolve main package.json file');
+    return {
+      targets: [],
+      platforms: [process.platform],
+      arches: [process.arch]
+    }
   }
   let mainPath = Array(attempts).join("../");
   try {
@@ -124,7 +129,7 @@ if (options.targets.length > 0) {
   let chain = Promise.resolve();
   options.targets.forEach(function(parts) {
     let runtime = parts[0];
-    let version = parts[1];
+    let abi = parts[1];
     options.platforms.forEach(function(platform) {
       options.arches.forEach(function(arch) {
         if (platform === 'darwin' && arch === 'ia32') {
@@ -132,7 +137,6 @@ if (options.targets.length > 0) {
         }
         chain = chain.then(function() {
           return new Promise(function(resolve) {
-            let abi = support.abis[runtime][version];
             console.log(runtime, abi, platform, arch);
             install(runtime, abi, platform, arch, resolve)
           })

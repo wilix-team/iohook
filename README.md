@@ -23,11 +23,12 @@ I really hope find way for use build systems for online build or download prebui
 Before install this module, you need specify build runtime.
 Just add following to your package.json file
 (if you use two-package-json structure, add to app's package.json, not to build).  
+Checkout your ABI for [node.js](https://nodejs.org/en/download/releases/) or [electron](https://www.npmjs.com/package/electron-abi)
 ```json
 "iohook": {
   "targets": [
-    "node-v51"
-    "electron-v53"
+    "node-51"
+    "electron-53"
   ],
   "platforms": [
     "win32",

@@ -1,6 +1,6 @@
 {
   "name": "iohook",
-  "version": "0.1.6",
+  "version": "0.1.9",
   "description": "Node.js global keyboard and mouse hook",
   "main": "index.js",
   "scripts": {
@@ -35,6 +35,7 @@
     "bindings": "^1.2.1",
     "node-abi": "^2.0.0",
     "pump": "^1.0.2",
+    "segfault-handler": "^1.0.0",
     "simple-get": "^2.4.0",
     "tar-fs": "^1.15.2"
   },
