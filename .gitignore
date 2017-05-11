@@ -9,4 +9,5 @@ build
 .env
 prebuilds
 builds
+libuiohook/*
 
