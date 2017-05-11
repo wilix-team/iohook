@@ -1,0 +1,69 @@
+.\" Copyright 2006-2016 Alexander Barker (alex@1stleg.com)
+.\"
+.\" %%%LICENSE_START(VERBATIM)
+.\" libUIOHook is free software: you can redistribute it and/or modify
+.\" it under the terms of the GNU Lesser General Public License as published
+.\" by the Free Software Foundation, either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" libUIOHook is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU Lesser General Public License
+.\" along with this program.  If not, see <http://www.gnu.org/licenses/>.
+.\" %%%LICENSE_END
+.\"
+.TH hook_run 3 "12 Dec 2014" "Version 1.0" "libUIOHook Programmer's Manual"
+.SH NAME
+hook_run, hook_disable \- Insert / Withdraw the native event hook
+.SH SYNTAX
+#include <uiohook.h>
+.HP
+UIOHOOK_API int hook_run\^(\fIvoid\fP\^);
+.HP
+UIOHOOK_API int hook_stop\^(\fIvoid\fP\^);
+.SH ARGUMENTS
+.IP \fIvoid\fP 1i
+
+.SH RETURN VALUE
+.IP \fIUIOHOOK_SUCCESS\fP li
+Returned on success.
+.IP \fIUIOHOOK_FAILURE\fP li
+General failure status.
+.IP \fIUIOHOOK_ERROR_OUT_OF_MEMORY\fP li
+Out of system memory.
+
+.IP \fIUIOHOOK_ERROR_X_OPEN_DISPLAY\fP li
+X11 specific error for XOpenDisplay\^(\^) failures.
+.IP \fIUIOHOOK_ERROR_X_RECORD_NOT_FOUND\fP li
+X11 specific error if XRecord is unavailable.
+.IP \fIUIOHOOK_ERROR_X_RECORD_ALLOC_RANGE\fP li
+X11 specific error for XRecordAllocRange\^(\^) failures.
+.IP \fIUIOHOOK_ERROR_X_RECORD_CREATE_CONTEXT\fP li
+X11 specific error for XRecordCreateContext\^(...\^) failures.
+.IP \fIUIOHOOK_ERROR_X_RECORD_ENABLE_CONTEXT\fP li
+X11 specific error for XRecordEnableContext\^(...\^) failures.
+
+.IP \fIUIOHOOK_ERROR_SET_WINDOWS_HOOK_EX\fP li
+Windows specific error for SetWindowsHookEx\^(...\^) failures.
+
+.IP \fIUIOHOOK_ERROR_AXAPI_DISABLED\fP li
+Darwin specific error if the Accessibility API for the calling application has not been enabled.
+.IP \fIUIOHOOK_ERROR_EVENT_PORT\fP li
+Darwin specfici error for CGEventTapCreate\^(...\^) failures.
+.IP \fIUIOHOOK_ERROR_CREATE_RUN_LOOP_SOURCE\fP li
+Darwin specfici error for CFMachPortCreateRunLoopSource\^(...\^) failures.
+.IP \fIUIOHOOK_ERROR_GET_RUNLOOP\fP li
+Darwin specfici error for CFRunLoopGetCurrent\^(\^) failures.
+.IP \fIUIOHOOK_ERROR_OBSERVER_CREATE\fP li
+Darwin specfici error for CFRunLoopObserverCreate\^(...\^) failures.
+
+.SH DESCRIPTION
+hook_run\^(\^) will block until either the hook has completed or an error
+occurred during the hook registration process.  You may assume successful 
+completion of hook_run() after receiving an event of EVENT_HOOK_ENABLED.
+
+The hook_stop\^(\^) function is asynchronous, and will only signal the running 
+hook to stop.  This function will return an error if signaling was not possible.

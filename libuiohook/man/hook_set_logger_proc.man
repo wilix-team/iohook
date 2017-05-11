@@ -1,0 +1,37 @@
+.\" Copyright 2006-2016 Alexander Barker (alex@1stleg.com)
+.\"
+.\" %%%LICENSE_START(VERBATIM)
+.\" libUIOHook is free software: you can redistribute it and/or modify
+.\" it under the terms of the GNU Lesser General Public License as published
+.\" by the Free Software Foundation, either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" libUIOHook is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU Lesser General Public License
+.\" along with this program.  If not, see <http://www.gnu.org/licenses/>.
+.\" %%%LICENSE_END
+.\"
+.TH hook_set_logger_proc 3 "07 July 2014" "Version 1.0" "libUIOHook Programmer's Manual"
+.SH NAME
+hook_set_logger_proc \- Set the event callback function
+.SH SYNTAX
+#include <uiohook.h>
+.HP
+void logger_proc\^(\fIunsigned int level, const char *format, ...\fP\^) {
+...
+}
+.HP
+hook_set_logger_proc(&logger_proc);
+
+.SH ARGUMENTS
+.IP \fIlogger_t\fP 1i
+A function pointer to a matching logger_t function.
+.SH RETURN VALUE
+.IP \fIvoid\fP li
+
+.SH DESCRIPTION
+Passing NULL to void dispatch_proc\^(\^) will remove the currently set callback.

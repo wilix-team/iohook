@@ -1,0 +1,10 @@
+prefix=@prefix@
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: uiohook
+Description: uiohook library
+Version: @VERSION@
+Libs: @LIBS@ -L${libdir} -luiohook
+Cflags: -I${includedir}
+Requires: @REQUIRE@

@@ -1,0 +1,50 @@
+.\" Copyright 2006-2016 Alexander Barker (alex@1stleg.com)
+.\"
+.\" %%%LICENSE_START(VERBATIM)
+.\" libUIOHook is free software: you can redistribute it and/or modify
+.\" it under the terms of the GNU Lesser General Public License as published
+.\" by the Free Software Foundation, either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" libUIOHook is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU Lesser General Public License
+.\" along with this program.  If not, see <http://www.gnu.org/licenses/>.
+.\" %%%LICENSE_END
+.\"
+.TH hook_get_auto_repeat_rate 3 "07 July 2014" "Version 1.0" "libUIOHook Programmer's Manual"
+.SH NAME
+hook_get_auto_repeat_rate, hook_get_auto_repeat_delay \- Keyboard auto\-repeat rate / delay
+.HP
+hook_get_pointer_acceleration_multiplier, hook_get_pointer_acceleration_threshold \- Pointer acceleration values
+.HP
+hook_get_pointer_sensitivity \- Pointer sensitivity
+.HP
+hook_get_multi_click_time \- Button multi-click timeout
+.SH SYNTAX
+#include <uiohook.h>
+.HP
+UIOHOOK_API long int hook_get_auto_repeat_rate\^(\fIvoid\fP\^);
+.HP
+UIOHOOK_API long int hook_get_auto_repeat_delay\^(\fIvoid\fP\^);
+.HP
+UIOHOOK_API long int hook_get_pointer_acceleration_multiplier\^(\fIvoid\fP\^);
+.HP
+UIOHOOK_API long int hook_get_pointer_acceleration_threshold\^(\fIvoid\fP\^);
+.HP
+UIOHOOK_API long int hook_get_pointer_sensitivity\^(\fIvoid\fP\^);
+.HP
+UIOHOOK_API long int hook_get_multi_click_time\^(\fIvoid\fP\^);
+.SH ARGUMENTS
+.IP \fIvoid\fP 1i
+.SH RETURN VALUE
+All functions return a value between zero and LONG_MAX inclusive for the
+requested property.  If a system property could not be determined, due to error
+or omission, a value of -1 will be returned.
+.SH DESCRIPTION
+There is no guarantee that any of the above values will be available at any
+point during runtime.  The return value should be checked for error after each
+call.
