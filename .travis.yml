@@ -36,7 +36,7 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "x32" ]]; then export PATH=$(pwd)/node-${NVER}-linux-x86/bin:$PATH; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "x32" ]]; then sudo apt-get -y install gcc-multilib g++-multilib; fi
 #  all versions
-  - git submodule update --init --recursive
+  #- git submodule update --init --recursive
   
 install:
   - npm i --ignore-scripts
