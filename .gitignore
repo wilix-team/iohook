@@ -11,5 +11,4 @@ prebuilds
 builds
 *.DS_Store
 electron-example/.DS_Store
-libuiohook/*
 

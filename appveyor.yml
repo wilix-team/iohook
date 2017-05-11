@@ -23,6 +23,7 @@ install:
   - npm i --ignore-scripts
   - for /f %%i in ('node -v') do set exact_nodejs_version=%%i
   #- git submodule update --init --recursive
+  - git submodule update
   - ps: |
       [Environment]::SetEnvironmentVariable("MSYS2_PATH_TYPE", "inherit", "Machine")
       $arch = $env:Arch
