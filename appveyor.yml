@@ -22,7 +22,7 @@ install:
   - set PATH=%APPDATA%\npm;%APPVEYOR_BUILD_FOLDER%\node_modules\.bin;%PATH%
   - npm i --ignore-scripts
   - for /f %%i in ('node -v') do set exact_nodejs_version=%%i
-  - git submodule update --init --recursive
+  #- git submodule update --init --recursive
   - ps: |
       [Environment]::SetEnvironmentVariable("MSYS2_PATH_TYPE", "inherit", "Machine")
       $arch = $env:Arch
