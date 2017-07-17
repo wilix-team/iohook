@@ -27,7 +27,7 @@ Checkout your ABI for [node.js](https://nodejs.org/en/download/releases/) or [el
 ```json
 "iohook": {
   "targets": [
-    "node-51"
+    "node-51",
     "electron-53"
   ],
   "platforms": [
