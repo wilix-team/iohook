@@ -1,5 +1,13 @@
-import { EventEmitter } from "events"
+import { EventEmitter } from 'events'
 
-declare module "iohook" {
-  export default class IOHook extends EventEmitter {}
+declare class IOHook extends EventEmitter {
+  start(enableLogger: boolean): void
+  stop(): void
+  load(): void
+  unload(): void
+  setDebug(mode: boolean): void
 }
+
+declare const iohook: IOHook
+
+export = iohook
