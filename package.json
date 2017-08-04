@@ -3,6 +3,7 @@
   "version": "0.1.9",
   "description": "Node.js global keyboard and mouse hook",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "install": "node install.js",
     "install-all": "node install.js --all",
@@ -32,6 +33,7 @@
   },
   "homepage": "https://github.com/WilixLead/iohook#readme",
   "dependencies": {
+    "@types/node": "^8.0.19",
     "bindings": "^1.2.1",
     "node-abi": "^2.0.0",
     "pump": "^1.0.2",
@@ -40,9 +42,9 @@
     "tar-fs": "^1.15.2"
   },
   "devDependencies": {
-    "nan": "^2.6.2",
     "cmake-js": "^3.4.1",
     "mkdirp": "^0.5.1",
+    "nan": "^2.6.2",
     "prebuild": "^6.1.0",
     "tar-stream": "^1.5.2"
   }
