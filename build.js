@@ -58,6 +58,14 @@ function build(runtime, version) {
       '--target_arch=' + arch,
       '--runtime=' + runtime
     ];
+    console.log('Compiling iohook for ' + runtime + ' v' + version + '>>>>');
+    if (version.split('.')[1] > 4) {
+      process.env.msvs_toolset = 14
+      process.env.msvs_version = 2015
+    } else {
+      process.env.msvs_toolset = 12
+      process.env.msvs_version = 2013
+    }
     let proc = spawn(cmakeJsPath, args, {
       env: process.env
     });
