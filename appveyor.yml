@@ -8,6 +8,7 @@ environment:
     - arch: x86_64
       bits: 64
       nodejs_version: 9
+      msvs_toolset: 14
     - arch: i686
       bits: 32
       nodejs_version: 9
