@@ -34,33 +34,85 @@
   "homepage": "https://github.com/WilixLead/iohook#readme",
   "dependencies": {
     "@types/node": "^7.0.39",
-    "bindings": "^1.2.1",
-    "node-abi": "^2.0.0",
-    "pump": "^1.0.2",
+    "bindings": "^1.3.0",
+    "node-abi": "^2.1.2",
+    "pump": "^1.0.3",
     "segfault-handler": "^1.0.0",
-    "simple-get": "^2.4.0",
-    "tar-fs": "^1.15.2"
+    "simple-get": "^2.7.0",
+    "tar-fs": "^1.16.0"
   },
   "devDependencies": {
-    "nan": "^2.6.2",
-    "cmake-js": "^3.4.1",
+    "cmake-js": "^3.6.0",
     "mkdirp": "^0.5.1",
-    "prebuild": "^6.1.0",
-    "tar-stream": "^1.5.2"
+    "nan": "^2.8.0",
+    "prebuild": "^6.2.2",
+    "tar-stream": "^1.5.5"
   },
   "supportedTargets": [
-    ["electron", "1.0.2", "47"],
-    ["electron", "1.2.8", "48"],
-    ["electron", "1.3.13", "49"],
-    ["electron", "1.4.15", "50"],
-    ["electron", "1.5.0", "51"],
-    ["electron", "1.6.0", "53"],
-    ["electron", "1.7.10", "54"],
-    ["node", "4.6.1", "46"],
-    ["node", "5.12.0", "47"],
-    ["node", "6.9.4", "48"],
-    ["node", "7.4.0", "51"],
-    ["node", "8.9.3", "57"],
-    ["node", "9.2.0", "59"]
+    [
+      "electron",
+      "1.0.2",
+      "47"
+    ],
+    [
+      "electron",
+      "1.2.8",
+      "48"
+    ],
+    [
+      "electron",
+      "1.3.13",
+      "49"
+    ],
+    [
+      "electron",
+      "1.4.15",
+      "50"
+    ],
+    [
+      "electron",
+      "1.5.0",
+      "51"
+    ],
+    [
+      "electron",
+      "1.6.0",
+      "53"
+    ],
+    [
+      "electron",
+      "1.7.10",
+      "54"
+    ],
+    [
+      "node",
+      "4.6.1",
+      "46"
+    ],
+    [
+      "node",
+      "5.12.0",
+      "47"
+    ],
+    [
+      "node",
+      "6.9.4",
+      "48"
+    ],
+    [
+      "node",
+      "7.4.0",
+      "51"
+    ],
+    [
+      "node",
+      "8.9.3",
+      "57"
+    ],
+    [
+      "node",
+      "9.2.0",
+      "59"
+    ]
   ]
 }
