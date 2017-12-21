@@ -7,10 +7,10 @@ environment:
   matrix:
     - arch: x86_64
       bits: 64
-      nodejs_version: 7
+      nodejs_version: 9
     - arch: i686
       bits: 32
-      nodejs_version: 7
+      nodejs_version: 9
 
 platform:
   - x64

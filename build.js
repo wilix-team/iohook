@@ -24,9 +24,7 @@ let cmakeJsPath = path.join(
   process.platform === 'win32' ? 'cmake-js.cmd' : 'cmake-js'
 );
 
-let support = require('./support');
-let targets = support.targets;
-let abis = support.abis;
+let targets = require('./package.json').supportedTargets;
 let files = [];
 
 let chain = Promise.resolve();
@@ -34,12 +32,13 @@ let chain = Promise.resolve();
 targets.forEach(parts => {
   let runtime = parts[0];
   let version = parts[1];
+  let abi = parts[2]
   chain = chain
     .then(function () {
       return build(runtime, version)
     })
     .then(function () {
-      return tarGz(runtime, version)
+      return tarGz(runtime, abi)
     })
     .catch(err => {
       console.error(err);
@@ -73,10 +72,9 @@ function build(runtime, version) {
   })
 }
 
-function tarGz(runtime, version) {
+function tarGz(runtime, abi) {
   return new Promise(function (resolve) {
     let filename = 'build/Release/iohook.node';
-    let abi = abis[runtime][version];
     let tarPath = 'prebuilds/' + pkg.name + '-v' + pkg.version + '-' + runtime + '-v' + abi + '-' + process.platform + '-' + arch + '.tar.gz';
     files.push(tarPath);
     mkdirp(path.dirname(tarPath), function () {

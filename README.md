@@ -52,12 +52,15 @@ iohook support prebuilded binaries for next environment versions:
   - [50] 1.4.15
   - [51] 1.5.0
   - [53] 1.6.0
+  - [54] 1.7.0
 
 - node:
   - [46] 4.6.1
   - [47] 5.12.0
   - [48] 6.9.4
   - [51] 7.4.0
+  - [57] 8.9.3
+  - [59] 9.2.0
 
 Support for node.js v0.12, io.js, nw.js is planed.
 

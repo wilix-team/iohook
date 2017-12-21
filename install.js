@@ -8,7 +8,7 @@ const pump = require('pump');
 const tfs = require('tar-fs');
 const zlib = require('zlib');
 const pkg = require('./package.json');
-const support = require('./support');
+const supportedTargets = require('./package.json').supportedTargets;
 
 function onerror(err) {
   throw err;
@@ -113,7 +113,7 @@ if (process.env.npm_config_targets) {
 }
 options.targets = options.targets.map(targetStr => targetStr.split('-'));
 if (process.env.npm_config_targets === 'all') {
-  options.targets = support.targets;
+  options.targets = supportedTargets.map(arr => [arr[0], arr[2]]);
   options.platforms = ['win32', 'darwin', 'linux'];
   options.arches = ['x64', 'ia32']
 }

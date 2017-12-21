@@ -1,6 +1,6 @@
 {
   "name": "iohook",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "Node.js global keyboard and mouse hook",
   "main": "index.js",
   "scripts": {
@@ -45,5 +45,20 @@
     "mkdirp": "^0.5.1",
     "prebuild": "^6.1.0",
     "tar-stream": "^1.5.2"
-  }
+  },
+  "supportedTargets": [
+    ["electron", "1.0.2", "47"],
+    ["electron", "1.2.8", "48"],
+    ["electron", "1.3.13", "49"],
+    ["electron", "1.4.15", "50"],
+    ["electron", "1.5.0", "51"],
+    ["electron", "1.6.0", "53"],
+    ["electron", "1.7.10", "54"],
+    ["node", "4.6.1", "46"],
+    ["node", "5.12.0", "47"],
+    ["node", "6.9.4", "48"],
+    ["node", "7.4.0", "51"],
+    ["node", "8.9.3", "57"],
+    ["node", "9.2.0", "59"]
+  ]
 }
