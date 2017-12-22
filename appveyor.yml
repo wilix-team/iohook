@@ -1,4 +1,4 @@
-os: Visual Studio 2015
+os: Visual Studio 2013
 version: "{build}"
 build: off
 skip_tags: true
