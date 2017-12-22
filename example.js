@@ -22,4 +22,17 @@ ioHook.on("mousedrag",function(msg){console.log(msg)});
 ioHook.start();
 // ioHook.setDebug(true); // Uncomment this line for see all debug information from iohook
 
+const CTRL = 29;
+const ALT = 56;
+const F7 = 65;
+
+ioHook.registerShortcut([CTRL, F7], (keys) => {
+  console.log('Shortcut pressed with keys:', keys);
+});
+
+let shId = ioHook.registerShortcut([ALT, F7], (keys) => {
+  console.log('This shortcut will be called once. Keys:', keys);
+  ioHook.unregisterShortcut(shId);
+})
+
 console.log('Hook started. Try type something or move mouse');

@@ -103,6 +103,29 @@ ioHook.start();
 ```
 If type ```ioHook.start(true);``` you can enable debug logger in native lib. Use it if you have troubles with this module
 
+### Shortcuts support
+You can register global shortcuts.  
+**NOTE: When shortcut called, keyup/keydown events still emit events. It mean if you register keyup and shortcut for ALT+t both events will be emited**
+
+ `registerShortcut(keys, callback):number`  
+In next example we register CTRL+F7 shortcut (in MacOS, for other OS, keycodes can be some different)  
+```js
+let id = ioHook.registerShortcut([29, 65], (keys) => {
+  console.log('Shortcut called with keys:', keys)
+});
+```
+  
+`ioHook.unregisterShortcut(shortcutId)`  
+You can unregister shortcut by using shortcutId returned by `registerShortcut()`   
+```js
+ioHook.unregisterShortcut(id);
+```
+
+`ioHook.unregisterAllShortcuts()`  
+Also you can unregister all shortcuts   
+```js
+ioHook.unregisterAllShortcuts();
+```
 
 ### Available events
 

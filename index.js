@@ -12,7 +12,9 @@ try {
 const runtime = process.versions['electron'] ? 'electron' : 'node';
 const essential = runtime + '-v' + process.versions.modules + '-' + process.platform + '-' + process.arch;
 const modulePath = path.join(__dirname, 'builds', essential, 'build', 'Release', 'iohook.node');
-console.log('Loading native binary:', modulePath);
+if (process.env.DEBUG) {
+  console.info('Loading native binary:', modulePath);
+}
 let NodeHookAddon = require(modulePath);
 
 const events = {
@@ -31,6 +33,7 @@ class IOHook extends EventEmitter {
   constructor() {
     super();
     this.active = false;
+    this.shortcuts = [];
     
     this.load();
     this.setDebug(false);
@@ -56,6 +59,43 @@ class IOHook extends EventEmitter {
     }
   }
 
+  /**
+   * Register global shortcut. When all keys in keys array pressed, callback will be called
+   * @param {Array} keys Array of keycodes
+   * @param {Function} callback Callback for call when shortcut pressed
+   * @return {number} ShortcutId for unregister
+   */
+  registerShortcut(keys, callback) {
+    let shortcut = {};
+    let shortcutId = Date.now() + Math.random();
+    keys.forEach(keyCode => {
+      shortcut[keyCode] = false;
+    })
+    shortcut.id = shortcutId;
+    shortcut.callback = callback;
+    this.shortcuts.push(shortcut);
+    return shortcutId;
+  }
+
+  /**
+   * Unregister shortcut by ShortcutId
+   * @param shortcutId
+   */
+  unregisterShortcut(shortcutId) {
+    this.shortcuts.forEach((shortcut,i) => {
+      if (shortcut.id === shortcutId) {
+        this.shortcuts.splice(i, 1);
+      }
+    });
+  }
+
+  /**
+   * Unregister all shortcuts
+   */
+  unregisterAllShortcuts() {
+    this.shortcuts.splice(0, this.shortcuts.length);
+  }
+  
   /**
    * Load native module
    */
@@ -97,8 +137,45 @@ class IOHook extends EventEmitter {
       let event = msg.mouse || msg.keyboard || msg.wheel;
       event.type = events[msg.type];
       this.emit(events[msg.type], event);
+      if ((event.type === 'keydown' || event.type === 'keyup') && iohook.shortcuts.length > 0) {
+        this._handleShortcut(event);
+      }
     } else {
       console.warn('Unregistered iohook event', msg);
+    }
+  }
+
+  /**
+   * Local shortcut event handler
+   * @param event Event object
+   * @private
+   */
+  _handleShortcut(event) {
+    if (event.type === 'keydown') {
+      this.shortcuts.forEach(shortcut => {
+        if (shortcut[event.keycode] !== undefined) {
+          shortcut[event.keycode] = true;
+
+          let keysTmpArray = [];
+          let callme = true;
+          Object.keys(shortcut).forEach(key => {
+            if (key === 'callback' || key === 'id') return;
+            if (shortcut[key] === false) {
+              callme = false;
+              keysTmpArray.splice(0, keysTmpArray.length);
+              return;
+            }
+            keysTmpArray.push(key);
+          });
+          if (callme) {
+            shortcut.callback(keysTmpArray);
+          }
+        }
+      });
+    } else if (event.type === 'keyup') {
+      this.shortcuts.forEach(shortcut => {
+        if (shortcut[event.keycode] !== undefined) shortcut[event.keycode] = false;
+      });
     }
   }
 }
