@@ -10,8 +10,8 @@ If you like this module or are interested in updates, follow me on Twitter [http
 
 ## OS Support
 Already tested in:
-- Ubuntu 16.04
-- macOS Sierra 10.12
+- Ubuntu 16.04 / 17
+- macOS High Sierra 10.13.2 and older
 - Windows (NOT TESTED YET)
 
 ## Installation
