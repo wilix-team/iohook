@@ -12,7 +12,6 @@ If you like this module or are interested in updates, follow me on Twitter [http
 Already tested in:
 - Ubuntu 16.04
 - macOS Sierra 10.12
-- Windows (NOT TESTED YET)
 
 ## Installation
 This module use native library libuiohook and require some installed packages.  
