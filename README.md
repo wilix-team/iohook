@@ -4,6 +4,7 @@
 # iohook
 Node.js global native keyboard and mouse listener.  
 This module can handle keyboard and mouse events via native hooks.  
+**(this module don't require Java (jnativehook) or any other runtimes. Raw C++ implementation, should be very fast)**  
 
 If you like this module or are interested in updates, follow me on Twitter [https://twitter.com/wilixlead](https://twitter.com/wilixlead)
 
