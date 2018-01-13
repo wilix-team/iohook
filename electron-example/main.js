@@ -17,5 +17,6 @@ app.on('ready', () => {
 });
 
 app.on('before-quit', () => {
+  ioHook.unload();
   ioHook.stop();
 });
