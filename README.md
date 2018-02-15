@@ -12,13 +12,14 @@ If you like this module or are interested in updates, follow me on Twitter [http
 Already tested in:
 - Ubuntu 16.04 / 17
 - macOS High Sierra 10.13.2 and older
-- Windows (NOT TESTED YET)
+- Windows x32/x64
 
 ## Installation
 This module use native library libuiohook and require some installed packages.  
 I really hope find way for use build systems for online build or download prebuild packages.
 
-`npm install iohook --save`
+`npm install iohook --save`  
+_PS: TypeScript types already included_
 
 ### Electron users [optional]
 Before install this module, you need specify build runtime.
@@ -81,6 +82,11 @@ All what you need install os dependencies and start compilation:
 - `cd node_modules/iohook`
 - `npm run build`
 
+### Windows  
+Install: msys2 with autotools, pkg-config, libtool, gcc, clang, glib, C++ Build Tools, cmake  
+- `cd node_modules/iohook`
+- `npm run build`
+
 ## Usage
 Module is pretty simple for use. There is example:  
 
@@ -140,7 +146,7 @@ Calls when user press a key. Event contain next object:
 
 ### keyup
 Calls when user release a key. Event contain next object:  
-`{keychar: 'f', keycode: 19, rawcode: 15, type: 'keup'}`
+`{keychar: 'f', keycode: 19, rawcode: 15, type: 'keyup'}`
 
 ### mouseclick
 Calls when user click mouse button. Event contain next object:  
@@ -175,3 +181,4 @@ but I still can't find a problem. Will be happy if somebody helps with it.
 Thanks for [libuiohook](https://github.com/kwhat/libuiohook) project!    
 Thank you [ayoubserti](https://github.com/ayoubserti) for first iohook prototype  
 Thank you [vespakoen](https://github.com/vespakoen) for prebuild system implementation
+Thank you [matthewshirley](https://github.com/matthewshirley) for fixing prebuild for Windows

@@ -1,6 +1,6 @@
 'use strict';
 
-const ioHook = require('./index.js');
+const ioHook = require('../index.js');
 
 ioHook.on("mousedown",function(msg){console.log(msg);});
 

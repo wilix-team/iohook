@@ -10,5 +10,5 @@ build
 prebuilds
 builds
 *.DS_Store
-electron-example/.DS_Store
+examples/electron-example/.DS_Store
 

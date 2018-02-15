@@ -6,6 +6,8 @@ matrix:
   include:
     - os: linux
       env: ARCH=x32
+    - os: linux
+      env: ARCH=x64
     - os: osx
 
 node_js:
