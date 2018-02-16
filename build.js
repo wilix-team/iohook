@@ -3,7 +3,7 @@ const spawn = require('child_process').spawn;
 const fs = require('fs');
 const path = require('path');
 const mkdirp = require('mkdirp');
-const tar = require('tar-stream');
+const archiver = require('archiver');
 const zlib = require('zlib');
 const pkg = require('./package.json');
 
@@ -81,36 +81,29 @@ function build(runtime, version) {
 }
 
 function tarGz(runtime, abi) {
-  return new Promise(function (resolve) {
-    let filename = 'build/Release/iohook.node';
-    let tarPath = 'prebuilds/' + pkg.name + '-v' + pkg.version + '-' + runtime + '-v' + abi + '-' + process.platform + '-' + arch + '.tar.gz';
-    files.push(tarPath);
-    mkdirp(path.dirname(tarPath), function () {
-      fs.stat(filename, function (err, st) {
-        if (err) {
-          return reject(err);
-        }
-        let tarStream = tar.pack();
-        let ws = fs.createWriteStream(tarPath);
-        let stream = tarStream.entry({
-          name: filename.replace(/\\/g, '/').replace(/:/g, '_'),
-          size: st.size,
-          mode: st.mode | mode('444') | mode('222'),
-          gid: st.gid,
-          uid: st.uid
-        });
-        fs.createReadStream(filename)
-          .pipe(stream)
-          .on('finish', function () {
-            tarStream.finalize()
-          });
-        tarStream
-          .pipe(zlib.createGzip())
-          .pipe(ws)
-          .on('close', resolve)
-      })
-    })
-  })
+  const filesToArchive = process.platform == 'win32' ? 
+    ['build/Release/iohook.node', 'build/Release/uiohook.dll']
+  :
+    ['build/Release/iohook.node']
+
+  const tarPath = 'prebuilds/' + pkg.name + '-v' + pkg.version + '-' + runtime + '-v' + abi + '-' + process.platform + '-' + arch + '.tar.gz';
+
+  files.push(tarPath)
+
+  mkdirp(path.dirname(tarPath), () => {
+    const output = fs.createWriteStream(tarPath);
+    const archive = archiver('tar', {
+      gzip: true
+    });
+
+    archive.pipe(output);
+
+    filesToArchive.forEach(file => {
+      archive.append(fs.createReadStream(file), { name: file });
+    });
+
+    archive.finalize();
+  });
 }
 
 function uploadFiles (files) {

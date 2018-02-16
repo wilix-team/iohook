@@ -42,11 +42,11 @@
     "tar-fs": "^1.16.0"
   },
   "devDependencies": {
+    "archiver": "^2.1.1",
     "cmake-js": "^3.6.0",
     "mkdirp": "^0.5.1",
     "nan": "^2.8.0",
-    "prebuild": "^6.2.2",
-    "tar-stream": "^1.5.5"
+    "prebuild": "^6.2.2"
   },
   "supportedTargets": [
     [
