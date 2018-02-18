@@ -1,5 +1,4 @@
 'use strict';
-const os = require('os');
 const EventEmitter = require('events');
 const path = require('path');
 
@@ -116,7 +115,7 @@ class IOHook extends EventEmitter {
    * @param {Boolean} mode
    */
   setDebug(mode) {
-    NodeHookAddon.debugEnable(mode ? true : false);
+    NodeHookAddon.debugEnable(mode);
   }
   
   /**
@@ -151,6 +150,9 @@ class IOHook extends EventEmitter {
    * @private
    */
   _handleShortcut(event) {
+    if (this.active === false) {
+      return;
+    }
     if (event.type === 'keydown') {
       this.shortcuts.forEach(shortcut => {
         if (shortcut[event.keycode] !== undefined) {
