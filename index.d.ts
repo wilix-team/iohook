@@ -3,7 +3,7 @@ import { EventEmitter } from 'events'
 /**
  * Native module for hooking keyboard and mouse events
  */
-declare class IOHook extends EventEmitter<IOHookEvent> {
+declare class IOHook extends EventEmitter {
   /**
    * Start hooking engine. Call it when you ready to receive events
    * @param {boolean} enableLogger If true, module will publish debug information to stdout
@@ -37,13 +37,13 @@ declare class IOHook extends EventEmitter<IOHookEvent> {
    * @param {Function} callback Callback for call when shortcut pressed
    * @return {number} ShortcutId for unregister
    */
-  registerShortcut(keys, callback): number
+  registerShortcut(keys: Array<string|number>, callback: Function): number
 
   /**
    * Unregister shortcut by ShortcutId
-   * @param shortcutId
+   * @param {number} shortcutId
    */
-  unregisterShortcut(shortcutId): void
+  unregisterShortcut(shortcutId: number): void
 
   /**
    * Unregister all shortcuts
@@ -54,7 +54,7 @@ declare class IOHook extends EventEmitter<IOHookEvent> {
 declare interface IOHookEvent {
   type: string
   keychar?: number
-  keycode?: number 
+  keycode?: number
   rawcode?: number
   button?: number
   clicks?: number
