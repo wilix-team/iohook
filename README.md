@@ -1,36 +1,68 @@
+# iohook
+
 [![Build status](https://ci.appveyor.com/api/projects/status/ph54iicf29ipy8wm?svg=true)](https://ci.appveyor.com/project/WilixLead/iohook)
 [![Build Status](https://travis-ci.org/WilixLead/iohook.svg?branch=master)](https://travis-ci.org/WilixLead/iohook)
 
-# iohook
-Node.js global native keyboard and mouse listener.  
-This module can handle keyboard and mouse events via native hooks.  
-**(this module don't require Java (jnativehook) or any other runtimes. Raw C++ implementation, should be very fast)**  
+## About
 
-If you like this module or are interested in updates, follow me on Twitter [https://twitter.com/wilixlead](https://twitter.com/wilixlead)
+Node.js global native keyboard and mouse listener.
+
+This module can handle keyboard and mouse events via native hooks inside and outside your JavaScript/TypeScript application.
+
+Found a bug ? Have an idea ? Feel free to post an [issue](https://github.com/WilixLead/iohook/issues) or submit a [PR](https://github.com/WilixLead/iohook/pulls).
+
+**Check out the [documentation](README.md#Usage) below.**
 
 ## OS Support
-Already tested in:
-- Ubuntu 16.04 / 17
+
+Every iohook version is built on Linux and Windows. It has been tested on:
+- Ubuntu 16.04 / 17.04
 - macOS High Sierra 10.13.2 and older
 - Windows x32/x64
 
 ## Installation
-This module use native library libuiohook and require some installed packages.  
-I really hope find way for use build systems for online build or download prebuild packages.
 
-`npm install iohook --save`  
-_PS: TypeScript types already included_
+iohook provides prebuilt version for a bunch of OS andruntime versions.
 
-### Electron users [optional]
-Before install this module, you need specify build runtime.
-Just add following to your package.json file
-(if you use two-package-json structure, add to app's package.json, not to build).  
-Checkout your ABI for [node.js](https://nodejs.org/en/download/releases/) or [electron](https://www.npmjs.com/package/electron-abi)
+```bash
+npm install iohook --save # or yarn add iohook
+```
+
+iohook currently provide prebuilt versions for the following runtimes:
+
+- Electron:
+  - 1.0.X (ABI 47)
+  - 1.2.X (ABI 48)
+  - 1.3.X (ABI 49)
+  - 1.4.X (ABI 50)
+  - 1.5.X (ABI 51)
+  - 1.6.X (ABI 53)
+  - 1.7.X (ABI 54)
+  - 1.8.X (ABI 57)
+
+- Node.js:
+  - 4.6.X (ABI 46)
+  - 5.12.X (ABI 47)
+  - 6.9.X (ABI 48)
+  - 7.4.X (ABI 51)
+  - 8.9.X (ABI 57)
+  - 9.2.X (ABI 59)
+
+## Tips
+
+### Usage with Electron
+
+Before installing this module, you will need to set a runtime version.
+
+When developing with webpack, you will need the Node.js runtime. In production, your Electron app will need the Electron version.
+
+Checkout your ABI for [node.js](https://nodejs.org/en/download/releases/) or [electron](https://www.npmjs.com/package/electron-abi). The example below uses Node.js v9.X and Electron v1.8.X.
+
 ```json
 "iohook": {
   "targets": [
-    "node-51",
-    "electron-53"
+    "node-59",
+    "electron-57"
   ],
   "platforms": [
     "win32",
@@ -43,52 +75,12 @@ Checkout your ABI for [node.js](https://nodejs.org/en/download/releases/) or [el
   ]
 }
 ```
-**NOTE: Please remember, when you install iohook, it try to use current node environment NOT ELECTRON OR NW.js**
 
-### Prebuild support  
-iohook support prebuilded binaries for next environment versions:  
-- electron:
-  - [47] 1.0.2
-  - [48] 1.2.8
-  - [49] 1.3.13
-  - [50] 1.4.15
-  - [51] 1.5.0
-  - [53] 1.6.0
-  - [54] 1.7.0
-
-- node:
-  - [46] 4.6.1
-  - [47] 5.12.0
-  - [48] 6.9.4
-  - [51] 7.4.0
-  - [57] 8.9.3
-  - [59] 9.2.0
-
-Support for node.js v0.12, io.js, nw.js is planed.
-
-## Manual compilation for your version of environment  
-iohook have prebuild binaries, it downloads when you try to install it.  
-But if you use specified version of node.js/nw.js/io.js/electron/etc. you can try compile it.  
-All what you need install os dependencies and start compilation:
-
-### Ubuntu 16
-- `sudo apt install libx11-dev libxtst-dev libxt-dev libx11-xcb-dev`
-- `sudo apt install libxkbcommon-dev libxkbcommon-x11-dev`
-- `cd node_modules/iohook`
-- `npm run build`
-
-### macOS
-- `brew install cmake automake libtool pkg-config`
-- `cd node_modules/iohook`
-- `npm run build`
-
-### Windows  
-Install: msys2 with autotools, pkg-config, libtool, gcc, clang, glib, C++ Build Tools, cmake  
-- `cd node_modules/iohook`
-- `npm run build`
+Note: if you use a two-package.json structure, add to application package.json.
 
 ## Usage
-Module is pretty simple for use. There is example:  
+
+Here is a simple example :
 
 ```javascript
 'use strict';
@@ -96,89 +88,152 @@ const ioHook = require('iohook');
 
 ioHook.on("mousemove", event => {
   console.log(event);
-  /* You get object like this
+  /* prints :
     {
       type: 'mousemove',
       x: 700,
       y: 400
     }
-   */
+  */
 });
 
 //Register and start hook
 ioHook.start();
+
+// Alternatively, pass true to start in DEBUG mode.
+// ioHook.start(true);
 ```
-If type ```ioHook.start(true);``` you can enable debug logger in native lib. Use it if you have troubles with this module
 
-### Shortcuts support
+### Available events
+
+#### keypress (NOT WORKING AT THIS MOMENT, USE keydown/keyup)
+Triggered when user presses and releases a key.
+
+```js
+{keychar: 'f', keycode: 19, rawcode: 15, type: 'keypress'}
+```
+
+#### keydown
+
+Triggered when user presses a key.
+
+```js
+{ keychar: 'd', keycode: 46, rawcode: 8, type: 'keydown' }
+```
+
+#### keyup
+
+Triggered when user releases a key.
+
+```js
+{keychar: 'f', keycode: 19, rawcode: 15, type: 'keyup'}
+```
+
+#### mouseclick
+
+Triggered when user clicks a mouse button.
+```js
+{ button: 1, clicks: 1, x: 545, y: 696, type: 'mouseclick' }
+```
+
+#### mousedown
+
+Triggered when user clicks a mouse button.
+
+```js
+{ button: 1, clicks: 1, x: 545, y: 696, type: 'mousedown' }
+```
+
+#### mouseup
+
+Triggered when user releases a mouse button.
+
+```js
+{ button: 1, clicks: 1, x: 545, y: 696, type: 'mouseup' }
+```
+
+#### mousemove
+
+Triggered when user moves the mouse.
+
+```js
+{ button: 0, clicks: 0, x: 521, y: 737, type: 'mousemove' }
+```
+
+#### mousedrag
+
+Triggered when user clicks and drags something.
+
+```js
+{ button: 0, clicks: 0, x: 373, y: 683, type: 'mousedrag' }
+```
+
+#### mousewheel
+
+Triggered when user uses the mouse wheel.
+
+```js
+{ amount: 3, clicks: 1, direction: 3, rotation: 1, type: 'mousewheel', x: 466, y: 683 }
+```
+
+### Shortcuts
+
 You can register global shortcuts.  
-**NOTE: When shortcut called, keyup/keydown events still emit events. It mean if you register keyup and shortcut for ALT+t both events will be emited**
 
- `registerShortcut(keys, callback):number`  
-In next example we register CTRL+F7 shortcut (in MacOS, for other OS, keycodes can be some different)  
+**NOTE: When a shortcut is caught, keyup/keydown events still emit events. It mean if you register noth keyup AND shortcut for ALT+T, both events will be emited.**
+
+#### registerShortcut(keys, callback)  
+
+In next example we register CTRL+F7 shortcut (in MacOS, for other OS, keycodes can be some different).
+
 ```js
 let id = ioHook.registerShortcut([29, 65], (keys) => {
   console.log('Shortcut called with keys:', keys)
 });
 ```
-  
-`ioHook.unregisterShortcut(shortcutId)`  
-You can unregister shortcut by using shortcutId returned by `registerShortcut()`   
+
+#### ioHook.unregisterShortcut(shortcutId)
+
+You can unregister shortcut by using shortcutId returned by `registerShortcut()`.
+
 ```js
 ioHook.unregisterShortcut(id);
 ```
 
-`ioHook.unregisterAllShortcuts()`  
-Also you can unregister all shortcuts   
+#### ioHook.unregisterAllShortcuts()
+
+You can also unregister all shortcuts
 ```js
 ioHook.unregisterAllShortcuts();
 ```
 
-### Available events
+## Manual Build
 
-### keypress (NOT WORKING AT THIS MOMENT, USE keydown/keyup)
-Calls when user press and release a key. Event contain next object:  
-`{keychar: 'f', keycode: 19, rawcode: 15, type: 'keypress'}`
+If you want to manually compile it, follow the instructions below.
 
-### keydown
-Calls when user press a key. Event contain next object:  
-`{ keychar: 'd', keycode: 46, rawcode: 8, type: 'keydown' }`
+### Ubuntu 16
+- `sudo apt install libx11-dev libxtst-dev libxt-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev`
+- `npm run build`
 
-### keyup
-Calls when user release a key. Event contain next object:  
-`{keychar: 'f', keycode: 19, rawcode: 15, type: 'keyup'}`
+### macOS
+- `brew install cmake automake libtool pkg-config`
+- `npm run build`
 
-### mouseclick
-Calls when user click mouse button. Event contain next object:  
-`{ button: 1, clicks: 1, x: 545, y: 696, type: 'mouseclick' }`
+### Windows  
+- Install: msys2 with autotools, pkg-config, libtool, gcc, clang, glib, C++ Build Tools, cmake  
+- `npm run build`
 
-### mousedown
-Calls when user press and release a key. Event contain next object:  
-`{ button: 1, clicks: 1, x: 545, y: 696, type: 'mousedown' }`
+## FAQ
 
-### mouseup
-Calls when user press and release a key. Event contain next object:  
-`{ button: 1, clicks: 1, x: 545, y: 696, type: 'mouseup' }`
+Q. *Does this module require Java ?*
 
-### mousemove
-Calls when user press and release a key. Event contain next object:  
-`{ button: 0, clicks: 0, x: 521, y: 737, type: 'mousemove' }`
+A. No, this module doesn't require Java (like jnativehook) or any other runtimes.
 
-### mousedrag
-Calls when user press and release a key. Event contain next object:  
-`{ button: 0, clicks: 0, x: 373, y: 683, type: 'mousedrag' }`
+## Contributors
 
-### mousewheel
-Calls when user press and release a key. Event contain next object:  
-`{ amount: 3, clicks: 1, direction: 3, rotation: 1, type: 'mousewheel', x: 466, y: 683 }`
+Thanks to _kwhat_ for the [libuiohook](https://github.com/kwhat/libuiohook) project and [ayoubserti](https://github.com/ayoubserti) for the first iohook prototype.
 
-## Known issues
-In some cases, most often when you make mouse moves or keyboard events very fast,
-module crash with "Segmentation fault: 11". Looks like it is problem in my native implementation,
-but I still can't find a problem. Will be happy if somebody helps with it.
-
-## Credits
-Thanks for [libuiohook](https://github.com/kwhat/libuiohook) project!    
-Thank you [ayoubserti](https://github.com/ayoubserti) for first iohook prototype  
-Thank you [vespakoen](https://github.com/vespakoen) for prebuild system implementation
-Thank you [matthewshirley](https://github.com/matthewshirley) for fixing prebuild for Windows
+* [vespakoen](https://github.com/vespakoen) (prebuild system implementation)
+* [matthewshirley](https://github.com/matthewshirley) (Windows prebuild fix)
+* [djiit](https://github.com/djiit) (project & community help)
+* All the other contributors. Feel free to extend this list !
