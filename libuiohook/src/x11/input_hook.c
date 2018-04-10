@@ -1,5 +1,5 @@
 /* libUIOHook: Cross-platfrom userland keyboard and mouse hooking.
- * Copyright (C) 2006-2016 Alexander Barker.  All Rights Received.
+ * Copyright (C) 2006-2017 Alexander Barker.  All Rights Received.
  * https://github.com/kwhat/libuiohook/
  *
  * libUIOHook is free software: you can redistribute it and/or modify
@@ -303,6 +303,18 @@ void hook_event_proc(XPointer closeure, XRecordInterceptData *recorded_data) {
 			keysym = keycode_to_keysym(keycode, data->event.u.keyButtonPointer.state);
 			#endif
 
+			// Check to make sure the key is printable.
+			uint16_t buffer[2];
+			size_t count =  0;
+			#ifdef USE_XKBCOMMON
+			if (state != NULL) {
+				count = keycode_to_unicode(state, keycode, buffer, sizeof(buffer) / sizeof(uint16_t));
+			}
+			#else
+			count = keysym_to_unicode(keysym, buffer, sizeof(buffer) / sizeof(uint16_t));
+			#endif
+
+
 			unsigned short int scancode = keycode_to_scancode(keycode);
 
 			// TODO If you have a better suggestion for this ugly, let me know.
@@ -317,8 +329,9 @@ void hook_event_proc(XPointer closeure, XRecordInterceptData *recorded_data) {
 			xkb_state_update_key(state, keycode, XKB_KEY_DOWN);
 			initialize_locks();
 
+
 			if ((get_modifiers() & MASK_NUM_LOCK) == 0) {
-                switch (scancode) {
+				switch (scancode) {
 					case VC_KP_SEPARATOR:
 					case VC_KP_1:
 					case VC_KP_2:
@@ -332,7 +345,7 @@ void hook_event_proc(XPointer closeure, XRecordInterceptData *recorded_data) {
 					case VC_KP_9:
 						scancode |= 0xEE00;
 						break;
-                }
+				}
 			}
 
 			// Populate key pressed event.
@@ -354,18 +367,6 @@ void hook_event_proc(XPointer closeure, XRecordInterceptData *recorded_data) {
 
 			// If the pressed event was not consumed...
 			if (event.reserved ^ 0x01) {
-				uint16_t buffer[2];
-			    size_t count =  0;
-
-				// Check to make sure the key is printable.
-				#ifdef USE_XKBCOMMON
-				if (state != NULL) {
-					count = keycode_to_unicode(state, keycode, buffer, sizeof(buffer) / sizeof(uint16_t));
-				}
-				#else
-				count = keysym_to_unicode(keysym, buffer, sizeof(buffer) / sizeof(uint16_t));
-				#endif
-
 				for (unsigned int i = 0; i < count; i++) {
 					// Populate key typed event.
 					event.time = timestamp;
@@ -396,6 +397,16 @@ void hook_event_proc(XPointer closeure, XRecordInterceptData *recorded_data) {
 			}
 			#else
 			keysym = keycode_to_keysym(keycode, data->event.u.keyButtonPointer.state);
+			#endif
+
+			// Check to make sure the key is printable.
+			uint16_t buffer[2];
+			#ifdef USE_XKBCOMMON
+			if (state != NULL) {
+				keycode_to_unicode(state, keycode, buffer, sizeof(buffer) / sizeof(uint16_t));
+			}
+			#else
+			keysym_to_unicode(keysym, buffer, sizeof(buffer) / sizeof(uint16_t));
 			#endif
 
 			unsigned short int scancode = keycode_to_scancode(keycode);
@@ -748,9 +759,9 @@ void hook_event_proc(XPointer closeure, XRecordInterceptData *recorded_data) {
 
 			event.mask = get_modifiers();
 
-			// Check the upper half of virtual modifiers for non-zero
-			// values and set the mouse dragged flag.
-			hook->input.mouse.is_dragged = (event.mask >> 8 > 0);
+			// Check the upper half of virtual modifiers for non-zero values and set the mouse
+			// dragged flag.  The last 3 bits are reserved for lock masks.
+			hook->input.mouse.is_dragged = ((event.mask & 0x1F00) > 0);
 			if (hook->input.mouse.is_dragged) {
 				// Create Mouse Dragged event.
 				event.type = EVENT_MOUSE_DRAGGED;
@@ -1028,11 +1039,6 @@ static int xrecord_start() {
 			xkb_context_unref(hook->input.context);
 			hook->input.context = NULL;
 		}
-
-		if (hook->input.connection != NULL) {
-			xcb_disconnect(hook->input.connection);
-			hook->input.connection = NULL;
-		}
 		#endif
 	}
 	else {
@@ -1128,11 +1134,9 @@ UIOHOOK_API int hook_stop() {
 
 			status = UIOHOOK_ERROR_OUT_OF_MEMORY;
 		}
-
-		return status;
 	}
 
-	logger(LOG_LEVEL_DEBUG,	"%s [%u]: Status: %#X.\n",
+	logger(LOG_LEVEL_DEBUG, "%s [%u]: Status: %#X.\n",
 			__FUNCTION__, __LINE__, status);
 
 	return status;
