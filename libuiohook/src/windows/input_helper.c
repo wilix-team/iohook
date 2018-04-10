@@ -1,5 +1,5 @@
 /* libUIOHook: Cross-platfrom userland keyboard and mouse hooking.
- * Copyright (C) 2006-2016 Alexander Barker.  All Rights Received.
+ * Copyright (C) 2006-2017 Alexander Barker.  All Rights Received.
  * https://github.com/kwhat/libuiohook/
  *
  * libUIOHook is free software: you can redistribute it and/or modify
@@ -30,6 +30,8 @@
 
 #include "logger.h"
 #include "input_helper.h"
+
+#define REG_KEYBOARD_LAYOUTS "SYSTEM\\CurrentControlSet\\Control\\Keyboard Layouts\\%s"
 
 static const uint16_t keycode_scancode_table[][2] = {
 	/* idx		{ vk_code,				scancode				}, */
@@ -432,10 +434,10 @@ static int get_keyboard_layout_file(char *layoutFile, DWORD bufferSize) {
 		logger(LOG_LEVEL_DEBUG,	"%s [%u]: Found keyboard layout \"%s\".\n",
 				__FUNCTION__, __LINE__, kbdName);
 
-		const char *kbdKeyBase = "SYSTEM\\CurrentControlSet\\Control\\Keyboard Layouts\\%s";
-		char *kbdKeyPath = (char *) malloc(sizeof(kbdKeyBase) + KL_NAMELENGTH);
+		size_t keySize = strlen(REG_KEYBOARD_LAYOUTS) + KL_NAMELENGTH;
+		char *kbdKeyPath = (char *) malloc(keySize);
 		if (kbdKeyPath != NULL) {
-			snprintf(kbdKeyPath, sizeof(kbdKeyBase) + KL_NAMELENGTH, "SYSTEM\\CurrentControlSet\\Control\\Keyboard Layouts\\%s", kbdName);
+			snprintf(kbdKeyPath, keySize, REG_KEYBOARD_LAYOUTS, kbdName);
 
 			if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, (LPCTSTR) kbdKeyPath, 0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS) {
 				const char *kbdKey =  "Layout File";
@@ -444,16 +446,20 @@ static int get_keyboard_layout_file(char *layoutFile, DWORD bufferSize) {
 					status = UIOHOOK_SUCCESS;
 				}
 				else {
-					logger(LOG_LEVEL_DEBUG,	"%s [%u]: RegOpenKeyEx failed to open key: \"%s\"!\n",
+					logger(LOG_LEVEL_WARN,	"%s [%u]: RegOpenKeyEx failed to open key: \"%s\"!\n",
 							__FUNCTION__, __LINE__, kbdKey);
 				}
 			}
 			else {
-				logger(LOG_LEVEL_DEBUG,	"%s [%u]: RegOpenKeyEx failed to open key: \"%s\"!\n",
+				logger(LOG_LEVEL_WARN,	"%s [%u]: RegOpenKeyEx failed to open key: \"%s\"!\n",
 						__FUNCTION__, __LINE__, kbdKeyPath);
 			}
 
 			free(kbdKeyPath);
+		}
+		else {
+			logger(LOG_LEVEL_WARN, "%s [%u]: malloc(%u) failed!\n",
+					__FUNCTION__, __LINE__, keySize);
 		}
 	}
 
@@ -551,7 +557,7 @@ static int refresh_locale_list() {
 
 					// Try to pull the current keyboard layout DLL from the registry.
 					char layoutFile[MAX_PATH];
-					if (get_keyboard_layout_file(layoutFile, sizeof(layoutFile)) == UIOHOOK_SUCCESS) {
+					if (get_keyboard_layout_file(layoutFile, MAX_PATH) == UIOHOOK_SUCCESS) {
 						// You can't trust the %SYSPATH%, look it up manually.
 						char systemDirectory[MAX_PATH];
 						if (GetSystemDirectory(systemDirectory, MAX_PATH) != 0) {

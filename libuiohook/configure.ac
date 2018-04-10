@@ -1,5 +1,5 @@
 # libUIOHook: Cross-platfrom userland keyboard and mouse hooking.
-# Copyright (C) 2006-2016 Alexander Barker.  All Rights Received.
+# Copyright (C) 2006-2017 Alexander Barker.  All Rights Received.
 # https://github.com/kwhat/libuiohook/
 #
 # libUIOHook is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 #
 
 # Define a few constants using m4 macros to prevent multiple definitions.
-m4_define([UIOHOOK_MAJOR],	[2])
-m4_define([UIOHOOK_MINOR],	[0])
+m4_define([UIOHOOK_MAJOR],	[1])
+m4_define([UIOHOOK_MINOR],	[1])
 m4_define([UIOHOOK_PATCH],	[0])
 m4_define([UIOHOOK_RC],		[])
 m4_define([UIOHOOK_BUGS],	[alex@1stleg.com])
@@ -133,7 +133,7 @@ AC_ARG_ENABLE([xkbcommon],
 	AS_HELP_STRING([--without-xkbcommon], [Disable X Keyboard Common Extension (default: enabled)]),
 	[enable_xkbcommon="$enableval"],
 	[enable_xkbcommon="yes"])
-
+	
 AC_ARG_ENABLE([xkbfile],
 	AS_HELP_STRING([--without-xkbfile], [Disable X Keyboard File Extension (default: enabled)]),
 	[enable_xkbfile="$enableval"],
