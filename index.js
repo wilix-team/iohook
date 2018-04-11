@@ -1,4 +1,3 @@
-'use strict';
 const EventEmitter = require('events');
 const path = require('path');
 
@@ -14,7 +13,7 @@ const modulePath = path.join(__dirname, 'builds', essential, 'build', 'Release',
 if (process.env.DEBUG) {
   console.info('Loading native binary:', modulePath);
 }
-let NodeHookAddon = require(modulePath);
+let NodeHookAddon = require('./build/Release/iohook.node');
 
 const events = {
   3: 'keypress',
@@ -33,6 +32,8 @@ class IOHook extends EventEmitter {
     super();
     this.active = false;
     this.shortcuts = [];
+
+    this.lastKeydownShift = false;
     
     this.load();
     this.setDebug(false);
@@ -124,23 +125,38 @@ class IOHook extends EventEmitter {
    * @private
    */
   _handler(msg) {
-    if (this.active === false) {
-      return;
-    }
-    
-    if (!msg) {
-      return;
-    }
-
+    if (this.active === false || !msg) return;
+  
     if (events[msg.type]) {
-      let event = msg.mouse || msg.keyboard || msg.wheel;
+      const event = msg.mouse || msg.keyboard || msg.wheel;
+      
       event.type = events[msg.type];
+
+      // Assign the shiftKey boolean to the event.
+      // If the last keyup was the shift key, the assume the shiftKey
+      // is no longer pressed.
+      if (event.type === 'keyup' && event.shiftKey) {
+        this.lastKeydownShift = false;
+      } 
+      
+      // Otherwise if the last keydown was the shift key, our next
+      // keypress needs to be shift.
+      if (event.type === 'keydown' && event.shiftKey) {
+        this.lastKeydownShift = true;
+      }
+
+      // Set shiftKey to true if the shift key is current pressed and
+      // key is pressed.
+      if (event.type === 'keypress' && this.lastKeydownShift) {
+        event.shiftKey = true;
+      }
+
       this.emit(events[msg.type], event);
+      
+      // If there is any registered shortcuts then handle them.
       if ((event.type === 'keydown' || event.type === 'keyup') && iohook.shortcuts.length > 0) {
         this._handleShortcut(event);
       }
-    } else {
-      console.warn('Unregistered iohook event', msg);
     }
   }
 

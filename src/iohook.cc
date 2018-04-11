@@ -420,9 +420,17 @@ v8::Local<v8::Object> fillEventObject(uiohook_event event) {
 
   if ((event.type >= EVENT_KEY_TYPED) && (event.type <= EVENT_KEY_RELEASED)) {
     v8::Local<v8::Object> keyboard = Nan::New<v8::Object>();
-    if (event.type == EVENT_KEY_TYPED) {
+    
+    if (event.data.keyboard.keycode == VC_SHIFT_L || event.data.keyboard.keycode == VC_SHIFT_R) {
+      keyboard->Set(Nan::New("shiftKey").ToLocalChecked(), Nan::New(true));
+    } else {
+      keyboard->Set(Nan::New("shiftKey").ToLocalChecked(), Nan::New(false));
+    }
+
+    if (event.type == EVENT_KEY_TYPED) {    
       keyboard->Set(Nan::New("keychar").ToLocalChecked(), Nan::New((uint16_t)event.data.keyboard.keychar));
     }
+
     keyboard->Set(Nan::New("keycode").ToLocalChecked(), Nan::New((uint16_t)event.data.keyboard.keycode));
     keyboard->Set(Nan::New("rawcode").ToLocalChecked(), Nan::New((uint16_t)event.data.keyboard.rawcode));
 
