@@ -13,7 +13,7 @@ const modulePath = path.join(__dirname, 'builds', essential, 'build', 'Release',
 if (process.env.DEBUG) {
   console.info('Loading native binary:', modulePath);
 }
-let NodeHookAddon = require('./build/Release/iohook.node');
+let NodeHookAddon = require(modulePath);
 
 const events = {
   3: 'keypress',
