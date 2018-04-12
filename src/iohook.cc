@@ -420,11 +420,12 @@ v8::Local<v8::Object> fillEventObject(uiohook_event event) {
 
   if ((event.type >= EVENT_KEY_TYPED) && (event.type <= EVENT_KEY_RELEASED)) {
     v8::Local<v8::Object> keyboard = Nan::New<v8::Object>();
+
     if (event.type == EVENT_KEY_TYPED) {
       char* character = (char*) &event.data.keyboard.keychar;
     
       keyboard->Set(Nan::New("keychar").ToLocalChecked(), Nan::New(character).ToLocalChecked());
-      keyboard->Set(Nan::New("keycode").ToLocalChecked(), Nan::New((uint16_t)event.data.keyboard.rawcode));
+      keyboard->Set(Nan::New("keycode").ToLocalChecked(), Nan::New((uint16_t)event.data.keyboard.keychar));
     } else {
       keyboard->Set(Nan::New("keycode").ToLocalChecked(), Nan::New((uint16_t)event.data.keyboard.keycode));
     }
