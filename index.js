@@ -133,7 +133,10 @@ class IOHook extends EventEmitter {
 
     if (events[msg.type]) {
       let event = msg.mouse || msg.keyboard || msg.wheel;
+
       event.type = events[msg.type];
+      event.mask = msg.mask;
+      
       this.emit(events[msg.type], event);
       if ((event.type === 'keydown' || event.type === 'keyup') && iohook.shortcuts.length > 0) {
         this._handleShortcut(event);
