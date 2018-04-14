@@ -32,6 +32,17 @@ declare class IOHook extends EventEmitter {
   setDebug(mode: boolean): void
 
   /**
+   * Enable click propagation. Enabled by default when start.
+   */
+  enableClickPropagation(): void
+
+
+  /**
+   *  Disable click propagation. When the propagation are disabled the click event are created but captured by iohook.
+   */
+  disableClickPropagation(): void
+
+  /**
    * Register global shortcut. When all keys in keys array pressed, callback will be called
    * @param {Array<string|number>} keys Array of keycodes
    * @param {Function} callback Callback for call when shortcut pressed
