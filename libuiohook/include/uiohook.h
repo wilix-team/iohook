@@ -428,6 +428,8 @@ extern "C" {
 	// Withdraw the event hook.
 	UIOHOOK_API int hook_stop();
 
+	UIOHOOK_API void grab_mouse_click(bool enable);
+
 	// Retrieves an array of screen data for each available monitor.
 	UIOHOOK_API screen_data* hook_create_screen_info(unsigned char *count);
 

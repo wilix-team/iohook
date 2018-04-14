@@ -92,6 +92,8 @@ static uiohook_event event;
 // Event dispatch callback.
 static dispatcher_t dispatcher = NULL;
 
+static unsigned short int grab_mouse_click_event = 0x00;
+
 UIOHOOK_API void hook_set_dispatch_proc(dispatcher_t dispatch_proc) {
 	logger(LOG_LEVEL_DEBUG,	"%s [%u]: Setting new dispatch callback to %#p.\n",
 			__FUNCTION__, __LINE__, dispatch_proc);
@@ -780,7 +782,7 @@ static inline void process_button_pressed(uint64_t timestamp, CGEventRef event_r
 
 	// Populate mouse pressed event.
 	event.time = timestamp;
-	event.reserved = 0x00;
+	event.reserved = grab_mouse_click_event;
 
 	event.type = EVENT_MOUSE_PRESSED;
 	event.mask = get_modifiers();
@@ -803,7 +805,8 @@ static inline void process_button_released(uint64_t timestamp, CGEventRef event_
 
 	// Populate mouse released event.
 	event.time = timestamp;
-	event.reserved = 0x00;
+	event.time = timestamp;
+	event.reserved = grab_mouse_click_event;
 
 	event.type = EVENT_MOUSE_RELEASED;
 	event.mask = get_modifiers();
@@ -821,10 +824,11 @@ static inline void process_button_released(uint64_t timestamp, CGEventRef event_
 	dispatch_event(&event);
 
 	// If the pressed event was not consumed...
-	if (event.reserved ^ 0x01 && mouse_dragged != true) {
+	if ((event.reserved ^ 0x01 || grab_mouse_click_event ^ 0x00) && mouse_dragged != true) {
 		// Populate mouse clicked event.
 		event.time = timestamp;
-		event.reserved = 0x00;
+
+		event.reserved = grab_mouse_click_event;
 
 		event.type = EVENT_MOUSE_CLICKED;
 		event.mask = get_modifiers();
@@ -1098,6 +1102,14 @@ CGEventRef hook_event_proc(CGEventTapProxy tap_proxy, CGEventType type, CGEventR
 	}
 
 	return result_ref;
+}
+
+UIOHOOK_API void grab_mouse_click(bool enabled) {
+	if (enabled) {
+		grab_mouse_click_event = 0x01;
+	} else {
+		grab_mouse_click_event = 0x00;
+	}
 }
 
 UIOHOOK_API int hook_run() {
