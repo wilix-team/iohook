@@ -1,6 +1,6 @@
 {
   "name": "iohook",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "Node.js global keyboard and mouse hook",
   "main": "index.js",
   "types": "index.d.ts",
@@ -33,19 +33,19 @@
   },
   "homepage": "https://github.com/WilixLead/iohook#readme",
   "dependencies": {
-    "@types/node": "^7.0.39",
+    "@types/node": "^7.0.62",
     "bindings": "^1.3.0",
-    "node-abi": "^2.1.2",
+    "node-abi": "^2.4.0",
     "pump": "^1.0.3",
     "segfault-handler": "^1.0.0",
-    "simple-get": "^2.7.0",
-    "tar-fs": "^1.16.0"
+    "simple-get": "^2.8.1",
+    "tar-fs": "^1.16.2"
   },
   "devDependencies": {
     "archiver": "^2.1.1",
-    "cmake-js": "^3.6.0",
+    "cmake-js": "^3.6.2",
     "mkdirp": "^0.5.1",
-    "nan": "^2.8.0",
+    "nan": "^2.10.0",
     "prebuild": "^6.2.2"
   },
   "supportedTargets": [
@@ -90,6 +90,11 @@
       "57"
     ],
     [
+      "electron",
+      "2.0.0",
+      "57"
+    ],
+    [
       "node",
       "4.6.1",
       "46"
@@ -118,6 +123,11 @@
       "node",
       "9.2.0",
       "59"
+    ],
+    [
+      "node",
+      "10.0.0",
+      "64"
     ]
   ]
 }
