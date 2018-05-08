@@ -211,6 +211,22 @@ You can also unregister all shortcuts
 ioHook.unregisterAllShortcuts();
 ```
 
+#### ioHook.disableClickPropagation()
+
+You can disable mouse click event propagation. Click events are captured and emitted but not propagated to the window.
+
+```js
+ioHook.disableClickPropagation();
+```
+
+#### ioHook.enableClickPropagation()
+
+You can enable mouse click event propagation if it's disabled. Click event are propagated by default.
+
+```js
+ioHook.enableClickPropagation();
+```
+
 ## Manual Build
 
 If you want to manually compile it, follow the instructions below.
@@ -240,4 +256,5 @@ Thanks to _kwhat_ for the [libuiohook](https://github.com/kwhat/libuiohook) proj
 * [vespakoen](https://github.com/vespakoen) (prebuild system implementation)
 * [matthewshirley](https://github.com/matthewshirley) (Windows prebuild fix)
 * [djiit](https://github.com/djiit) (project & community help)
+* [ezain](https://github.com/eboukamza) (add feature enable/disable mouse click propagation)
 * All the other contributors. Feel free to extend this list !
