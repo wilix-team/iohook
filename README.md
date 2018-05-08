@@ -3,13 +3,14 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/ph54iicf29ipy8wm?svg=true)](https://ci.appveyor.com/project/WilixLead/iohook)
 [![Build Status](https://travis-ci.org/WilixLead/iohook.svg?branch=master)](https://travis-ci.org/WilixLead/iohook)
 [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/iohookjs/Lobby)
+[![NPM version](https://img.shields.io/npm/v/iohook.svg)](https://www.npmjs.com/package/iohook)
 
 ## About
 Node.js global native keyboard and mouse listener.
 
 This module can handle keyboard and mouse events via native hooks inside and outside your JavaScript/TypeScript application.
 
-Found a bug ? Have an idea ? Feel free to post an [issue](https://github.com/WilixLead/iohook/issues) or submit a [PR](https://github.com/WilixLead/iohook/pulls).
+Found a bug? Have an idea? Feel free to post an [issue](https://github.com/WilixLead/iohook/issues) or submit a [PR](https://github.com/WilixLead/iohook/pulls).
 
 **Check out the [documentation](https://wilixlead.github.io/iohook).**
 
