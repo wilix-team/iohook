@@ -9,7 +9,9 @@
     "install-all": "node install.js --all",
     "build": "cmake-js compile",
     "deploy": "node build.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
   },
   "repository": {
     "type": "git",
@@ -46,7 +48,8 @@
     "cmake-js": "^3.6.2",
     "mkdirp": "^0.5.1",
     "nan": "^2.10.0",
-    "prebuild": "^6.2.2"
+    "prebuild": "^6.2.2",
+    "vuepress": "^0.8.4"
   },
   "supportedTargets": [
     [

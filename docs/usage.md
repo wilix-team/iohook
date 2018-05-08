@@ -1,0 +1,157 @@
+# Usage
+## Usage with Electron
+Before installing this module, you will need to set a runtime version.
+
+When developing with webpack, you will need the Node.js runtime. In production, your Electron app will need the Electron version.
+
+Checkout your ABI for [node.js](https://nodejs.org/en/download/releases/) or [electron](https://www.npmjs.com/package/electron-abi). The example below uses Node.js v9.X and Electron v1.8.X.
+
+```json
+"iohook": {
+  "targets": [
+    "node-59",
+    "electron-57"
+  ],
+  "platforms": [
+    "win32",
+    "darwin",
+    "linux"
+  ],
+  "arches": [
+    "x64",
+    "ia32"
+  ]
+}
+```
+
+::: tip
+if you use a two-package.json structure, add this to application package.json.
+:::
+
+## Usage in a generic Node application
+Here is a simple example :
+
+```javascript
+'use strict';
+
+const ioHook = require('iohook');
+
+ioHook.on('mousemove', event => {
+  console.log(event); // { type: 'mousemove', x: 700, y: 400 }
+});
+
+// Register and start hook
+ioHook.start();
+
+// Alternatively, pass true to start in DEBUG mode.
+ioHook.start(true);
+```
+
+## Available events
+
+### keypress
+::: danger
+This event is **not** working at this moment. Use keydown/keyup instead
+:::
+
+Triggered when user presses and releases a key.
+
+```js
+{ keychar: 'f', keycode: 19, rawcode: 15, type: 'keypress' }
+```
+
+### keydown
+
+Triggered when user presses a key.
+
+```js
+{ keychar: 'd', keycode: 46, rawcode: 8, type: 'keydown' }
+```
+
+### keyup
+
+Triggered when user releases a key.
+
+```js
+{ keychar: 'f', keycode: 19, rawcode: 15, type: 'keyup' }
+```
+
+### mouseclick
+
+Triggered when user clicks a mouse button.
+```js
+{ button: 1, clicks: 1, x: 545, y: 696, type: 'mouseclick' }
+```
+
+### mousedown
+
+Triggered when user clicks a mouse button.
+
+```js
+{ button: 1, clicks: 1, x: 545, y: 696, type: 'mousedown' }
+```
+
+### mouseup
+
+Triggered when user releases a mouse button.
+
+```js
+{ button: 1, clicks: 1, x: 545, y: 696, type: 'mouseup' }
+```
+
+### mousemove
+
+Triggered when user moves the mouse.
+
+```js
+{ button: 0, clicks: 0, x: 521, y: 737, type: 'mousemove' }
+```
+
+### mousedrag
+
+Triggered when user clicks and drags something.
+
+```js
+{ button: 0, clicks: 0, x: 373, y: 683, type: 'mousedrag' }
+```
+
+### mousewheel
+
+Triggered when user uses the mouse wheel.
+
+```js
+{ amount: 3, clicks: 1, direction: 3, rotation: 1, type: 'mousewheel', x: 466, y: 683 }
+```
+
+## Shortcuts
+
+You can register global shortcuts.
+
+::: tip NOTE
+When a shortcut is caught, keyup/keydown events still emit events. It means, that if you register a keyup AND shortcut for `ALT+T`, both events will be emited.
+:::
+
+### registerShortcut(keys, callback)
+
+In next example we register CTRL+F7 shortcut (in MacOS, for other OS, keycodes can be some different).
+
+```js
+const id = ioHook.registerShortcut([29, 65], (keys) => {
+  console.log('Shortcut called with keys:', keys)
+});
+```
+
+### unregisterShortcut(shortcutId)
+
+You can unregister shortcut by using shortcutId returned by `registerShortcut()`.
+
+```js
+ioHook.unregisterShortcut(id);
+```
+
+### unregisterAllShortcuts()
+
+You can also unregister all shortcuts
+```js
+ioHook.unregisterAllShortcuts();
+```

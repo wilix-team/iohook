@@ -11,6 +11,7 @@ prebuilds
 builds
 *.DS_Store
 examples/electron-example/.DS_Store
+docs/.vuepress/dist
 
 libuiohook/nbproject/
 libuiohook/build/
