@@ -32,4 +32,5 @@ Thanks to _kwhat_ for the [libuiohook](https://github.com/kwhat/libuiohook) proj
 * [vespakoen](https://github.com/vespakoen) (prebuild system implementation)
 * [matthewshirley](https://github.com/matthewshirley) (Windows prebuild fix)
 * [djiit](https://github.com/djiit) (project & community help)
+* [ezain](https://github.com/eboukamza) (add feature enable/disable mouse click propagation)
 * All the other contributors. Feel free to extend this list !
