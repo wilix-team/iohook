@@ -155,3 +155,19 @@ You can also unregister all shortcuts
 ```js
 ioHook.unregisterAllShortcuts();
 ```
+
+### disableClickPropagation()
+
+You can disable mouse click event propagation. Click events are captured and emitted but not propagated to the window.
+
+```js
+ioHook.disableClickPropagation();
+```
+
+### enableClickPropagation()
+
+You can enable mouse click event propagation if it's disabled. Click event are propagated by default.
+
+```js
+ioHook.enableClickPropagation();
+```
