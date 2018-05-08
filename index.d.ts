@@ -32,13 +32,15 @@ declare class IOHook extends EventEmitter {
   setDebug(mode: boolean): void
 
   /**
-   * Enable click propagation. Enabled by default when start.
+   * Enable mouse click propagation (enabled by default).
+   * The click event are emitted and propagated.
    */
   enableClickPropagation(): void
 
 
   /**
-   *  Disable click propagation. When the propagation are disabled the click event are created but captured by iohook.
+   * Disable mouse click propagation.
+   * The click event are captured and the event emitted but not propagated to the window.
    */
   disableClickPropagation(): void
 

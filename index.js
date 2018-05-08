@@ -127,7 +127,7 @@ class IOHook extends EventEmitter {
   }
 
   /**
-   * Enable mouse click propagation (option by default).
+   * Enable mouse click propagation (enabled by default).
    * The click event are emitted and propagated.
    */
   enableClickPropagation() {
