@@ -54,7 +54,7 @@ ioHook.start(true);
 Triggered when user presses a key.
 
 ```js
-{ keychar: 'd', keycode: 46, rawcode: 8, type: 'keydown' }
+{ keycode: 46, rawcode: 8, type: 'keydown' }
 ```
 
 ### keyup
@@ -62,7 +62,7 @@ Triggered when user presses a key.
 Triggered when user releases a key.
 
 ```js
-{ keychar: 'f', keycode: 19, rawcode: 15, type: 'keyup' }
+{ keycode: 19, rawcode: 15, type: 'keyup' }
 ```
 
 ### mouseclick
