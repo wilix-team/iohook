@@ -57,7 +57,16 @@ This event is **not** working at this moment. Use keydown/keyup instead
 Triggered when user presses and releases a key.
 
 ```js
-{ keychar: 'f', keycode: 19, rawcode: 15, type: 'keypress' }
+{
+  keychar: 'f',
+  keycode: 19,
+  rawcode: 15,
+  type: 'keypress',
+  altKey: true,
+  shiftKey: true,
+  ctrlKey: false,
+  metaKey: false
+}
 ```
 
 ### keydown
@@ -65,7 +74,15 @@ Triggered when user presses and releases a key.
 Triggered when user presses a key.
 
 ```js
-{ keychar: 'd', keycode: 46, rawcode: 8, type: 'keydown' }
+{
+  keycode: 46,
+  rawcode: 8,
+  type: 'keydown',
+  altKey: true,
+  shiftKey: true,
+  ctrlKey: false,
+  metaKey: false
+}
 ```
 
 ### keyup
@@ -73,7 +90,15 @@ Triggered when user presses a key.
 Triggered when user releases a key.
 
 ```js
-{ keychar: 'f', keycode: 19, rawcode: 15, type: 'keyup' }
+{
+  keycode: 19,
+  rawcode: 15,
+  type: 'keyup',
+  altKey: true,
+  shiftKey: true,
+  ctrlKey: false,
+  metaKey: false
+}
 ```
 
 ### mouseclick
