@@ -180,7 +180,7 @@ class IOHook extends EventEmitter {
       this.lastKeydownShift = true;
     }
 
-    if (event.type === 'keypress' && this.lastKeydownShift) {
+    if (this.lastKeydownShift) {
       event.shiftKey = true;
     }
   }
@@ -200,7 +200,7 @@ class IOHook extends EventEmitter {
       this.lastKeydownAlt = true;
     }
 
-    if (event.type === 'keypress' && this.lastKeydownAlt) {
+    if (this.lastKeydownAlt) {
       event.altKey = true;
     }
   }
@@ -220,7 +220,7 @@ class IOHook extends EventEmitter {
       this.lastKeydownCtrl = true;
     }
 
-    if (event.type === 'keypress' && this.lastKeydownCtrl) {
+    if (this.lastKeydownCtrl) {
       event.ctrlKey = true;
     }
   }
@@ -240,7 +240,7 @@ class IOHook extends EventEmitter {
       this.lastKeydownMeta = true;
     }
 
-    if (event.type === 'keypress' && this.lastKeydownMeta) {
+    if (this.lastKeydownMeta) {
       event.metaKey = true;
     }
   }
