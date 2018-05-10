@@ -1,7 +1,7 @@
 const EventEmitter = require('events');
 const path = require('path');
 
-// Try use handler if runtime and ABI is compatible  
+// Try use handler if runtime and ABI is compatible
 try {
   const SegfaultHandler = require('segfault-handler');
   SegfaultHandler.registerHandler("iohook-crash.log");
@@ -34,14 +34,14 @@ class IOHook extends EventEmitter {
     this.shortcuts = [];
 
     this.lastKeydownShift = false;
-    
+
     this.load();
     this.setDebug(false);
   }
 
   /**
    * Start hook process
-   * @param enableLogger Turn on debug logging 
+   * @param enableLogger Turn on debug logging
    */
   start(enableLogger) {
     if (!this.active) {
@@ -51,7 +51,7 @@ class IOHook extends EventEmitter {
   }
 
   /**
-   * Shutdown event hook 
+   * Shutdown event hook
    */
   stop() {
     if (this.active) {
@@ -95,14 +95,14 @@ class IOHook extends EventEmitter {
   unregisterAllShortcuts() {
     this.shortcuts.splice(0, this.shortcuts.length);
   }
-  
+
   /**
    * Load native module
    */
   load() {
     NodeHookAddon.startHook(this._handler.bind(this), this.debug || false);
   }
-  
+
   /**
    * Unload native module and stop hook
    */
@@ -142,10 +142,10 @@ class IOHook extends EventEmitter {
    */
   _handler(msg) {
     if (this.active === false || !msg) return;
-  
+
     if (events[msg.type]) {
       const event = msg.mouse || msg.keyboard || msg.wheel;
-      
+
       event.type = events[msg.type];
 
       // Assign the shiftKey boolean to the event.
@@ -153,8 +153,8 @@ class IOHook extends EventEmitter {
       // is no longer pressed.
       if (event.type === 'keyup' && event.shiftKey) {
         this.lastKeydownShift = false;
-      } 
-      
+      }
+
       // Otherwise if the last keydown was the shift key, our next
       // keypress needs to be shift.
       if (event.type === 'keydown' && event.shiftKey) {
@@ -168,7 +168,7 @@ class IOHook extends EventEmitter {
       }
 
       this.emit(events[msg.type], event);
-      
+
       // If there is any registered shortcuts then handle them.
       if ((event.type === 'keydown' || event.type === 'keyup') && iohook.shortcuts.length > 0) {
         this._handleShortcut(event);
