@@ -34,6 +34,9 @@ class IOHook extends EventEmitter {
     this.shortcuts = [];
 
     this.lastKeydownShift = false;
+    this.lastKeydownAlt = false;
+    this.lastKeydownCtrl = false;
+    this.lastKeydownMeta = false;
 
     this.load();
     this.setDebug(false);
@@ -148,24 +151,10 @@ class IOHook extends EventEmitter {
 
       event.type = events[msg.type];
 
-      // Assign the shiftKey boolean to the event.
-      // If the last keyup was the shift key, the assume the shiftKey
-      // is no longer pressed.
-      if (event.type === 'keyup' && event.shiftKey) {
-        this.lastKeydownShift = false;
-      }
-
-      // Otherwise if the last keydown was the shift key, our next
-      // keypress needs to be shift.
-      if (event.type === 'keydown' && event.shiftKey) {
-        this.lastKeydownShift = true;
-      }
-
-      // Set shiftKey to true if the shift key is current pressed and
-      // key is pressed.
-      if (event.type === 'keypress' && this.lastKeydownShift) {
-        event.shiftKey = true;
-      }
+      this._handleShift(event);
+      this._handleAlt(event);
+      this._handleCtrl(event);
+      this._handleMeta(event);
 
       this.emit(events[msg.type], event);
 
@@ -173,6 +162,86 @@ class IOHook extends EventEmitter {
       if ((event.type === 'keydown' || event.type === 'keyup') && iohook.shortcuts.length > 0) {
         this._handleShortcut(event);
       }
+    }
+  }
+
+  /**
+   * Handles the shift key. Whenever shift is pressed, all future events would
+   * contain { shiftKey: true } in its object, until the shift key is released.
+   * @param event Event object
+   * @private
+   */
+  _handleShift(event) {
+    if (event.type === 'keyup' && event.shiftKey) {
+      this.lastKeydownShift = false;
+    }
+
+    if (event.type === 'keydown' && event.shiftKey) {
+      this.lastKeydownShift = true;
+    }
+
+    if (event.type === 'keypress' && this.lastKeydownShift) {
+      event.shiftKey = true;
+    }
+  }
+
+  /**
+   * Handles the alt key. Whenever alt is pressed, all future events would
+   * contain { altKey: true } in its object, until the alt key is released.
+   * @param event Event object
+   * @private
+   */
+  _handleAlt(event) {
+    if (event.type === 'keyup' && event.altKey) {
+      this.lastKeydownAlt = false;
+    }
+
+    if (event.type === 'keydown' && event.altKey) {
+      this.lastKeydownAlt = true;
+    }
+
+    if (event.type === 'keypress' && this.lastKeydownAlt) {
+      event.altKey = true;
+    }
+  }
+
+  /**
+   * Handles the ctrl key. Whenever ctrl is pressed, all future events would
+   * contain { ctrlKey: true } in its object, until the ctrl key is released.
+   * @param event Event object
+   * @private
+   */
+  _handleCtrl(event) {
+    if (event.type === 'keyup' && event.ctrlKey) {
+      this.lastKeydownCtrl = false;
+    }
+
+    if (event.type === 'keydown' && event.ctrlKey) {
+      this.lastKeydownCtrl = true;
+    }
+
+    if (event.type === 'keypress' && this.lastKeydownCtrl) {
+      event.ctrlKey = true;
+    }
+  }
+
+  /**
+   * Handles the meta key. Whenever meta is pressed, all future events would
+   * contain { metaKey: true } in its object, until the meta key is released.
+   * @param event Event object
+   * @private
+   */
+  _handleMeta(event) {
+    if (event.type === 'keyup' && event.metaKey) {
+      this.lastKeydownMeta = false;
+    }
+
+    if (event.type === 'keydown' && event.metaKey) {
+      this.lastKeydownMeta = true;
+    }
+
+    if (event.type === 'keypress' && this.lastKeydownMeta) {
+      event.metaKey = true;
     }
   }
 

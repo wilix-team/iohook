@@ -427,6 +427,24 @@ v8::Local<v8::Object> fillEventObject(uiohook_event event) {
       keyboard->Set(Nan::New("shiftKey").ToLocalChecked(), Nan::New(false));
     }
 
+    if (event.data.keyboard.keycode == VC_ALT_L || event.data.keyboard.keycode == VC_ALT_R) {
+      keyboard->Set(Nan::New("altKey").ToLocalChecked(), Nan::New(true));
+    } else {
+      keyboard->Set(Nan::New("altKey").ToLocalChecked(), Nan::New(false));
+    }
+
+    if (event.data.keyboard.keycode == VC_CONTROL_L || event.data.keyboard.keycode == VC_CONTROL_R) {
+      keyboard->Set(Nan::New("ctrlKey").ToLocalChecked(), Nan::New(true));
+    } else {
+      keyboard->Set(Nan::New("ctrlKey").ToLocalChecked(), Nan::New(false));
+    }
+
+    if (event.data.keyboard.keycode == VC_META_L || event.data.keyboard.keycode == VC_META_R) {
+      keyboard->Set(Nan::New("metaKey").ToLocalChecked(), Nan::New(true));
+    } else {
+      keyboard->Set(Nan::New("metaKey").ToLocalChecked(), Nan::New(false));
+    }
+
     if (event.type == EVENT_KEY_TYPED) {
       keyboard->Set(Nan::New("keychar").ToLocalChecked(), Nan::New((uint16_t)event.data.keyboard.keychar));
     }
