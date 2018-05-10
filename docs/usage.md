@@ -49,17 +49,6 @@ ioHook.start(true);
 
 ## Available events
 
-### keypress
-::: danger
-This event is **not** working at this moment. Use keydown/keyup instead
-:::
-
-Triggered when user presses and releases a key.
-
-```js
-{ keychar: 'f', keycode: 19, rawcode: 15, type: 'keypress' }
-```
-
 ### keydown
 
 Triggered when user presses a key.
