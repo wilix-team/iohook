@@ -2,24 +2,44 @@ const ioHook = require('../../index');
 const robot = require('robotjs');
 
 describe('Keyboard events', () => {
-    it('receives the text "Hello World"', (done) => {
-        let currentKey = 0;
+  afterEach(() => {
+    ioHook.stop();
+  });
 
-        const actualCharacters = [];
-        const expectedCharacters = ['H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd'];
+  it('receives the text "hello world" on keyup event', (done) => {
+    const chars = [
+      { keycode: 35, value: 'h' },
+      { keycode: 18, value: 'e' },
+      { keycode: 38, value: 'l' },
+      { keycode: 38, value: 'l' },
+      { keycode: 24, value: 'o' },
+      { keycode: 57, value: ' ' },
+      { keycode: 17, value: 'w' },
+      { keycode: 24, value: 'o' },
+      { keycode: 19, value: 'r' },
+      { keycode: 38, value: 'l' },
+      { keycode: 32, value: 'd' }
+    ];
+    let i = 0;
 
-        ioHook.on('keydown', (event) => {
-            actualCharacters.push(String.fromCharCode(event.keychar));
-
-            if (currentKey === expectedCharacters.length) {
-                expect(actualCharacters).toEqual(expectedCharacters);
-            }
-
-            currentKey += 1;
-            done();
-        });
-        ioHook.start();
-
-        robot.typeString('Hello World');
+    ioHook.on('keydown', (event) => {
+      expect(event.keycode).toEqual(chars[i].keycode);
+      expect(event.type).toEqual('keydown');
     });
+    ioHook.on('keyup', (event) => {
+      expect(event.keycode).toEqual(chars[i].keycode);
+      expect(event.type).toEqual('keyup');
+
+      if (i === chars.length - 1) {
+        done();
+      }
+
+      i += 1;
+    });
+    ioHook.start();
+
+    for (const char of chars) {
+      robot.keyTap(char.value);
+    }
+  });
 });
