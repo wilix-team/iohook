@@ -28,3 +28,11 @@ For build requirements for your OS look below.
 ## Windows
 - Install: msys2 with autotools, pkg-config, libtool, gcc, clang, glib, C++ Build Tools, cmake
 - `npm run build`
+
+# Testing
+
+iohook uses Jest for automated testing. To execute tests, run `npm run test` in your console.
+
+::: warning
+It is important you don't press any buttons on your keyboard, don't use your mouse nor the scroll wheel. Tests depend on native events fired by the real keyboard and mouse. Interrupting them will cause tests to fail.
+:::
