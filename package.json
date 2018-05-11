@@ -9,7 +9,7 @@
     "install-all": "node install.js --all",
     "build": "cmake-js compile",
     "deploy": "node build.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs"
   },
@@ -46,9 +46,11 @@
   "devDependencies": {
     "archiver": "^2.1.1",
     "cmake-js": "^3.6.2",
+    "jest": "^22.4.3",
     "mkdirp": "^0.5.1",
     "nan": "^2.10.0",
     "prebuild": "^6.2.2",
+    "robotjs": "^0.5.1",
     "vuepress": "^0.8.4"
   },
   "supportedTargets": [
