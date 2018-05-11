@@ -7,7 +7,7 @@ describe('Keyboard events', () => {
   });
 
   it('receives the text "hello world" on keyup event', (done) => {
-    expect.assertions(44);
+    expect.assertions(22);
 
     const chars = [
       { keycode: 35, value: 'h' },
@@ -25,12 +25,16 @@ describe('Keyboard events', () => {
     let i = 0;
 
     ioHook.on('keydown', (event) => {
-      expect(event.keycode).toEqual(chars[i].keycode);
-      expect(event.type).toEqual('keydown');
+      expect(event).toEqual({
+        keycode: chars[i].keycode,
+        type: 'keydown',
+      });
     });
     ioHook.on('keyup', (event) => {
-      expect(event.keycode).toEqual(chars[i].keycode);
-      expect(event.type).toEqual('keyup');
+      expect(event).toEqual({
+        keycode: chars[i].keycode,
+        type: 'keydown',
+      });
 
       if (i === chars.length - 1) {
         done();
@@ -40,8 +44,10 @@ describe('Keyboard events', () => {
     });
     ioHook.start();
 
-    for (const char of chars) {
-      robot.keyTap(char.value);
-    }
+    setTimeout(() => { // Make sure ioHook starts before anything gets typed
+      for (const char of chars) {
+        robot.keyTap(char.value);
+      }
+    }, 50);
   });
 });
