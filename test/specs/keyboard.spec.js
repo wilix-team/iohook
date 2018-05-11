@@ -28,12 +28,20 @@ describe('Keyboard events', () => {
       expect(event).toEqual({
         keycode: chars[i].keycode,
         type: 'keydown',
+        shiftKey: false,
+        altKey: false,
+        ctrlKey: false,
+        metaKey: false
       });
     });
     ioHook.on('keyup', (event) => {
       expect(event).toEqual({
         keycode: chars[i].keycode,
         type: 'keydown',
+        shiftKey: false,
+        altKey: false,
+        ctrlKey: false,
+        metaKey: false
       });
 
       if (i === chars.length - 1) {
@@ -48,6 +56,126 @@ describe('Keyboard events', () => {
       for (const char of chars) {
         robot.keyTap(char.value);
       }
+    }, 50);
+  });
+
+  it('recognizes shift key being pressed', (done) => {
+    expect.assertions(8);
+
+    ioHook.on('keydown', (event) => {
+      expect(event).toEqual({
+        type: 'keydown',
+        shiftKey: true,
+        altKey: false,
+        ctrlKey: false,
+        metaKey: false
+      });
+    });
+    ioHook.on('keyup', (event) => {
+      expect(event).toEqual({
+        type: 'keydown',
+        shiftKey: true,
+        altKey: false,
+        ctrlKey: false,
+        metaKey: false
+      });
+    });
+    ioHook.start();
+
+    setTimeout(() => { // Make sure ioHook starts before anything gets typed
+      robot.keyToggle('shift', 'down');
+      robot.keyTap('1');
+      robot.keyToggle('shift', 'up');
+    }, 50);
+  });
+
+  it('recognizes alt key being pressed', (done) => {
+    expect.assertions(8);
+
+    ioHook.on('keydown', (event) => {
+      expect(event).toEqual({
+        type: 'keydown',
+        shiftKey: false,
+        altKey: true,
+        ctrlKey: false,
+        metaKey: false
+      });
+    });
+    ioHook.on('keyup', (event) => {
+      expect(event).toEqual({
+        type: 'keydown',
+        shiftKey: false,
+        altKey: true,
+        ctrlKey: false,
+        metaKey: false
+      });
+    });
+    ioHook.start();
+
+    setTimeout(() => { // Make sure ioHook starts before anything gets typed
+      robot.keyToggle('alt', 'down');
+      robot.keyTap('1');
+      robot.keyToggle('alt', 'up');
+    }, 50);
+  });
+
+  it('recognizes ctrl key being pressed', (done) => {
+    expect.assertions(8);
+
+    ioHook.on('keydown', (event) => {
+      expect(event).toEqual({
+        type: 'keydown',
+        shiftKey: false,
+        altKey: false,
+        ctrlKey: true,
+        metaKey: false
+      });
+    });
+    ioHook.on('keyup', (event) => {
+      expect(event).toEqual({
+        type: 'keydown',
+        shiftKey: false,
+        altKey: false,
+        ctrlKey: true,
+        metaKey: false
+      });
+    });
+    ioHook.start();
+
+    setTimeout(() => { // Make sure ioHook starts before anything gets typed
+      robot.keyToggle('control', 'down');
+      robot.keyTap('1');
+      robot.keyToggle('control', 'up');
+    }, 50);
+  });
+
+  it('recognizes meta key being pressed', (done) => {
+    expect.assertions(8);
+
+    ioHook.on('keydown', (event) => {
+      expect(event).toEqual({
+        type: 'keydown',
+        shiftKey: false,
+        altKey: false,
+        ctrlKey: false,
+        metaKey: true
+      });
+    });
+    ioHook.on('keyup', (event) => {
+      expect(event).toEqual({
+        type: 'keydown',
+        shiftKey: false,
+        altKey: false,
+        ctrlKey: false,
+        metaKey: true
+      });
+    });
+    ioHook.start();
+
+    setTimeout(() => { // Make sure ioHook starts before anything gets typed
+      robot.keyToggle('command', 'down');
+      robot.keyTap('1');
+      robot.keyToggle('command', 'up');
     }, 50);
   });
 });
