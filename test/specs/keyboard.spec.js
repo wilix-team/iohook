@@ -7,6 +7,8 @@ describe('Keyboard events', () => {
   });
 
   it('receives the text "hello world" on keyup event', (done) => {
+    expect.assertions(44);
+
     const chars = [
       { keycode: 35, value: 'h' },
       { keycode: 18, value: 'e' },
