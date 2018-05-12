@@ -22,7 +22,7 @@ static HookProcessWorker* sIOHook = nullptr;
 static std::queue<uiohook_event> zqueue;
 
 // Native thread errors.
-#define UIOHOOK_ERROR_THREAD_CREATE				0x10
+#define UIOHOOK_ERROR_THREAD_CREATE       0x10
 
 // Thread and mutex variables.
 #ifdef _WIN32
@@ -198,20 +198,20 @@ int hook_enable() {
     if (SetThreadPriority(hook_thread, THREAD_PRIORITY_TIME_CRITICAL) == 0) {
       logger_proc(LOG_LEVEL_WARN, "%s [%u]: Could not set thread priority %li for thread %#p! (%#lX)\n",
           __FUNCTION__, __LINE__, (long) THREAD_PRIORITY_TIME_CRITICAL,
-          hook_thread	, (unsigned long) GetLastError());
+          hook_thread, (unsigned long) GetLastError());
     }
     #elif (defined(__APPLE__) && defined(__MACH__)) || _POSIX_C_SOURCE >= 200112L
     // Some POSIX revisions do not support pthread_setschedprio so we will
     // use pthread_setschedparam instead.
     struct sched_param param = { .sched_priority = priority };
     if (pthread_setschedparam(hook_thread, SCHED_OTHER, &param) != 0) {
-      logger_proc(LOG_LEVEL_WARN,	"%s [%u]: Could not set thread priority %i for thread 0x%lX!\n",
+      logger_proc(LOG_LEVEL_WARN, "%s [%u]: Could not set thread priority %i for thread 0x%lX!\n",
           __FUNCTION__, __LINE__, priority, (unsigned long) hook_thread);
     }
     #else
     // Raise the thread priority using glibc pthread_setschedprio.
     if (pthread_setschedprio(hook_thread, priority) != 0) {
-      logger_proc(LOG_LEVEL_WARN,	"%s [%u]: Could not set thread priority %i for thread 0x%lX!\n",
+      logger_proc(LOG_LEVEL_WARN, "%s [%u]: Could not set thread priority %i for thread 0x%lX!\n",
           __FUNCTION__, __LINE__, priority, (unsigned long) hook_thread);
     }
     #endif
@@ -253,7 +253,7 @@ int hook_enable() {
 
     free(hook_thread_status);
 
-    logger_proc(LOG_LEVEL_DEBUG,	"%s [%u]: Thread Result: (%#X).\n",
+    logger_proc(LOG_LEVEL_DEBUG,  "%s [%u]: Thread Result: (%#X).\n",
         __FUNCTION__, __LINE__, status);
   }
   else {
@@ -420,9 +420,35 @@ v8::Local<v8::Object> fillEventObject(uiohook_event event) {
 
   if ((event.type >= EVENT_KEY_TYPED) && (event.type <= EVENT_KEY_RELEASED)) {
     v8::Local<v8::Object> keyboard = Nan::New<v8::Object>();
+
+    if (event.data.keyboard.keycode == VC_SHIFT_L || event.data.keyboard.keycode == VC_SHIFT_R) {
+      keyboard->Set(Nan::New("shiftKey").ToLocalChecked(), Nan::New(true));
+    } else {
+      keyboard->Set(Nan::New("shiftKey").ToLocalChecked(), Nan::New(false));
+    }
+
+    if (event.data.keyboard.keycode == VC_ALT_L || event.data.keyboard.keycode == VC_ALT_R) {
+      keyboard->Set(Nan::New("altKey").ToLocalChecked(), Nan::New(true));
+    } else {
+      keyboard->Set(Nan::New("altKey").ToLocalChecked(), Nan::New(false));
+    }
+
+    if (event.data.keyboard.keycode == VC_CONTROL_L || event.data.keyboard.keycode == VC_CONTROL_R) {
+      keyboard->Set(Nan::New("ctrlKey").ToLocalChecked(), Nan::New(true));
+    } else {
+      keyboard->Set(Nan::New("ctrlKey").ToLocalChecked(), Nan::New(false));
+    }
+
+    if (event.data.keyboard.keycode == VC_META_L || event.data.keyboard.keycode == VC_META_R) {
+      keyboard->Set(Nan::New("metaKey").ToLocalChecked(), Nan::New(true));
+    } else {
+      keyboard->Set(Nan::New("metaKey").ToLocalChecked(), Nan::New(false));
+    }
+
     if (event.type == EVENT_KEY_TYPED) {
       keyboard->Set(Nan::New("keychar").ToLocalChecked(), Nan::New((uint16_t)event.data.keyboard.keychar));
     }
+
     keyboard->Set(Nan::New("keycode").ToLocalChecked(), Nan::New((uint16_t)event.data.keyboard.keycode));
     keyboard->Set(Nan::New("rawcode").ToLocalChecked(), Nan::New((uint16_t)event.data.keyboard.rawcode));
 
