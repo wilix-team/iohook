@@ -41,5 +41,6 @@ install:
   - npm i --ignore-scripts
 
 script:
-  - npm run test
+  - npm run build
+  - npm run test || travis_terminate 1
   - npm run deploy

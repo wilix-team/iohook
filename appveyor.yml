@@ -22,7 +22,8 @@ install:
   - npm -g i npm@latest
   - npm i --ignore-scripts
   - for /f %%i in ('node -v') do set exact_nodejs_version=%%i
-  - npm run test
+  - npm run build
+  - npm run test || travis_terminate 1
   - npm run deploy
 
 #on_success:
