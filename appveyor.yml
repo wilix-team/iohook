@@ -21,8 +21,8 @@ install:
   - ps: Install-Product node $env:nodejs_version $env:platform
   - npm -g i npm@latest
   - npm i --ignore-scripts
-  - for /f %%i in ('node -v') do set exact_nodejs_version=%%i 
-  - npm run build
+  - for /f %%i in ('node -v') do set exact_nodejs_version=%%i
+  - npm run test
   - npm run deploy
 
 #on_success:

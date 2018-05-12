@@ -36,9 +36,10 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "x32" ]]; then tar xf node-${NVER}-linux-x86.tar.gz; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "x32" ]]; then export PATH=$(pwd)/node-${NVER}-linux-x86/bin:$PATH; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "x32" ]]; then sudo apt-get -y install gcc-multilib g++-multilib; fi
-  
+
 install:
   - npm i --ignore-scripts
-  
-script: 
+
+script:
+  - npm run test
   - npm run deploy
