@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v0.2.0
+
+* feat: Add modifier keys support
+* feat: Add online documentation
+* feat: Add tests (reverted for now)
+
 ## v0.1.16
 
 * feat: Add support for Electron 2.0
