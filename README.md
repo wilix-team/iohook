@@ -210,6 +210,17 @@ You can also unregister all shortcuts
 ioHook.unregisterAllShortcuts();
 ```
 
+## Clean up
+
+Prior to cleaning up, remember to unload and stop iohook. Otherwise there will be crashes and error messages. 
+
+```js
+app.on('before-quit', () => {
+  ioHook.unload();
+  ioHook.stop();
+});
+```
+
 ## Manual Build
 
 If you want to manually compile it, follow the instructions below.
