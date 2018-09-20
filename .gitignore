@@ -39,3 +39,16 @@ libuiohook/*.vcxproj
 libuiohook/*.vcxproj.filters
 libuiohook/*.cmake
 libuiohook/*.sln
+
+.vscode/
+libuiohook/Makefile
+libuiohook/config.status
+libuiohook/include/config.h
+libuiohook/include/stamp-h1
+libuiohook/libtool
+libuiohook/pc/uiohook.pc
+libuiohook/src/.deps/
+libuiohook/src/darwin/.deps/
+libuiohook/src/windows/.deps/
+libuiohook/src/x11/.deps/
+libuiohook/test/.deps/

@@ -31,6 +31,19 @@ declare class IOHook extends EventEmitter {
    */
   setDebug(mode: boolean): void
 
+  /** 
+   * Enable keyboard propagation (enabled by default).
+   * The keyboard event are emitted and propagated.
+   */
+  enableKeyboardPropagation(): void
+
+  /**
+   * Disable keyboard propagation.
+   * The keyboard event are captured and the event emitted but not
+   propagated to the window 
+   */
+  disableKeyboardPropagation(): void
+
   /**
    * Enable mouse click propagation (enabled by default).
    * The click event are emitted and propagated.

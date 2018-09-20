@@ -117,6 +117,17 @@ class IOHook extends EventEmitter {
   }
 
   /**
+   * Enable/disable keyboard input propagation.
+   */
+  enableKeyboardPropagation() {
+    NodeHookAddon.grabKeyboard(false);
+  }
+
+  disableKeyboardPropagation() {
+    NodeHookAddon.grabKeyboard(true);
+  }
+
+  /**
    * Disable mouse click propagation.
    * The click event are captured and the event emitted but not propagated to the window.
    */
