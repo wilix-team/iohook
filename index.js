@@ -57,6 +57,8 @@ class IOHook extends EventEmitter {
    * Shutdown event hook
    */
   stop() {
+    this.enableClickPropagation();
+    this.enableKeyboardPropagation();
     if (this.active) {
       this.active = false;
     }
@@ -120,6 +122,17 @@ class IOHook extends EventEmitter {
    */
   setDebug(mode) {
     NodeHookAddon.debugEnable(mode);
+  }
+
+  /**
+   * Enable/disable keyboard input propagation.
+   */
+  enableKeyboardPropagation() {
+    NodeHookAddon.grabKeyboard(false);
+  }
+
+  disableKeyboardPropagation() {
+    NodeHookAddon.grabKeyboard(true);
   }
 
   /**

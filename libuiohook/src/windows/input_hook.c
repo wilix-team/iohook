@@ -51,6 +51,7 @@ static uiohook_event event;
 static dispatcher_t dispatcher = NULL;
 
 static unsigned short int grab_mouse_click_event = 0x00;
+static unsigned short int grab_keyboard_event = 0x00;
 
 UIOHOOK_API void hook_set_dispatch_proc(dispatcher_t dispatch_proc) {
 	logger(LOG_LEVEL_DEBUG,	"%s [%u]: Setting new dispatch callback to %#p.\n",
@@ -216,7 +217,7 @@ static void process_key_pressed(KBDLLHOOKSTRUCT *kbhook) {
 
 	// Populate key pressed event.
 	event.time = kbhook->time;
-	event.reserved = 0x00;
+	event.reserved = grab_keyboard_event;
 
 	event.type = EVENT_KEY_PRESSED;
 	event.mask = get_modifiers();
@@ -232,7 +233,7 @@ static void process_key_pressed(KBDLLHOOKSTRUCT *kbhook) {
 	dispatch_event(&event);
 
 	// If the pressed event was not consumed...
-	if (event.reserved ^ 0x01) {
+	if (event.reserved ^ 0x01 || grab_keyboard_event) {
 		// Buffer for unicode typed chars. No more than 2 needed.
 		WCHAR buffer[2]; // = { WCH_NONE };
 
@@ -241,7 +242,7 @@ static void process_key_pressed(KBDLLHOOKSTRUCT *kbhook) {
 		for (unsigned int i = 0; i < count; i++) {
 			// Populate key typed event.
 			event.time = kbhook->time;
-			event.reserved = 0x00;
+			event.reserved = grab_keyboard_event;
 
 			event.type = EVENT_KEY_TYPED;
 			event.mask = get_modifiers();
@@ -275,7 +276,7 @@ static void process_key_released(KBDLLHOOKSTRUCT *kbhook) {
 
 	// Populate key pressed event.
 	event.time = kbhook->time;
-	event.reserved = 0x00;
+	event.reserved = grab_keyboard_event;
 
 	event.type = EVENT_KEY_RELEASED;
 	event.mask = get_modifiers();
@@ -669,6 +670,9 @@ void CALLBACK win_hook_event_proc(HWINEVENTHOOK hook, DWORD event, HWND hWnd, LO
 	}
 }
 
+UIOHOOK_API void grab_keyboard(bool enabled) {
+	grab_keyboard_event = enabled;
+}
 UIOHOOK_API void grab_mouse_click(bool enabled) {
 	if (enabled) {
 		grab_mouse_click_event = 0x01;

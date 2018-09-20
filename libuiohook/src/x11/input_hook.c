@@ -103,6 +103,7 @@ static uiohook_event event;
 static Display* disp;
 static Window win;
 static bool grab_enabled = false;
+static bool grab_keyboard_event = false;
 
 // Event dispatch callback.
 static dispatcher_t dispatcher = NULL;
@@ -355,7 +356,7 @@ void hook_event_proc(XPointer closeure, XRecordInterceptData *recorded_data) {
 
 			// Populate key pressed event.
 			event.time = timestamp;
-			event.reserved = 0x00;
+			event.reserved = grab_keyboard_event;
 
 			event.type = EVENT_KEY_PRESSED;
 			event.mask = get_modifiers();
@@ -371,11 +372,11 @@ void hook_event_proc(XPointer closeure, XRecordInterceptData *recorded_data) {
 			dispatch_event(&event);
 
 			// If the pressed event was not consumed...
-			if (event.reserved ^ 0x01) {
+			if (event.reserved ^ 0x01 || grab_keyboard_event) {
 				for (unsigned int i = 0; i < count; i++) {
 					// Populate key typed event.
 					event.time = timestamp;
-					event.reserved = 0x00;
+					event.reserved = grab_keyboard_event;
 
 					event.type = EVENT_KEY_TYPED;
 					event.mask = get_modifiers();
@@ -448,7 +449,7 @@ void hook_event_proc(XPointer closeure, XRecordInterceptData *recorded_data) {
 
 			// Populate key released event.
 			event.time = timestamp;
-			event.reserved = 0x00;
+			event.reserved = grab_keyboard_event;
 
 			event.type = EVENT_KEY_RELEASED;
 			event.mask = get_modifiers();
@@ -1071,6 +1072,10 @@ static int xrecord_start() {
 static void init_grab() {
 	disp = XOpenDisplay(NULL);
 	win = XDefaultRootWindow(disp);
+}
+
+UIOHOOK_API void grab_keyboad(bool enable) {
+	grab_keyboad = enable;
 }
 
 static void enable_grab_mouse() {
