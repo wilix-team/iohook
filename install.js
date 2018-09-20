@@ -150,6 +150,5 @@ if (options.targets.length > 0) {
   const platform = process.platform;
   const arch = process.arch;
   install(runtime, abi, platform, arch, function() {
-    process.exit(0);
   })
 }
