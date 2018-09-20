@@ -51,6 +51,8 @@ class IOHook extends EventEmitter {
    * Shutdown event hook
    */
   stop() {
+    this.enableClickPropagation();
+    this.enableKeyboardPropagation();
     if (this.active) {
       this.active = false;
     }
