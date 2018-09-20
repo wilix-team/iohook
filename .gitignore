@@ -38,3 +38,4 @@ libuiohook/uiohook.dir/
 libuiohook/*.vcxproj
 libuiohook/*.vcxproj.filters
 libuiohook/*.cmake
+libuiohook/*.sln
