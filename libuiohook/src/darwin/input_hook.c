@@ -20,9 +20,7 @@
 #include <config.h>
 #endif
 
-#ifndef USE_WEAK_IMPORT
 #include <dlfcn.h>
-#endif
 #include <mach/mach_time.h>
 #ifdef USE_OBJC
 #include <objc/objc.h>
@@ -65,17 +63,11 @@ typedef struct {
 } TISMessage;
 TISMessage *tis_message;
 
-#ifdef USE_WEAK_IMPORT
-// Required to dynamically check for AXIsProcessTrustedWithOptions availability.
-extern void dispatch_get_main_queue() __attribute__((weak_import));
-extern void dispatch_sync_f(dispatch_queue_t queue, void *context, void (*function)(void *)) __attribute__((weak_import));
-#else
 #if __MAC_OS_X_VERSION_MAX_ALLOWED <= 1050
 typedef void* dispatch_queue_t;
 #endif
-static dispatch_queue_t (*dispatch_get_main_queue_f)();
+static struct dispatch_queue_s *dispatch_main_queue_s;
 static void (*dispatch_sync_f_f)(dispatch_queue_t, void *, void (*function)(void *));
-#endif
 
 #if ! defined(USE_CARBON_LEGACY) && defined(USE_COREFOUNDATION)
 static CFRunLoopSourceRef src_msg_port;
@@ -99,8 +91,6 @@ static uiohook_event event;
 
 // Event dispatch callback.
 static dispatcher_t dispatcher = NULL;
-
-static unsigned short int grab_mouse_click_event = 0x00;
 
 UIOHOOK_API void hook_set_dispatch_proc(dispatcher_t dispatch_proc) {
 	logger(LOG_LEVEL_DEBUG,	"%s [%u]: Setting new dispatch callback to %#p.\n",
@@ -383,19 +373,14 @@ static inline void process_key_pressed(uint64_t timestamp, CGEventRef event_ref)
 		tis_message->length = 0;
 		bool is_runloop_main = CFEqual(event_loop, CFRunLoopGetMain());
 		
-		#ifdef USE_WEAK_IMPORT
-		if (dispatch_sync_f != NULL && dispatch_get_main_queue != NULL && !is_runloop_main) {
+		if (dispatch_sync_f_f != NULL && dispatch_main_queue_s != NULL && !is_runloop_main) {
 			logger(LOG_LEVEL_DEBUG,	"%s [%u]: Using dispatch_sync_f for key typed events.\n", __FUNCTION__, __LINE__);
-			dispatch_sync_f(dispatch_get_main_queue(), tis_message, &keycode_to_lookup);
+			(*dispatch_sync_f_f)(dispatch_main_queue_s, tis_message, &keycode_to_lookup);
 		}
-		#else
-		if (dispatch_sync_f_f != NULL && dispatch_get_main_queue_f != NULL && !is_runloop_main) {
-			logger(LOG_LEVEL_DEBUG,	"%s [%u]: Using *dispatch_sync_f_f for key typed events.\n", __FUNCTION__, __LINE__);
-			(*dispatch_sync_f_f)((*dispatch_get_main_queue_f)(), tis_message, &keycode_to_lookup);
-		}
-		#endif
 		#if ! defined(USE_CARBON_LEGACY) && defined(USE_COREFOUNDATION)
-		else if (!is_runloop_main) {
+		else if (! is_runloop_main) {
+			logger(LOG_LEVEL_DEBUG,	"%s [%u]: Using CFRunLoopWakeUp for key typed events.\n", __FUNCTION__, __LINE__);
+
 			// Lock for code dealing with the main runloop.
 			pthread_mutex_lock(&msg_port_mutex);
 
@@ -771,7 +756,7 @@ static inline void process_system_key(uint64_t timestamp, CGEventRef event_ref) 
 
 static inline void process_button_pressed(uint64_t timestamp, CGEventRef event_ref, uint16_t button) {
 	// Track the number of clicks.
-	if (button == click_button && (long int) (timestamp - click_time) <= hook_get_multi_click_time()) {
+	if (button == click_button && (long int) (timestamp - click_time) / 1000000 <= hook_get_multi_click_time()) {
 		if (click_count < USHRT_MAX) {
 			click_count++;
 		}
@@ -795,7 +780,7 @@ static inline void process_button_pressed(uint64_t timestamp, CGEventRef event_r
 
 	// Populate mouse pressed event.
 	event.time = timestamp;
-	event.reserved = grab_mouse_click_event;
+	event.reserved = 0x00;
 
 	event.type = EVENT_MOUSE_PRESSED;
 	event.mask = get_modifiers();
@@ -818,8 +803,7 @@ static inline void process_button_released(uint64_t timestamp, CGEventRef event_
 
 	// Populate mouse released event.
 	event.time = timestamp;
-	event.time = timestamp;
-	event.reserved = grab_mouse_click_event;
+	event.reserved = 0x00;
 
 	event.type = EVENT_MOUSE_RELEASED;
 	event.mask = get_modifiers();
@@ -837,11 +821,10 @@ static inline void process_button_released(uint64_t timestamp, CGEventRef event_
 	dispatch_event(&event);
 
 	// If the pressed event was not consumed...
-	if ((event.reserved ^ 0x01 || grab_mouse_click_event ^ 0x00) && mouse_dragged != true) {
+	if (event.reserved ^ 0x01 && mouse_dragged != true) {
 		// Populate mouse clicked event.
 		event.time = timestamp;
-
-		event.reserved = grab_mouse_click_event;
+		event.reserved = 0x00;
 
 		event.type = EVENT_MOUSE_CLICKED;
 		event.mask = get_modifiers();
@@ -860,7 +843,7 @@ static inline void process_button_released(uint64_t timestamp, CGEventRef event_
 	}
 
 	// Reset the number of clicks.
-	if (button == click_button && (long int) (event.time - click_time) > hook_get_multi_click_time()) {
+	if ((long int) (timestamp - click_time) / 1000000 > hook_get_multi_click_time()) {
 		// Reset the click count.
 		click_count = 0;
 	}
@@ -868,7 +851,7 @@ static inline void process_button_released(uint64_t timestamp, CGEventRef event_
 
 static inline void process_mouse_moved(uint64_t timestamp, CGEventRef event_ref) {
 	// Reset the click count.
-	if (click_count != 0 && (long int) (timestamp - click_time) > hook_get_multi_click_time()) {
+	if (click_count != 0 && (long int) (timestamp - click_time) / 1000000 > hook_get_multi_click_time()) {
 		click_count = 0;
 	}
 
@@ -1117,25 +1100,17 @@ CGEventRef hook_event_proc(CGEventTapProxy tap_proxy, CGEventType type, CGEventR
 	return result_ref;
 }
 
-UIOHOOK_API void grab_mouse_click(bool enabled) {
-	if (enabled) {
-		grab_mouse_click_event = 0x01;
-	} else {
-		grab_mouse_click_event = 0x00;
-	}
-}
-
 UIOHOOK_API int hook_run() {
 	int status = UIOHOOK_SUCCESS;
-	
-	do {
-		// Reset the restart flag...
-		restart_tap = false;
 
-		// Check for accessibility each time we start the loop.
-		if (is_accessibility_enabled()) {
-			logger(LOG_LEVEL_DEBUG,	"%s [%u]: Accessibility API is enabled.\n",
-					__FUNCTION__, __LINE__);
+	// Check for accessibility before we start the loop.
+	if (is_accessibility_enabled()) {
+		logger(LOG_LEVEL_DEBUG,	"%s [%u]: Accessibility API is enabled.\n",
+				__FUNCTION__, __LINE__);
+
+		do {
+			// Reset the restart flag...
+			restart_tap = false;
 
 			// Initialize starting modifiers.
 			initialize_modifiers();
@@ -1211,25 +1186,24 @@ UIOHOOK_API int hook_run() {
 								tis_message = (TISMessage *) calloc(1, sizeof(TISMessage));
 								if (tis_message != NULL) {
 									if (! CFEqual(event_loop, CFRunLoopGetMain())) {
-										#ifdef USE_WEAK_IMPORT
-										if (dispatch_sync_f == NULL || dispatch_get_main_queue == NULL) {
-										#else
 										*(void **) (&dispatch_sync_f_f) = dlsym(RTLD_DEFAULT, "dispatch_sync_f");
 										const char *dlError = dlerror();
 										if (dlError != NULL) {
 											logger(LOG_LEVEL_DEBUG,	"%s [%u]: %s.\n",
 													__FUNCTION__, __LINE__, dlError);
 										}
-										
-										*(void **) (&dispatch_get_main_queue_f) = dlsym(RTLD_DEFAULT, "dispatch_get_main_queue");
+
+										// This is load is equivalent to calling dispatch_get_main_queue().  We use
+										// _dispatch_main_q because dispatch_get_main_queue is not exported from
+										// libdispatch.dylib and the function only dereferences the pointer.
+										dispatch_main_queue_s = (struct dispatch_queue_s *) dlsym(RTLD_DEFAULT, "_dispatch_main_q");
 										dlError = dlerror();
 										if (dlError != NULL) {
 											logger(LOG_LEVEL_DEBUG,	"%s [%u]: %s.\n",
 													__FUNCTION__, __LINE__, dlError);
 										}
 										
-										if (dispatch_sync_f_f == NULL || dispatch_get_main_queue_f == NULL) {
-										#endif
+										if (dispatch_sync_f_f == NULL || dispatch_main_queue_s == NULL) {
 											logger(LOG_LEVEL_DEBUG, "%s [%u]: Failed to locate dispatch_sync_f() or dispatch_get_main_queue()!\n",
 													__FUNCTION__, __LINE__);
 
@@ -1244,7 +1218,7 @@ UIOHOOK_API int hook_run() {
 											#endif
 										}
 									}
-										
+
 									// Add the event source and observer to the runloop mode.
 									CFRunLoopAddSource(event_loop, hook->source, kCFRunLoopDefaultMode);
 									CFRunLoopAddObserver(event_loop, hook->observer, kCFRunLoopDefaultMode);
@@ -1276,11 +1250,7 @@ UIOHOOK_API int hook_run() {
 									
 									#if ! defined(USE_CARBON_LEGACY) && defined(USE_COREFOUNDATION)
 									if (! CFEqual(event_loop, CFRunLoopGetMain())) {
-										#ifdef USE_WEAK_IMPORT
-										if (dispatch_sync_f == NULL || dispatch_get_main_queue == NULL) {
-										#else
-										if (dispatch_sync_f_f == NULL || dispatch_get_main_queue_f == NULL) {
-										#endif	
+										if (dispatch_sync_f_f == NULL || dispatch_main_queue_s == NULL) {
 											stop_message_port_runloop();
 										}
 									}
@@ -1348,15 +1318,15 @@ UIOHOOK_API int hook_run() {
 			else {
 				status = UIOHOOK_ERROR_OUT_OF_MEMORY;
 			}
-		}
-		else {
-			logger(LOG_LEVEL_ERROR,	"%s [%u]: Accessibility API is disabled!\n",
-					__FUNCTION__, __LINE__);
+		} while (restart_tap);
+	}
+	else {
+		logger(LOG_LEVEL_ERROR,	"%s [%u]: Accessibility API is disabled!\n",
+				__FUNCTION__, __LINE__);
 
-			// Set the exit status.
-			status = UIOHOOK_ERROR_AXAPI_DISABLED;
-		}
-	} while (restart_tap);
+		// Set the exit status.
+		status = UIOHOOK_ERROR_AXAPI_DISABLED;
+	}
 
 	logger(LOG_LEVEL_DEBUG,	"%s [%u]: Something, something, something, complete.\n",
 			__FUNCTION__, __LINE__);

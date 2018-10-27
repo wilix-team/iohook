@@ -50,8 +50,6 @@ static uiohook_event event;
 // Event dispatch callback.
 static dispatcher_t dispatcher = NULL;
 
-static unsigned short int grab_mouse_click_event = 0x00;
-
 UIOHOOK_API void hook_set_dispatch_proc(dispatcher_t dispatch_proc) {
 	logger(LOG_LEVEL_DEBUG,	"%s [%u]: Setting new dispatch callback to %#p.\n",
 			__FUNCTION__, __LINE__, dispatch_proc);
@@ -354,7 +352,7 @@ static void process_button_pressed(MSLLHOOKSTRUCT *mshook, uint16_t button) {
 
 	// Populate mouse pressed event.
 	event.time = timestamp;
-	event.reserved = grab_mouse_click_event;
+	event.reserved = 0x00;
 
 	event.type = EVENT_MOUSE_PRESSED;
 	event.mask = get_modifiers();
@@ -376,8 +374,7 @@ static void process_button_pressed(MSLLHOOKSTRUCT *mshook, uint16_t button) {
 static void process_button_released(MSLLHOOKSTRUCT *mshook, uint16_t button) {
 	// Populate mouse released event.
 	event.time = GetMessageTime();
-	event.reserved = grab_mouse_click_event;
-
+	event.reserved = 0x00;
 
 	event.type = EVENT_MOUSE_RELEASED;
 	event.mask = get_modifiers();
@@ -397,11 +394,10 @@ static void process_button_released(MSLLHOOKSTRUCT *mshook, uint16_t button) {
 	dispatch_event(&event);
 
 	// If the pressed event was not consumed...
-	if ((event.reserved ^ 0x01 || grab_mouse_click_event ^ 0x00) && last_click.x == mshook->pt.x && last_click.y == mshook->pt.y) {
+	if (event.reserved ^ 0x01 && last_click.x == mshook->pt.x && last_click.y == mshook->pt.y) {
 		// Populate mouse clicked event.
 		event.time = GetMessageTime();
-		event.reserved = grab_mouse_click_event;
-
+		event.reserved = 0x00;
 
 		event.type = EVENT_MOUSE_CLICKED;
 		event.mask = get_modifiers();
@@ -669,13 +665,6 @@ void CALLBACK win_hook_event_proc(HWINEVENTHOOK hook, DWORD event, HWND hWnd, LO
 	}
 }
 
-UIOHOOK_API void grab_mouse_click(bool enabled) {
-	if (enabled) {
-		grab_mouse_click_event = 0x01;
-	} else {
-		grab_mouse_click_event = 0x00;
-	}
-}
 
 UIOHOOK_API int hook_run() {
 	int status = UIOHOOK_FAILURE;
