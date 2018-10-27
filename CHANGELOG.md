@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v0.2.1
+
+* feat: Add support for Electron 2.0
+* feat: Drop support for node < 6, electron < 1.2
+
 ## v0.2.0
 
 * feat: Add modifier keys support
