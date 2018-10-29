@@ -6,7 +6,7 @@ iohook provides prebuilt version for a bunch of OSes and runtime versions.
 npm install iohook --save # or yarn add iohook
 ```
 
-iohook currently provide prebuilt versions for the following runtimes:
+iohook currently provides prebuilt versions for the following runtimes:
 
 - Electron:
   - 1.0.X (ABI 47)
