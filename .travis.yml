@@ -42,5 +42,4 @@ install:
 
 script:
   - npm run build
-  # - npm run test || travis_terminate 1
-  - npm run deploy
+  - 'if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then npm run deploy; fi'
