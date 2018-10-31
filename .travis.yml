@@ -11,7 +11,7 @@ matrix:
     - os: osx
 
 node_js:
-  - 10
+  - 9
 
 before_script:
 #  MacOS 64 bits version
