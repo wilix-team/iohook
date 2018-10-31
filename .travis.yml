@@ -11,16 +11,16 @@ matrix:
     - os: osx
 
 node_js:
-  - 9
+  - node
 
 before_script:
-#  MacOS 64 version
+#  MacOS 64 bits version
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew list cmake &>/dev/null || brew install cmake; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew list automake &>/dev/null || brew install automake; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew list libtool &>/dev/null || brew install libtool; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew list pkg-config &>/dev/null || brew install pkg-config; fi
-#  For all linux versions
+#  Linux 64 bits versions
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get -qq update; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libx11-dev libxtst-dev libxt-dev libx11-xcb-dev; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libxkbcommon-dev; fi
@@ -29,7 +29,7 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libxcb-xkb-dev; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libxkbfile-dev; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libxinerama-dev; fi
-#  32 bit version
+#  Linux 32 bits version
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "x32" ]]; then sudo dpkg --add-architecture i386; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "x32" ]]; then NVER=`node -v`; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "x32" ]]; then wget http://nodejs.org/dist/${NVER}/node-${NVER}-linux-x86.tar.gz; fi
@@ -41,5 +41,7 @@ install:
   - npm i --ignore-scripts
 
 script:
+  # Compiles libuiohook
   - npm run build
-  - 'if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then npm run deploy; fi'
+  # Builds iohook and optionnaly upload prebuilt binaries to Github
+  - 'if [ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_BRANCH" != "master" ]; then UPLOAD_BINARIES=1 npm run deploy; else npm run deploy; fi'
