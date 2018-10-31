@@ -3,6 +3,7 @@
 ## v0.2.3
 
 * feat: Bump libuiohook version
+* chore: many travis build improvements
 
 ## v0.2.2
  * feat: Add support for Node 10 (for real this time...)
