@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.2.3
+
+* feat: Bump libuiohook version
+
+## v0.2.2
+ * feat: Add support for Node 10 (for real this time...)
+
 ## v0.2.1
 
 * feat: Add support for Electron 2.0
