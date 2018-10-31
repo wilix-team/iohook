@@ -44,4 +44,4 @@ script:
   # Compiles libuiohook
   - npm run build
   # Builds iohook and optionnaly upload prebuilt binaries to Github
-  - 'if [ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_BRANCH" == "master" ]; then UPLOAD_BINARIES=1 npm run deploy; else npm run deploy; fi'
+  - 'if ["$TRAVIS_BRANCH" == "master" ]; then UPLOAD_BINARIES=1 npm run deploy; else npm run deploy; fi'
