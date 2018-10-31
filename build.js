@@ -46,11 +46,9 @@ targets.forEach(parts => {
     })
 });
 
-if (process.env.UPLOAD_BINARIES) {
-  chain = chain.then(function () {
-    return uploadFiles(files)
-  });
-}
+chain = chain.then(function () {
+  return uploadFiles(files)
+});
 
 function build(runtime, version) {
   return new Promise(function (resolve, reject) {
