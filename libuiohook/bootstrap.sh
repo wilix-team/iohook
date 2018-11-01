@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ "$(uname)" == "Darwin" ]; then
+if [ "$(uname)" = "Darwin" ]; then
 	include=" -I/opt/local/share/aclocal"
 fi
 
