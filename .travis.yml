@@ -5,7 +5,7 @@ sudo: true
 matrix:
   include:
     - os: linux
-      env: ARCH=x32
+      env: ARCH=ia32
     - os: linux
       env: ARCH=x64
     - os: osx
@@ -30,12 +30,12 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libxkbfile-dev; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libxinerama-dev; fi
 #  Linux 32 bits version
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "x32" ]]; then sudo dpkg --add-architecture i386; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "x32" ]]; then NVER=`node -v`; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "x32" ]]; then wget http://nodejs.org/dist/${NVER}/node-${NVER}-linux-x86.tar.gz; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "x32" ]]; then tar xf node-${NVER}-linux-x86.tar.gz; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "x32" ]]; then export PATH=$(pwd)/node-${NVER}-linux-x86/bin:$PATH; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "x32" ]]; then sudo apt-get -y install gcc-multilib g++-multilib; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "ia32" ]]; then sudo dpkg --add-architecture i386; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "ia32" ]]; then NVER=`node -v`; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "ia32" ]]; then wget http://nodejs.org/dist/${NVER}/node-${NVER}-linux-x86.tar.gz; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "ia32" ]]; then tar xf node-${NVER}-linux-x86.tar.gz; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "ia32" ]]; then export PATH=$(pwd)/node-${NVER}-linux-x86/bin:$PATH; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "ia32" ]]; then sudo apt-get -y install gcc-multilib g++-multilib; fi
 
 install:
   - npm i --ignore-scripts
