@@ -23,6 +23,7 @@ function onerror(err) {
  * @param cb Callback
  */
 function install(runtime, abi, platform, arch, cb) {
+  if (arch = "ia32") { arch = "x32"; }
   const essential = runtime + '-v' + abi + '-' + platform + '-' + arch;
   const pkgVersion = pkg.version;
   const currentPlatform = pkg.name + '-v' + pkgVersion + '-' + essential;
