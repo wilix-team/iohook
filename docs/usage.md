@@ -164,9 +164,17 @@ You can unregister shortcut by using shortcutId returned by `registerShortcut()`
 ioHook.unregisterShortcut(id);
 ```
 
+### unregisterShortcutByKeys(keys)
+
+You can unregister shortcut by using the keys codes passed to `registerShortcut()`. Passing codes in the same order as during registration is not required.
+
+```js
+ioHook.unregisterShortcutByKeys(keys);
+```
+
 ### unregisterAllShortcuts()
 
-You can also unregister all shortcuts
+You can also unregister all shortcuts.
 ```js
 ioHook.unregisterAllShortcuts();
 ```

@@ -96,6 +96,47 @@ class IOHook extends EventEmitter {
   }
 
   /**
+   * Unregister shortcut via its key codes
+   * @param {string} keyCodes Keyboard keys matching the shortcut that should be unregistered
+   */
+  unregisterShortcutByKeys(keyCodes) {
+    // A traditional loop is used in order to access `this` from inside
+    for (let i = 0; i < this.shortcuts.length; i++) {
+      let shortcut = this.shortcuts[i];
+
+      // Convert any keycode numbers to strings
+      keyCodes.forEach((key, index) => {
+        if (typeof key !== 'string' && !(key instanceof String)) {
+          // Convert to string
+          keyCodes[index] = key.toString();
+        }
+      })
+
+      // Check if this is our shortcut
+      Object.keys(shortcut).every(key => {
+        if (key === 'callback' || key === 'id') return;
+
+        // Remove all given keys from keyCodes
+        // If any are not in this shortcut, then this shortcut does not match
+        // If at the end we have eliminated all codes in keyCodes, then we have succeeded
+        let index = keyCodes.indexOf(key);
+        if (index === -1) return false; // break
+
+        // Remove this key from the given keyCodes array
+        keyCodes.splice(index, 1);
+        return true;
+      });
+
+      // Is this the shortcut we want to remove?
+      if (keyCodes.length === 0) {
+        // Unregister this shortcut
+        this.shortcuts.splice(i, 1);
+        return;
+      }
+    }
+  }
+
+  /**
    * Unregister all shortcuts
    */
   unregisterAllShortcuts() {

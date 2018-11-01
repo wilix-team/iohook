@@ -60,6 +60,12 @@ declare class IOHook extends EventEmitter {
   unregisterShortcut(shortcutId: number): void
 
   /**
+   * Unregister shortcut via its key codes
+   * @param {Array<string|number>} keys
+   */
+  unregisterShortcut(keys: Array<string|number>): void
+
+  /**
    * Unregister all shortcuts
    */
   unregisterAllShortcuts(): void
