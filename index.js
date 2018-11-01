@@ -32,6 +32,7 @@ class IOHook extends EventEmitter {
     super();
     this.active = false;
     this.shortcuts = [];
+    this.activatedShortcuts = [];
 
     this.lastKeydownShift = false;
     this.lastKeydownAlt = false;
@@ -65,10 +66,11 @@ class IOHook extends EventEmitter {
   /**
    * Register global shortcut. When all keys in keys array pressed, callback will be called
    * @param {Array} keys Array of keycodes
-   * @param {Function} callback Callback for call when shortcut pressed
+   * @param {Function} callback Callback for when shortcut pressed
+   * @param {Function} [releaseCallback] Callback for when shortcut has been released
    * @return {number} ShortcutId for unregister
    */
-  registerShortcut(keys, callback) {
+  registerShortcut(keys, callback, releaseCallback) {
     let shortcut = {};
     let shortcutId = Date.now() + Math.random();
     keys.forEach(keyCode => {
@@ -76,6 +78,7 @@ class IOHook extends EventEmitter {
     })
     shortcut.id = shortcutId;
     shortcut.callback = callback;
+    shortcut.releaseCallback = releaseCallback;
     this.shortcuts.push(shortcut);
     return shortcutId;
   }
@@ -254,30 +257,81 @@ class IOHook extends EventEmitter {
     if (this.active === false) {
       return;
     }
+
+    // Keep track of shortcuts that are currently active
+    let activatedShortcuts = this.activatedShortcuts;
+
     if (event.type === 'keydown') {
       this.shortcuts.forEach(shortcut => {
         if (shortcut[event.keycode] !== undefined) {
+          // Mark this key as currently being pressed
           shortcut[event.keycode] = true;
 
           let keysTmpArray = [];
           let callme = true;
+
+          // Iterate through each keyboard key in this shortcut
           Object.keys(shortcut).forEach(key => {
-            if (key === 'callback' || key === 'id') return;
+            if (key === 'callback' || key === 'releaseCallback' || key === 'id') return;
+
+            // If one of the keys aren't pressed...
             if (shortcut[key] === false) {
+              // Don't call the callback and empty our temp tracking array
               callme = false;
               keysTmpArray.splice(0, keysTmpArray.length);
+
               return;
             }
+
+            // Otherwise, this key is being pressed.
+            // Add it to the array of keyboard keys we will send as an argument
+            // to our callback
             keysTmpArray.push(key);
           });
           if (callme) {
             shortcut.callback(keysTmpArray);
+
+            // Add this shortcut from our activate shortcuts array if not
+            // already activated
+            if (activatedShortcuts.indexOf(shortcut) === -1) {
+              activatedShortcuts.push(shortcut);
+            }
           }
         }
       });
     } else if (event.type === 'keyup') {
+      // Mark this key as currently not being pressed in all of our shortcuts
       this.shortcuts.forEach(shortcut => {
         if (shortcut[event.keycode] !== undefined) shortcut[event.keycode] = false;
+      });
+
+      // Check if any of our currently pressed shortcuts have been released
+      // "released" means that all of the keys that the shortcut defines are no
+      // longer being pressed
+      this.activatedShortcuts.forEach(shortcut => {
+        if (shortcut[event.keycode] === undefined) return;
+
+        let shortcutReleased = true;
+        let keysTmpArray = [];
+        Object.keys(shortcut).forEach(key => {
+          if (key === 'callback' || key === 'releaseCallback' || key === 'id') return;
+          keysTmpArray.push(key)
+
+          // If any key is true, and thus still pressed, the shortcut is still
+          // being held
+          if (shortcut[key]) {
+            shortcutReleased = false;
+          }
+        });
+
+        if (shortcutReleased) {
+          // Call the released function handler
+          shortcut.releaseCallback(keysTmpArray);
+
+          // Remove this shortcut from our activate shortcuts array
+          const index = this.activatedShortcuts.indexOf(shortcut);
+          if (index !== -1) this.activatedShortcuts.splice(index, 1);
+        }
       });
     }
   }

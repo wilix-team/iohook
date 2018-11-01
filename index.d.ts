@@ -47,10 +47,11 @@ declare class IOHook extends EventEmitter {
   /**
    * Register global shortcut. When all keys in keys array pressed, callback will be called
    * @param {Array<string|number>} keys Array of keycodes
-   * @param {Function} callback Callback for call when shortcut pressed
+   * @param {Function} callback Callback for when shortcut pressed
+   * @param {Function} [releaseCallback] Callback for when shortcut released
    * @return {number} ShortcutId for unregister
    */
-  registerShortcut(keys: Array<string|number>, callback: Function): number
+  registerShortcut(keys: Array<string|number>, callback: Function, releaseCallback?: Function): number
 
   /**
    * Unregister shortcut by ShortcutId
