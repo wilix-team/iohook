@@ -136,13 +136,23 @@ You can register global shortcuts.
 When a shortcut is caught, keyup/keydown events still emit events. It means, that if you register a keyup AND shortcut for `ALT+T`, both events will be emited.
 :::
 
-### registerShortcut(keys, callback)
+### registerShortcut(keys, callback, releaseCallback?)
 
-In next example we register CTRL+F7 shortcut (in MacOS, for other OS, keycodes can be some different).
+In the next example we register CTRL+F7 shortcut (in MacOS. For other OSes, the keycodes could be different).
 
 ```js
 const id = ioHook.registerShortcut([29, 65], (keys) => {
   console.log('Shortcut called with keys:', keys)
+});
+```
+
+We can also specify a callback to run when our shortcut has been released by specifying a third function argument.
+
+```js
+const id = ioHook.registerShortcut([29, 65], (keys) => {
+  console.log('Shortcut called with keys:', keys)
+}, (keys) => {
+  console.log('Shortcut has been released!')
 });
 ```
 

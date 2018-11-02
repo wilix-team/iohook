@@ -178,4 +178,22 @@ describe('Keyboard events', () => {
       robot.keyToggle('command', 'up');
     }, 50);
   });
+
+  it('runs a callback when a shortcut has been released', (done) => {
+    expect.assertions(2);
+
+    let shortcut = [42, 30];
+
+    ioHook.registerShortcut(shortcut, keys => {
+      expect(shortcut.sort()).toEqual(keys.sort());
+    }, keys => {
+      expect(shortcut.sort()).toEqual(keys.sort());
+    });
+
+    setTimeout(() => { // Make sure ioHook starts before anything gets typed
+      robot.keyToggle('shift', 'down');
+      robot.keyTap('a');
+      robot.keyToggle('shift', 'up');
+    }, 50);
+  });
 });
