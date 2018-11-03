@@ -196,4 +196,27 @@ describe('Keyboard events', () => {
       robot.keyToggle('shift', 'up');
     }, 50);
   });
+
+  it('can unregister a shortcut via its keycodes', (done) => {
+    expect.assertions(0);
+
+    let shortcut = [42, 30];
+
+    // Register the shortcut
+    ioHook.registerShortcut(shortcut, (event) => {
+      // We're unregistering this shortcut. It should not have been called
+      expect.not.toHaveBeenCalled();
+    });
+
+    // Unregister the shortcut
+    ioHook.unregisterShortcutByKeys(shortcut);
+
+    ioHook.start();
+
+    setTimeout(() => { // Make sure ioHook starts before anything gets typed
+      robot.keyToggle('shift', 'down');
+      robot.keyTap('a');
+      robot.keyToggle('shift', 'up');
+    }, 50);
+  });
 });
