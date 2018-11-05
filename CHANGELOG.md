@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v0.2.4
+
+* feat: ability to listen for when a keyboard shortcut has been released
+* feat: ability to unregister a shortcut via the shortcut's keys
+
 ## v0.2.3
 
 * feat: Bump libuiohook version
