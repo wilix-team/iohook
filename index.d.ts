@@ -32,6 +32,16 @@ declare class IOHook extends EventEmitter {
   setDebug(mode: boolean): void
 
   /**
+   * Specify that key event's `rawcode` property should be used instead of
+   * `keycode` when listening for key presses.
+   * 
+   * This allows iohook to be used in conjunction with other programs that may
+   * only provide a keycode.
+   * @param {Boolean} using 
+   */
+  useRawcode(using: boolean): void
+
+  /**
    * Enable mouse click propagation (enabled by default).
    * The click event are emitted and propagated.
    */

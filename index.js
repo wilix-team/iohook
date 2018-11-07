@@ -32,6 +32,7 @@ class IOHook extends EventEmitter {
     super();
     this.active = false;
     this.shortcuts = [];
+    this.eventProperty = 'keycode';
     this.activatedShortcuts = [];
 
     this.lastKeydownShift = false;
@@ -164,6 +165,19 @@ class IOHook extends EventEmitter {
    */
   setDebug(mode) {
     NodeHookAddon.debugEnable(mode);
+  }
+
+  /**
+   * Specify that key event's `rawcode` property should be used instead of
+   * `keycode` when listening for key presses.
+   * 
+   * This allows iohook to be used in conjunction with other programs that may
+   * only provide a keycode.
+   * @param {Boolean} using
+   */
+  useRawcode(using) {
+    // If true, use rawcode, otherwise use keycode
+    this.eventProperty = using ? 'rawcode' : 'keycode';
   }
 
   /**
@@ -304,9 +318,9 @@ class IOHook extends EventEmitter {
 
     if (event.type === 'keydown') {
       this.shortcuts.forEach(shortcut => {
-        if (shortcut[event.keycode] !== undefined) {
+        if (shortcut[event[this.eventProperty]] !== undefined) {
           // Mark this key as currently being pressed
-          shortcut[event.keycode] = true;
+          shortcut[event[this.eventProperty]] = true;
 
           let keysTmpArray = [];
           let callme = true;
@@ -343,14 +357,16 @@ class IOHook extends EventEmitter {
     } else if (event.type === 'keyup') {
       // Mark this key as currently not being pressed in all of our shortcuts
       this.shortcuts.forEach(shortcut => {
-        if (shortcut[event.keycode] !== undefined) shortcut[event.keycode] = false;
+        if (shortcut[event[this.eventProperty]] !== undefined) {
+          shortcut[event[this.eventProperty]] = false;
+        }
       });
 
       // Check if any of our currently pressed shortcuts have been released
       // "released" means that all of the keys that the shortcut defines are no
       // longer being pressed
       this.activatedShortcuts.forEach(shortcut => {
-        if (shortcut[event.keycode] === undefined) return;
+        if (shortcut[event[this.eventProperty]] === undefined) return;
 
         let shortcutReleased = true;
         let keysTmpArray = [];

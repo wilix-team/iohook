@@ -219,4 +219,24 @@ describe('Keyboard events', () => {
       robot.keyToggle('shift', 'up');
     }, 50);
   });
+
+  it('can use rawcode instead of keycode when detecting events', (done) => {
+    expect.assertions(1);
+
+    let rawCodeShortcut = [65505, 65]; // Shift + A in rawcode
+
+    ioHook.registerShortcut(rawCodeShortcut, (event) => {
+      expect.toHaveBeenCalled();
+    });
+
+    // Check rawcode detection works
+    ioHook.useRawcode(true);
+    ioHook.start();
+
+    setTimeout(() => { // Make sure ioHook starts before anything gets typed
+      robot.keyToggle('shift', 'down');
+      robot.keyTap('a');
+      robot.keyToggle('shift', 'up');
+    }, 50);
+  });
 });
