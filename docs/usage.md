@@ -179,6 +179,22 @@ You can also unregister all shortcuts.
 ioHook.unregisterAllShortcuts();
 ```
 
+### useRawcode(using)
+
+Some libraries, such as [Mousetrap]() will emit keyboard events that contain
+a `rawcode` value. This is a separate, but equally valid, representation of
+the key that was pressed. However by default iohook instead uses an event's
+`keycode` field to determine which key was pressed. If these key codes do not
+line up, your shortcut will not be detected as pressed.
+
+To tell iohook to use the `rawcode` value instead, simply do so before
+starting iohook.
+
+```js
+iohook.useRawcode(true);
+iohook.start();
+```
+
 ### disableClickPropagation()
 
 You can disable mouse click event propagation. Click events are captured and emitted but not propagated to the window.
