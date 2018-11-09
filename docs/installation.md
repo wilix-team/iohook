@@ -1,6 +1,6 @@
 # Installation
 
-iohook provides prebuilt version for a bunch of OSes and runtime versions.
+iohook provides prebuilt versions for a bunch of OSes and runtime versions.
 
 ```bash
 npm install iohook --save # or yarn add iohook
