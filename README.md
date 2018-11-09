@@ -12,7 +12,7 @@ This module can handle keyboard and mouse events via native hooks inside and out
 
 Found a bug? Have an idea? Feel free to post an [issue](https://github.com/WilixLead/iohook/issues) or submit a [PR](https://github.com/WilixLead/iohook/pulls).
 
-**Check out the [documentation](https://wilixlead.github.io/iohook).**
+**Check out the [documentation](https://wilix-team.github.io/iohook).**
 
 ## Installation
 iohook provides prebuilt version for a bunch of OSes and runtime versions.
