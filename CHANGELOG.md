@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v0.2.5
+
+* feat: git@github.com:wilix-team/iohook.git
+* fix: fix documentation link.
+* chore : repo transfered to wilix-team org.
+
 ## v0.2.4
 
 * feat: ability to listen for when a keyboard shortcut has been released
