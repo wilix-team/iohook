@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.3.0
+
+* feat: drop segfault-handler dependency.
+
+## v0.2.6
+
+* feat: add support for Node 10
+
 ## v0.2.5
 
 * feat: git@github.com:wilix-team/iohook.git

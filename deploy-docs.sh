@@ -17,6 +17,6 @@ git add -A
 git commit -m 'deploy'
 
 # deploying to https://<USERNAME>.github.io/<REPO>
-git push -f git@github.com:WilixLead/iohook.git master:gh-pages
+git push -f git@github.com:wilix-team/iohook.git master:gh-pages
 
 cd -
