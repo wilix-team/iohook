@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.3.1
+
+* fix: allow use of iohook.registerShortcut without a 3rd releaseCallback argument.
+
 ## v0.3.0
 
 * feat: drop segfault-handler dependency.
