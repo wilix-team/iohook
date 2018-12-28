@@ -164,7 +164,7 @@ class IOHook extends EventEmitter {
   /**
    * Specify that key event's `rawcode` property should be used instead of
    * `keycode` when listening for key presses.
-   * 
+   *
    * This allows iohook to be used in conjunction with other programs that may
    * only provide a keycode.
    * @param {Boolean} using
@@ -377,7 +377,9 @@ class IOHook extends EventEmitter {
 
         if (shortcutReleased) {
           // Call the released function handler
-          shortcut.releaseCallback(keysTmpArray);
+          if(shortcut.releaseCallback) {
+            shortcut.releaseCallback(keysTmpArray);
+          }
 
           // Remove this shortcut from our activate shortcuts array
           const index = this.activatedShortcuts.indexOf(shortcut);
