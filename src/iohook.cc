@@ -75,42 +75,43 @@ void dispatch_proc(uiohook_event * const event) {
     case EVENT_HOOK_ENABLED:
       // Lock the running mutex so we know if the hook is enabled.
       #ifdef _WIN32
-      WaitForSingleObject(hook_running_mutex, INFINITE);
+      if (WaitForSingleObject(hook_running_mutex, 0) != WAIT_TIMEOUT) {
       #else
-      pthread_mutex_lock(&hook_running_mutex);
+      if (pthread_mutex_trylock(&hook_running_mutex) == 0) {
       #endif
 
-
-      #ifdef _WIN32
-      // Signal the control event.
-      SetEvent(hook_control_cond);
-      #else
-      // Unlock the control mutex so hook_enable() can continue.
-      pthread_cond_signal(&hook_control_cond);
-      pthread_mutex_unlock(&hook_control_mutex);
-      #endif
+        #ifdef _WIN32
+        // Signal the control event.
+        SetEvent(hook_control_cond);
+        #else
+        // Unlock the control mutex so hook_enable() can continue.
+        pthread_cond_signal(&hook_control_cond);
+        pthread_mutex_unlock(&hook_control_mutex);
+        #endif
+	    }
       break;
 
     case EVENT_HOOK_DISABLED:
       // Lock the control mutex until we exit.
-      #ifdef _WIN32
-      WaitForSingleObject(hook_control_mutex, INFINITE);
+	    #ifdef _WIN32
+      if (WaitForSingleObject(hook_control_mutex, 0) != WAIT_TIMEOUT) {
       #else
-      pthread_mutex_lock(&hook_control_mutex);
+      if (pthread_mutex_trylock(&hook_control_mutex) == 0) {
       #endif
 
-      // Unlock the running mutex so we know if the hook is disabled.
-      #ifdef _WIN32
-      ReleaseMutex(hook_running_mutex);
-      ResetEvent(hook_control_cond);
-      #else
-      #if defined(__APPLE__) && defined(__MACH__)
-      // Stop the main runloop so that this program ends.
-      CFRunLoopStop(CFRunLoopGetMain());
-      #endif
+        // Unlock the running mutex so we know if the hook is disabled.
+        #ifdef _WIN32
+        ReleaseMutex(hook_running_mutex);
+        ResetEvent(hook_control_cond);
+        #else
+        #if defined(__APPLE__) && defined(__MACH__)
+        // Stop the main runloop so that this program ends.
+        CFRunLoopStop(CFRunLoopGetMain());
+        #endif
 
-      pthread_mutex_unlock(&hook_running_mutex);
-      #endif
+        pthread_mutex_unlock(&hook_running_mutex);
+        #endif
+	    }
       break;
 
     case EVENT_KEY_PRESSED:
