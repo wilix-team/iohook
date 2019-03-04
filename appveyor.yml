@@ -20,7 +20,7 @@ install:
   - set PATH=C:\Program Files (x86)\MSBuild\14.0\Bin;%PATH%
   - ps: Install-Product node $env:nodejs_version $env:platform
   - npm -g i npm@latest
-  - npm i --ignore-scripts
+  - npm i -D --ignore-scripts
   - for /f %%i in ('node -v') do set exact_nodejs_version=%%i
   - npm run build
   # - npm run test || travis_terminate 1
