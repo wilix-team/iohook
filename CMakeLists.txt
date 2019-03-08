@@ -10,8 +10,9 @@ macro(use_c99)
   endif ()
 endmacro(use_c99)
 
-
 use_c99()
+
+set (CMAKE_CXX_STANDARD 11)
 
 project(iohook)
 

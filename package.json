@@ -1,6 +1,6 @@
 {
   "name": "iohook",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Node.js global keyboard and mouse hook",
   "main": "index.js",
   "types": "index.d.ts",
@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "archiver": "^2.1.1",
-    "cmake-js": "^3.6.2",
+    "cmake-js": "^5.1.0",
     "jest": "^22.4.3",
     "mkdirp": "^0.5.1",
     "nan": "^2.10.0",
@@ -97,6 +97,11 @@
       "electron",
       "3.0.0",
       "64"
+    ],
+    [
+      "electron",
+      "4.0.4",
+      "69"
     ],
     [
       "node",
