@@ -12,7 +12,7 @@ endmacro(use_c99)
 
 use_c99()
 
-set (CMAKE_CXX_FLAGS 11)
+set (CMAKE_CXX_STANDARD 11)
 
 project(iohook)
 
