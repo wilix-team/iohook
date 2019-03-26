@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "archiver": "^2.1.1",
-    "cmake-js": "^5.1.0",
+    "cmake-js": "github:anoadragon453/cmake-js#anoa/delay_generator",
     "jest": "^22.4.3",
     "mkdirp": "^0.5.1",
     "nan": "^2.10.0",
