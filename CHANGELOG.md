@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.4.1
+
+* fix: use VS C++ for Electron >= v4.
+
+## v0.4.0
+
+* feat: add support for Electron 4.
+
 ## v0.3.1
 
 * fix: allow use of iohook.registerShortcut without a 3rd releaseCallback argument.
