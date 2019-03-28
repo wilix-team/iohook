@@ -33,4 +33,5 @@ Thanks to _kwhat_ for the [libuiohook](https://github.com/kwhat/libuiohook) proj
 * [matthewshirley](https://github.com/matthewshirley) (Windows prebuild fix)
 * [djiit](https://github.com/djiit) (project & community help)
 * [ezain](https://github.com/eboukamza) (add feature enable/disable mouse click propagation)
+* [anoadragon453](https://github.com/anoadragon453) (electron 4+ support)
 * All the other contributors. Feel free to extend this list !
