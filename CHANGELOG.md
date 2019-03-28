@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.4.2
+
+* fix: use cmake-js fork to support Electron 4+ on Windows.
+
 ## v0.4.1
 
 * fix: use VS C++ for Electron >= v4.
