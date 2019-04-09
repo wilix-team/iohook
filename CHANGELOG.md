@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.4.4
+
+* hotfix: fix corrupted 0.4.3 release.
+
+## v0.4.3
+
+* feat: ability to build for a single platform/target.
+
 ## v0.4.2
 
 * fix: use cmake-js fork to support Electron 4+ on Windows.
