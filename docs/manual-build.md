@@ -5,7 +5,7 @@ This is not required for regular users. You should follow this page only if you 
 :::
 
 Firstly, run this script
-```javascript
+```js
 const path = require('path');
 const runtime = process.versions['electron'] ? 'electron' : 'node';
 const essential = runtime + '-v' + process.versions.modules + '-' + process.platform + '-' + process.arch;
