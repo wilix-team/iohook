@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.4.5
+
+* feat: add support for Electron 5, Node 12
+
 ## v0.4.4
 
 * hotfix: fix corrupted 0.4.3 release.
