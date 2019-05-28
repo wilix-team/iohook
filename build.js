@@ -75,8 +75,8 @@ function build(runtime, version) {
     let args = [
       'rebuild',
       '--runtime-version=' + version,
-      '--target_arch=' + arch,
-      '--runtime=' + runtime
+      '--runtime=' + runtime,
+      '--arch=' + arch
     ];
     console.log('Compiling iohook for ' + runtime + ' v' + version + '>>>>');
     if (version.split('.')[0] >= 4) {
