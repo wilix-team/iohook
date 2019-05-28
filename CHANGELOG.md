@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.4.6
+
+* fix: fix Win32 builds
+
 ## v0.4.5
 
 * feat: add support for Electron 5, Node 12
