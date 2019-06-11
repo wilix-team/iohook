@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.5.0
+
+* deprecation: Drop support for node < 8, electron < 1.8
+
 ## v0.4.6
 
 * fix: fix Win32 builds

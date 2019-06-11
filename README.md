@@ -14,8 +14,10 @@ Found a bug? Have an idea? Feel free to post an [issue](https://github.com/Wilix
 
 **Check out the [documentation](https://wilix-team.github.io/iohook).**
 
+**Note for Node > 8.0 and Electron > 2.0.0 users:** version **v0.5.0** drops support for old platforms versions. Please use the the 0.4.X versions.
+
 ## Installation
-iohook provides prebuilt version for a bunch of OSes and runtime versions.
+iohook provides prebuilt version for a bunch of OSes and platforms.
 
 ```bash
 npm install iohook --save # or yarn add iohook
