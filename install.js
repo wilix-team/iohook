@@ -37,7 +37,13 @@ function install(runtime, abi, platform, arch, cb) {
     strictSSL: true
   };
 
-  const npmrc = rc('npm', {});
+  let npmrc = {};
+
+  try {
+    rc('npm', npmrc);
+  } catch (error) {
+    console.warn('Error reading npm configuration: ' + error.message);
+  }
 
   if (npmrc && npmrc.proxy) {
     nuggetOpts.proxy = npmrc.proxy;
