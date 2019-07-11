@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.5.1
+
+* chore: Use SSL options when dealing with prebuilts.
+
 ## v0.5.0
 
 * deprecation: Drop support for node < 8, electron < 1.8
