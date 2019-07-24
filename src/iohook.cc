@@ -275,9 +275,9 @@ void run() {
   // thread has finished starting, or when it has fully stopped.
   #ifdef _WIN32
   // Create event handles for the thread hook.
-  hook_running_mutex = CreateMutex(NULL, FALSE, TEXT("hook_running_mutex"));
-  hook_control_mutex = CreateMutex(NULL, FALSE, TEXT("hook_control_mutex"));
-  hook_control_cond = CreateEvent(NULL, TRUE, FALSE, TEXT("hook_control_cond"));
+  hook_running_mutex = CreateMutex(NULL, FALSE, NULL);
+  hook_control_mutex = CreateMutex(NULL, FALSE, NULL);
+  hook_control_cond = CreateEvent(NULL, TRUE, FALSE, NULL);
   #else
   pthread_mutex_init(&hook_running_mutex, NULL);
   pthread_mutex_init(&hook_control_mutex, NULL);
