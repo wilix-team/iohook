@@ -6,7 +6,7 @@ This module can handle keyboard and mouse events via native hooks inside and out
 
 It is fully compatible with [Electron](https://electronjs.org).
 
-Found a bug? Have an idea? Feel free to post an [issue](https://github.com/WilixLead/iohook/issues) or submit a [PR](https://github.com/WilixLead/iohook/pulls).
+Found a bug? Have an idea? Feel free to post an [issue](https://github.com/wilix-team/iohook/issues) or submit a [PR](https://github.com/wilix-team/iohook/pulls).
 
 ## License
 This work is an open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

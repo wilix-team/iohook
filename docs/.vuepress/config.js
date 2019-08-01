@@ -3,7 +3,7 @@ module.exports = {
   description: 'Node.js global native keyboard and mouse listener.',
   base: '/iohook/',
   themeConfig: {
-    repo: 'WilixLead/iohook',
+    repo: 'wilix-team/iohook',
     editLinks: true,
     docsDir: 'docs',
     editLinkText: 'Edit this page on GitHub',
