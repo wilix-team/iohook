@@ -1,6 +1,6 @@
 {
   "name": "iohook",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Node.js global keyboard and mouse hook",
   "main": "index.js",
   "types": "index.d.ts",
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wilix-team/iohook.git"
+    "url": "git+https://github.com/intermedia-net/iohook.git"
   },
   "keywords": [
     "hook",
@@ -55,6 +55,11 @@
     "vuepress": "^0.14.4"
   },
   "supportedTargets": [
+    [
+      "electron",
+      "3.0.13",
+      "64"
+    ],
     [
       "electron",
       "4.0.4",
