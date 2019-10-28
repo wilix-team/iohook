@@ -81,6 +81,7 @@ void proc_event_data(uiohook_event event) {
       || (event.data.keyboard.keycode == VC_ESCAPE && shortcut_data.ctrl_key)
       || (event.data.keyboard.keycode == VC_META_L || event.data.keyboard.keycode == VC_META_R)
       || (event.data.keyboard.keycode == VC_POWER)
+      || (event.data.keyboard.keycode == VC_L && shortcut_data.meta_key)
   ) {
     grab_event = 0x01;
   } else {
