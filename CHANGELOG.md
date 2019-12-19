@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.6.2
+
+- feat: Add support for Electron 7.
+
 ## v0.6.1
 
 - fix: Update repo name.
