@@ -1,0 +1,10 @@
+prefix=/usr/local
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: uiohook
+Description: uiohook library
+Version: 1.1.0
+Libs:  -framework ApplicationServices -framework IOKit -lobjc -framework Carbon -L${libdir} -luiohook
+Cflags: -I${includedir}
+Requires: 
