@@ -18,7 +18,7 @@ Running `node examples/example.js` should show you a working result of your buil
 For build requirements for your OS look below.
 
 ## Ubuntu 16
-- `sudo apt install libx11-dev libxtst-dev libxt-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev`
+- `sudo apt install libx11-dev libxtst-dev libxt-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libpng-dev`
 - `npm run build`
 
 ## macOS
