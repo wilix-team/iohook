@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.6.4
+
+- feat: Add support for Node 13
+
 ## v0.6.3
 
 - fix: depreacated use of objc_msgSend.
