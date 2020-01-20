@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v0.6.3
+
+- fix: depreacated use of objc_msgSend.
+- fix: Update start() types.
+- feat: improve x11 use.
+
 ## v0.6.2
 
 - feat: Add support for Electron 7.
