@@ -3,7 +3,8 @@
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
-const get = require('simple-get');
+const nugget = require('nugget');
+const rc = require('rc');
 const pump = require('pump');
 const tfs = require('tar-fs');
 const zlib = require('zlib');
@@ -28,53 +29,70 @@ function install(runtime, abi, platform, arch, cb) {
   const currentPlatform = pkg.name + '-v' + pkgVersion + '-' + essential;
 
   console.log('Downloading prebuild for platform:', currentPlatform);
-  let downloadUrl = 'https://github.com/WilixLead/iohook/releases/download/v' + pkgVersion + '/' + currentPlatform + '.tar.gz';
+  let downloadUrl = 'https://github.com/wilix-team/iohook/releases/download/v' + pkgVersion + '/' + currentPlatform + '.tar.gz';
 
-  let reqOpts = {url: downloadUrl};
-  let tempFile = path.join(os.tmpdir(), 'prebuild.tar.gz');
-  let req = get(reqOpts, function(err, res) {
-    if (err) {
-      return onerror(err);
-    }
-    if (res.statusCode !== 200) {
-      if (res.statusCode === 404) {
+  let nuggetOpts = {
+    dir: os.tmpdir(),
+    target: 'prebuild.tar.gz',
+    strictSSL: true
+  };
+
+  let npmrc = {};
+
+  try {
+    rc('npm', npmrc);
+  } catch (error) {
+    console.warn('Error reading npm configuration: ' + error.message);
+  }
+
+  if (npmrc && npmrc.proxy) {
+    nuggetOpts.proxy = npmrc.proxy;
+  }
+
+  if (npmrc && npmrc['https-proxy']) {
+    nuggetOpts.proxy = npmrc['https-proxy'];
+  }
+
+  if (npmrc && npmrc['strict-ssl'] === false) {
+    nuggetOpts.strictSSL = false;
+  }
+
+  nugget(downloadUrl, nuggetOpts, function(errors) {
+    if (errors) {
+      const error = errors[0];
+
+      if (error.message.indexOf('404') === -1) {
+        onerror(error);
+      } else {
         console.error('Prebuild for current platform (' + currentPlatform + ') not found!');
         console.error('Try to compile for your platform:');
         console.error('# cd node_modules/iohook;');
         console.error('# npm run compile');
         console.error('');
-        return onerror('Prebuild for current platform (' + currentPlatform + ') not found!');
+        onerror('Prebuild for current platform (' + currentPlatform + ') not found!');
       }
-      return onerror('Bad response from prebuild server. Code: ' + res.statusCode);
     }
-    pump(res, fs.createWriteStream(tempFile), function(err) {
-      if (err) {
-        throw err;
-      }
-      let options = {
-        readable: true,
-        writable: true,
-        hardlinkAsFilesFallback: true
-      };
-      let binaryName;
-      let updateName = function(entry) {
-        if (/\.node$/i.test(entry.name)) binaryName = entry.name
-      };
-      let targetFile = path.join(__dirname, 'builds', essential);
-      let extract = tfs.extract(targetFile, options)
-        .on('entry', updateName);
-      pump(fs.createReadStream(tempFile), zlib.createGunzip(), extract, function(err) {
-        if (err) {
-          return onerror(err);
-        }
-        cb()
-      })
-    })
-  });
 
-  req.setTimeout(30 * 1000, function() {
-    req.abort()
-  })
+    let options = {
+      readable: true,
+      writable: true,
+      hardlinkAsFilesFallback: true
+    };
+
+    let binaryName;
+    let updateName = function(entry) {
+      if (/\.node$/i.test(entry.name)) binaryName = entry.name
+    };
+    let targetFile = path.join(__dirname, 'builds', essential);
+    let extract = tfs.extract(targetFile, options)
+      .on('entry', updateName);
+    pump(fs.createReadStream(path.join(nuggetOpts.dir, nuggetOpts.target)), zlib.createGunzip(), extract, function(err) {
+      if (err) {
+        return onerror(err);
+      }
+      cb()
+    });
+  });
 }
 
 /**

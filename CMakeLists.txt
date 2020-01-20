@@ -10,8 +10,9 @@ macro(use_c99)
   endif ()
 endmacro(use_c99)
 
-
 use_c99()
+
+set (CMAKE_CXX_STANDARD 11)
 
 project(iohook)
 
@@ -59,7 +60,7 @@ endif()
 
 # Build a shared library named after the project from the files in `src/`
 file(GLOB SOURCE_FILES "src/*.cc" "src/*.h")
-add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${CMAKE_JS_SRC})
 
 # Gives our library file a .node extension without any "lib" prefix
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX ".node")

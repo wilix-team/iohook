@@ -1,4 +1,4 @@
-os: Visual Studio 2015
+os: Visual Studio 2017
 version: "{build}"
 build: off
 skip_tags: true
@@ -7,10 +7,10 @@ environment:
   matrix:
     - arch: x86_64
       bits: 64
-      nodejs_version: 10
+      nodejs_version: 12
     - arch: i686
       bits: 32
-      nodejs_version: 10
+      nodejs_version: 12
 
 platform:
   - x64
@@ -27,6 +27,5 @@ install:
   - npm run build
   # - npm run test || travis_terminate 1
   - npm run deploy
-
 #on_success:
 # - for %%i in (prebuilds\*) do appveyor PushArtifact %%i

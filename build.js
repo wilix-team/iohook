@@ -1,10 +1,15 @@
-const upload = require('prebuild/upload');
 const spawn = require('child_process').spawn;
 const fs = require('fs');
 const path = require('path');
 const mkdirp = require('mkdirp');
 const archiver = require('archiver');
 const zlib = require('zlib');
+const argv = require('minimist')(
+    process.argv.slice(2), {
+        // Specify that these arguments should be a string
+        "string": ["version", "runtime", "abi"]
+    }
+);
 const pkg = require('./package.json');
 
 function mode(octal) {
@@ -24,8 +29,18 @@ let cmakeJsPath = path.join(
   process.platform === 'win32' ? 'cmake-js.cmd' : 'cmake-js'
 );
 
-let targets = require('./package.json').supportedTargets;
 let files = [];
+let targets;
+
+// Check if a specific runtime has been specified from the command line
+if ("runtime" in argv && "version" in argv && "abi" in argv) {
+    targets = [[argv["runtime"],
+                argv["version"],
+                argv["abi"]]];
+} else {
+    // If not, use those defined in package.json
+    targets = require('./package.json').supportedTargets;
+}
 
 let chain = Promise.resolve();
 
@@ -47,6 +62,11 @@ targets.forEach(parts => {
 });
 
 chain = chain.then(function () {
+  if ("upload" in argv && argv["upload"] == false) {
+    // If no upload has been specified, don't attempt to upload
+    return;
+  }
+
   return uploadFiles(files)
 });
 
@@ -55,13 +75,13 @@ function build(runtime, version) {
     let args = [
       'rebuild',
       '--runtime-version=' + version,
-      '--target_arch=' + arch,
-      '--runtime=' + runtime
+      '--runtime=' + runtime,
+      '--arch=' + arch
     ];
     console.log('Compiling iohook for ' + runtime + ' v' + version + '>>>>');
-    if (version.split('.')[0] > 4) {
-      process.env.msvs_toolset = 14
-      process.env.msvs_version = 2015
+    if (version.split('.')[0] >= 4) {
+      process.env.msvs_toolset = 15
+      process.env.msvs_version = 2017
     } else {
       process.env.msvs_toolset = 12
       process.env.msvs_version = 2013
@@ -107,6 +127,7 @@ function tarGz(runtime, abi) {
 }
 
 function uploadFiles (files) {
+  const upload = require('prebuild/upload');
   return new Promise(function (resolve, reject) {
     console.log('Uploading ' + files.length + ' prebuilds(s) to Github releases');
     let opts = {
