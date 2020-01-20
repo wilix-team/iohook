@@ -6,9 +6,9 @@ import { EventEmitter } from 'events'
 declare class IOHook extends EventEmitter {
   /**
    * Start hooking engine. Call it when you ready to receive events
-   * @param {boolean} enableLogger If true, module will publish debug information to stdout
+   * @param {boolean} [enableLogger] If true, module will publish debug information to stdout
    */
-  start(enableLogger: boolean): void
+  start(enableLogger?: boolean): void
 
   /**
    * Stop rising keyboard/mouse events
@@ -61,7 +61,7 @@ declare class IOHook extends EventEmitter {
    * @param {Function} [releaseCallback] Callback for when shortcut released
    * @return {number} ShortcutId for unregister
    */
-  registerShortcut(keys: Array<string|number>, callback: Function, releaseCallback?: Function): number
+  registerShortcut(keys: Array<string | number>, callback: Function, releaseCallback?: Function): number
 
   /**
    * Unregister shortcut by ShortcutId
@@ -73,7 +73,7 @@ declare class IOHook extends EventEmitter {
    * Unregister shortcut via its key codes
    * @param {Array<string|number>} keys
    */
-  unregisterShortcut(keys: Array<string|number>): void
+  unregisterShortcut(keys: Array<string | number>): void
 
   /**
    * Unregister all shortcuts
