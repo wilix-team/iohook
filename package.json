@@ -35,7 +35,6 @@
   },
   "homepage": "https://github.com/wilix-team/iohook#readme",
   "dependencies": {
-    "@types/node": "^7.0.62",
     "bindings": "^1.3.0",
     "node-abi": "^2.4.0",
     "nugget": "^2.0.1",
@@ -44,6 +43,7 @@
     "tar-fs": "^1.16.2"
   },
   "devDependencies": {
+    "@types/node": "^7.0.62",
     "archiver": "^2.1.1",
     "cmake-js": "github:crtxgg/cmake-js#anoa/delay_generator",
     "jest": "^22.4.3",
