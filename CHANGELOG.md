@@ -2,7 +2,8 @@
 
 ## v0.6.4
 
-- feat: Add support for Node 13
+- feat: Add support for Node 13.
+- chore: Fix npm vulnerabilities with audit.
 
 ## v0.6.3
 
