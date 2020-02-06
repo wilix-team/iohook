@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.6.5
+
+- feat: Add support for Electron 8.
+
 ## v0.6.4
 
 - feat: Add support for Node 13.
