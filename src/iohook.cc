@@ -22,6 +22,7 @@ static HookProcessWorker* sIOHook = nullptr;
 static std::queue<uiohook_event> zqueue;
 
 static unsigned short int grab_event = 0x00;
+static unsigned short int grab_event_enabled = false;
 struct ShortcutData {
   bool ctrl_key;
   bool alt_key;
@@ -178,7 +179,9 @@ void dispatch_proc(uiohook_event * const event) {
       uiohook_event event_copy;
       memcpy(&event_copy, event, sizeof(uiohook_event));
       proc_event_data(event_copy);
-      event->reserved = grab_event;
+      if (grab_event_enabled == true) {
+        event->reserved = event->reserved | grab_event;
+      }
       zqueue.push(event_copy);
       sIOHook->fHookExecution->Send(event, sizeof(uiohook_event));
       break;
@@ -567,6 +570,18 @@ NAN_METHOD(GrabMouseClick) {
   }
 }
 
+NAN_METHOD(GrabKeyboardEvents) {
+  grab_event = 0x00;
+  shortcut_data.shift_key = false;
+  shortcut_data.alt_key = false;
+  shortcut_data.ctrl_key = false;
+  shortcut_data.meta_key = false;
+  if (info.Length() > 0)
+  {
+    grab_event_enabled = info[0]->IsTrue();
+  }
+}
+
 NAN_METHOD(DebugEnable) {
   if (info.Length() > 0)
   {
@@ -618,6 +633,9 @@ NAN_MODULE_INIT(Init) {
 
   Nan::Set(target, Nan::New<String>("grabMouseClick").ToLocalChecked(),
   Nan::GetFunction(Nan::New<FunctionTemplate>(GrabMouseClick)).ToLocalChecked());
+
+  Nan::Set(target, Nan::New<String>("grabKeyboardEvents").ToLocalChecked(),
+  Nan::GetFunction(Nan::New<FunctionTemplate>(GrabKeyboardEvents)).ToLocalChecked());
 }
 
 NODE_MODULE(nodeHook, Init)
