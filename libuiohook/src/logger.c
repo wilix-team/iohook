@@ -38,9 +38,10 @@ static bool default_logger(unsigned int level, const char *format, ...) {
 		case LOG_LEVEL_DEBUG:
 		#endif
 		case LOG_LEVEL_INFO:
-			va_start(args, format);
-  			status = vfprintf(stdout, format, args) >= 0;
-			va_end(args);
+			// Disable startup logs
+			// va_start(args, format);
+  			// status = vfprintf(stdout, format, args) >= 0;
+			// va_end(args);
 			break;
 
 		case LOG_LEVEL_WARN:
