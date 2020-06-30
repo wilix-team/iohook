@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.6.6
+
+- feat: Add support for Electron 9.
+
 ## v0.6.5
 
 - feat: Add support for Electron 8.
