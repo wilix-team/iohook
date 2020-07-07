@@ -11,7 +11,7 @@
   "author": "Aloyan Dmitry",
   "license": "MIT",
   "dependencies": {
-    "electron": "^1.4.13",
+    "electron": "^9.1.0",
     "electron-rebuild": "^1.4.0"
   },
   "cmake-js": {
