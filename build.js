@@ -2,8 +2,8 @@ const spawn = require('child_process').spawn;
 const fs = require('fs-extra');
 const path = require('path');
 const mkdirp = require('mkdirp');
-const archiver = require('archiver');
 const zlib = require('zlib');
+const tar = require('tar');
 const argv = require('minimist')(
     process.argv.slice(2), {
         // Specify that these arguments should be a string
@@ -91,24 +91,16 @@ function build(runtime, version) {
   return new Promise(function (resolve, reject) {
 	let args = [];
 
-	fs.removeSync(path.join(__dirname, "build"));
-	fs.mkdirSync(path.join(__dirname, "build")); 
-	fs.mkdirSync(path.join(__dirname, "build", "Release")); 
-	fs.symlinkSync(
-		path.join(__dirname, "build", "Release", process.platform === 'win32' ? "iohook.dll" : "iohook.lib"),
-		path.join(__dirname, "build", "Release", "iohook.node")
-	);
-
     if (/^electron/i.test(runtime)) {
 		args = [
-		  'configure', 'build',
+		  'configure', 'rebuild',
 		  '--target=' + version,
 		  '--dist-url=https://atom.io/download/electron',
 		  '--arch=' + arch
 		];
     } else {
 		args = [
-		  'configure', 'build',
+		  'configure', 'rebuild',
 		  '--target=' + version,
 		  '--arch=' + arch
 		];
@@ -139,7 +131,7 @@ function build(runtime, version) {
   })
 }
 
-function tarGz(runtime, abi) {
+async function tarGz(runtime, abi) {
   const filesToArchive = process.platform == 'win32' ? 
     ['build/Release/iohook.node', 'build/Release/uiohook.dll']
   :
@@ -149,20 +141,24 @@ function tarGz(runtime, abi) {
 
   files.push(tarPath)
 
-  mkdirp(path.dirname(tarPath), () => {
-    const output = fs.createWriteStream(tarPath);
-    const archive = archiver('tar', {
-      gzip: true
-    });
+  if (!fs.existsSync(path.dirname(tarPath))) {
+	fs.mkdirSync(path.dirname(tarPath));
+  }
 
-    archive.pipe(output);
+  fs.copySync(
+  	path.join(__dirname, "build", "Release", process.platform === 'win32' ? "iohook.dll" : "iohook.lib"),
+  	path.join(__dirname, "build", "Release", "iohook.node")
+  );
 
-    filesToArchive.forEach(file => {
-      archive.append(fs.createReadStream(file), { name: file });
-    });
+  tar.c(
+    {
+      gzip: true,
+      file: tarPath, // exported file name
+      sync: true, // flag helpful to write files synchronously
+    },
+    filesToArchive, // Write only sub folders
+  );
 
-    archive.finalize();
-  });
 }
 
 function uploadFiles (files) {

@@ -44,7 +44,6 @@
   },
   "devDependencies": {
     "@types/node": "^7.0.62",
-    "archiver": "^5.0.2",
     "cmake-js": "github:crtxgg/cmake-js#anoa/delay_generator",
     "jest": "^22.4.3",
     "minimist": "^1.2.0",
@@ -53,6 +52,7 @@
     "node-gyp": "^7.1.2",
     "prebuild": "^6.2.2",
     "robotjs": "^0.5.1",
+    "tar": "^6.0.5",
     "vuepress": "^0.14.4"
   },
   "supportedTargets": [
