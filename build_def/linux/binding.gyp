@@ -1,4 +1,7 @@
 {
+  "variables": {
+    'v8_enable_pointer_compression': 1
+  },
 	"targets": [{
 		"target_name": "iohook",
 		"win_delay_load_hook": "true",
