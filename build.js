@@ -22,7 +22,7 @@ let arch = process.env.ARCH
     .replace('x86_64', 'x64')
   : process.arch;
 
-let cmakeJsPath = path.join(
+let gypJsPath = path.join(
   __dirname,
   'node_modules',
   '.bin',
@@ -119,7 +119,7 @@ function build(runtime, version, abi) {
 		}
 		args.push('--msvs_version=' + process.env.msvs_version);
 	}
-    let proc = spawn(cmakeJsPath, args, {
+    let proc = spawn(gypJsPath, args, {
       env: process.env
     });
     proc.stdout.pipe(process.stdout);
