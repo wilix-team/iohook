@@ -100,7 +100,9 @@ function build(runtime, version, abi) {
     }
 
 	if (parseInt(abi) >= 80) {
-		args.push('--v8_enable_pointer_compression=1');
+		if (!/^electron/i.test(runtime)) {
+			args.push('--v8_enable_pointer_compression=1');
+		}
 	}
 
     console.log('Compiling iohook for ' + runtime + ' v' + version + '>>>>');
