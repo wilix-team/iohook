@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "@types/node": "^7.0.62",
-    "archiver": "^2.1.1",
+    "archiver": "^5.0.2",
     "cmake-js": "github:crtxgg/cmake-js#anoa/delay_generator",
     "jest": "^22.4.3",
     "minimist": "^1.2.0",
