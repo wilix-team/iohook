@@ -155,10 +155,10 @@ async function tarGz(runtime, abi) {
   tar.c(
     {
       gzip: true,
-      file: tarPath, // exported file name
-      sync: true, // flag helpful to write files synchronously
+      file: tarPath,
+      sync: true,
     },
-    filesToArchive, // Write only sub folders
+    filesToArchive,
   );
 
 }
