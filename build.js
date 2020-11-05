@@ -50,7 +50,7 @@ targets.forEach(parts => {
   let abi = parts[2]
   chain = chain
     .then(function () {
-      return build(runtime, version)
+      return build(runtime, version, abi)
     })
     .then(function () {
       return tarGz(runtime, abi)
@@ -87,7 +87,7 @@ switch (process.platform) {
 		break;
 }
 
-function build(runtime, version) {
+function build(runtime, version, abi) {
   return new Promise(function (resolve, reject) {
 	let args = [
 		  'configure', 'rebuild',
