@@ -99,7 +99,7 @@ function build(runtime, version) {
 		args.push('--dist-url=https://atom.io/download/electron');
     }
 
-	if (arch === "x64") {
+	if (parseInt(abi) >= 80) {
 		args.push('--v8_enable_pointer_compression=1');
 	}
 
