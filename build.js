@@ -89,21 +89,18 @@ switch (process.platform) {
 
 function build(runtime, version) {
   return new Promise(function (resolve, reject) {
-	let args = [];
+	let args = [
+		  'configure', 'rebuild',
+		  '--target=' + version,
+		  '--arch=' + arch
+	];
 
     if (/^electron/i.test(runtime)) {
-		args = [
-		  'configure', 'rebuild',
-		  '--target=' + version,
-		  '--dist-url=https://atom.io/download/electron',
-		  '--arch=' + arch
-		];
-    } else {
-		args = [
-		  'configure', 'rebuild',
-		  '--target=' + version,
-		  '--arch=' + arch
-		];
+		args.push('--dist-url=https://atom.io/download/electron');
+    }
+
+	if (arch === "x64") {
+		args.push('--v8_enable_pointer_compression=1');
 	}
 
     console.log('Compiling iohook for ' + runtime + ' v' + version + '>>>>');
