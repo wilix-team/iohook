@@ -99,11 +99,12 @@ function build(runtime, version, abi) {
 		args.push('--dist-url=https://atom.io/download/electron');
     }
 
-	if (parseInt(abi) >= 80) {
-		if (!/^electron/i.test(runtime)) {
-			args.push('--v8_enable_pointer_compression=1');
-		}
-	}
+        if (arch === "x64" && parseInt(abi) >= 80) {
+                args.push('--v8_enable_pointer_compression=1');
+        } else if (arch === "x86" && parseInt(abi) >= 80) {
+                args.push('--v8_enable_pointer_compression=0');
+                args.push('--v8_enable_31bit_smis_on_64bit_arch=1');
+        }
 
     console.log('Compiling iohook for ' + runtime + ' v' + version + '>>>>');
 	if (process.platform === 'win32') {
