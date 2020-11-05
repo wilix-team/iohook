@@ -1,5 +1,5 @@
 const spawn = require('child_process').spawn;
-const fs = require('fs');
+const fs = require('fs-extra');
 const path = require('path');
 const mkdirp = require('mkdirp');
 const archiver = require('archiver');
@@ -26,7 +26,7 @@ let cmakeJsPath = path.join(
   __dirname,
   'node_modules',
   '.bin',
-  process.platform === 'win32' ? 'cmake-js.cmd' : 'cmake-js'
+  process.platform === 'win32' ? 'node-gyp.cmd' : 'node-gyp'
 );
 
 let files = [];
@@ -70,22 +70,61 @@ chain = chain.then(function () {
   return uploadFiles(files)
 });
 
+try {
+	fs.unlinkSync(path.join(__dirname, 'binding.gyp'));
+	fs.unlinkSync(path.join(__dirname, 'uiohook.gyp'));
+} catch {
+}
+switch (process.platform) {
+	case 'win32':
+	case 'darwin':
+		fs.symlinkSync(path.join(__dirname, 'build_def', process.platform, 'binding.gyp'), path.join(__dirname, 'binding.gyp'));
+		fs.symlinkSync(path.join(__dirname, 'build_def', process.platform, 'uiohook.gyp'), path.join(__dirname, 'uiohook.gyp'));
+		break;
+	default:
+		fs.symlinkSync(path.join(__dirname, 'build_def', 'linux', 'binding.gyp'), path.join(__dirname, 'binding.gyp'));
+		fs.symlinkSync(path.join(__dirname, 'build_def', 'linux', 'uiohook.gyp'), path.join(__dirname, 'uiohook.gyp'));
+		break;
+}
+
 function build(runtime, version) {
   return new Promise(function (resolve, reject) {
-    let args = [
-      'rebuild',
-      '--runtime-version=' + version,
-      '--runtime=' + runtime,
-      '--arch=' + arch
-    ];
-    console.log('Compiling iohook for ' + runtime + ' v' + version + '>>>>');
-    if (version.split('.')[0] >= 4) {
-      process.env.msvs_toolset = 15
-      process.env.msvs_version = 2017
+	let args = [];
+
+	fs.removeSync(path.join(__dirname, "build"));
+	fs.mkdirSync(path.join(__dirname, "build")); 
+	fs.mkdirSync(path.join(__dirname, "build", "Release")); 
+	fs.symlinkSync(
+		path.join(__dirname, "build", "Release", "iohook.dll"),
+		path.join(__dirname, "build", "Release", "iohook.node")
+	);
+
+    if (/^electron/i.test(runtime)) {
+		args = [
+		  'configure', 'build',
+		  '--target=' + version,
+		  '--dist-url=https://atom.io/download/electron',
+		  '--arch=' + arch
+		];
     } else {
-      process.env.msvs_toolset = 12
-      process.env.msvs_version = 2013
-    }
+		args = [
+		  'configure', 'build',
+		  '--target=' + version,
+		  '--arch=' + arch
+		];
+	}
+
+    console.log('Compiling iohook for ' + runtime + ' v' + version + '>>>>');
+	if (process.platform === 'win32') {
+		if (version.split('.')[0] >= 4) {
+		  process.env.msvs_toolset = 15
+		  process.env.msvs_version = 2017
+		} else {
+		  process.env.msvs_toolset = 12
+		  process.env.msvs_version = 2013
+		}
+		args.push('--msvs_version=' + process.env.msvs_version);
+	}
     let proc = spawn(cmakeJsPath, args, {
       env: process.env
     });
