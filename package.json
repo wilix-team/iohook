@@ -50,6 +50,7 @@
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "nan": "^2.13.2",
+    "node-gyp": "^7.1.2",
     "prebuild": "^6.2.2",
     "robotjs": "^0.5.1",
     "vuepress": "^0.14.4"
