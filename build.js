@@ -95,7 +95,7 @@ function build(runtime, version) {
 	fs.mkdirSync(path.join(__dirname, "build")); 
 	fs.mkdirSync(path.join(__dirname, "build", "Release")); 
 	fs.symlinkSync(
-		path.join(__dirname, "build", "Release", "iohook.dll"),
+		path.join(__dirname, "build", "Release", process.platform === 'win32' ? "iohook.dll" : "iohook.lib"),
 		path.join(__dirname, "build", "Release", "iohook.node")
 	);
 
