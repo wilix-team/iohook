@@ -72,10 +72,10 @@ function initBuild() {
 	  return uploadFiles(files)
 	});
 	
-	makeSymlink();
+	cpGyp();
 }
 
-function makeSymlink() {
+function cpGyp() {
 	try {
 		fs.unlinkSync(path.join(__dirname, 'binding.gyp'));
 		fs.unlinkSync(path.join(__dirname, 'uiohook.gyp'));
@@ -84,12 +84,12 @@ function makeSymlink() {
 	switch (process.platform) {
 		case 'win32':
 		case 'darwin':
-			fs.symlinkSync(path.join(__dirname, 'build_def', process.platform, 'binding.gyp'), path.join(__dirname, 'binding.gyp'));
-			fs.symlinkSync(path.join(__dirname, 'build_def', process.platform, 'uiohook.gyp'), path.join(__dirname, 'uiohook.gyp'));
+			fs.copySync(path.join(__dirname, 'build_def', process.platform, 'binding.gyp'), path.join(__dirname, 'binding.gyp'));
+			fs.copySync(path.join(__dirname, 'build_def', process.platform, 'uiohook.gyp'), path.join(__dirname, 'uiohook.gyp'));
 			break;
 		default:
-			fs.symlinkSync(path.join(__dirname, 'build_def', 'linux', 'binding.gyp'), path.join(__dirname, 'binding.gyp'));
-			fs.symlinkSync(path.join(__dirname, 'build_def', 'linux', 'uiohook.gyp'), path.join(__dirname, 'uiohook.gyp'));
+			fs.copySync(path.join(__dirname, 'build_def', 'linux', 'binding.gyp'), path.join(__dirname, 'binding.gyp'));
+			fs.copySync(path.join(__dirname, 'build_def', 'linux', 'uiohook.gyp'), path.join(__dirname, 'uiohook.gyp'));
 			break;
 	}
 }
