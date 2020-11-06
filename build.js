@@ -31,60 +31,67 @@ let gypJsPath = path.join(
 
 let files = [];
 let targets;
-
-// Check if a specific runtime has been specified from the command line
-if ("runtime" in argv && "version" in argv && "abi" in argv) {
-    targets = [[argv["runtime"],
-                argv["version"],
-                argv["abi"]]];
-} else {
-    // If not, use those defined in package.json
-    targets = require('./package.json').supportedTargets;
-}
-
 let chain = Promise.resolve();
 
-targets.forEach(parts => {
-  let runtime = parts[0];
-  let version = parts[1];
-  let abi = parts[2]
-  chain = chain
-    .then(function () {
-      return build(runtime, version, abi)
-    })
-    .then(function () {
-      return tarGz(runtime, abi)
-    })
-    .catch(err => {
-      console.error(err);
-      process.exit(1);
-    })
-});
+initBuild();
 
-chain = chain.then(function () {
-  if ("upload" in argv && argv["upload"] == false) {
-    // If no upload has been specified, don't attempt to upload
-    return;
-  }
+function initBuild() {
+	// Check if a specific runtime has been specified from the command line
+	if ("runtime" in argv && "version" in argv && "abi" in argv) {
+	    targets = [[argv["runtime"],
+			argv["version"],
+			argv["abi"]]];
+	} else {
+	    // If not, use those defined in package.json
+	    targets = require('./package.json').supportedTargets;
+	}
 
-  return uploadFiles(files)
-});
+	targets.forEach(parts => {
+	  let runtime = parts[0];
+	  let version = parts[1];
+	  let abi = parts[2]
+	  chain = chain
+	    .then(function () {
+	      return build(runtime, version, abi)
+	    })
+	    .then(function () {
+	      return tarGz(runtime, abi)
+	    })
+	    .catch(err => {
+	      console.error(err);
+	      process.exit(1);
+	    })
+	});
 
-try {
-	fs.unlinkSync(path.join(__dirname, 'binding.gyp'));
-	fs.unlinkSync(path.join(__dirname, 'uiohook.gyp'));
-} catch {
+	chain = chain.then(function () {
+	  if ("upload" in argv && argv["upload"] == false) {
+	    // If no upload has been specified, don't attempt to upload
+	    return;
+	  }
+
+	  return uploadFiles(files)
+	});
+	
+	makeSymlink();
 }
-switch (process.platform) {
-	case 'win32':
-	case 'darwin':
-		fs.symlinkSync(path.join(__dirname, 'build_def', process.platform, 'binding.gyp'), path.join(__dirname, 'binding.gyp'));
-		fs.symlinkSync(path.join(__dirname, 'build_def', process.platform, 'uiohook.gyp'), path.join(__dirname, 'uiohook.gyp'));
-		break;
-	default:
-		fs.symlinkSync(path.join(__dirname, 'build_def', 'linux', 'binding.gyp'), path.join(__dirname, 'binding.gyp'));
-		fs.symlinkSync(path.join(__dirname, 'build_def', 'linux', 'uiohook.gyp'), path.join(__dirname, 'uiohook.gyp'));
-		break;
+
+function makeSymlink() {
+	try {
+		fs.unlinkSync(path.join(__dirname, 'binding.gyp'));
+		fs.unlinkSync(path.join(__dirname, 'uiohook.gyp'));
+	} catch(e) {
+	}
+	switch (process.platform) {
+		case 'win32':
+		case 'darwin':
+			fs.symlinkSync(path.join(__dirname, 'build_def', process.platform, 'binding.gyp'), path.join(__dirname, 'binding.gyp'));
+			fs.symlinkSync(path.join(__dirname, 'build_def', process.platform, 'uiohook.gyp'), path.join(__dirname, 'uiohook.gyp'));
+			break;
+		default:
+			fs.symlinkSync(path.join(__dirname, 'build_def', 'linux', 'binding.gyp'), path.join(__dirname, 'binding.gyp'));
+			fs.symlinkSync(path.join(__dirname, 'build_def', 'linux', 'uiohook.gyp'), path.join(__dirname, 'uiohook.gyp'));
+			break;
+	}
 }
 
 function build(runtime, version, abi) {
@@ -133,7 +140,7 @@ function build(runtime, version, abi) {
   })
 }
 
-async function tarGz(runtime, abi) {
+function tarGz(runtime, abi) {
   const filesToArchive = process.platform == 'win32' ? 
     ['build/Release/iohook.node', 'build/Release/uiohook.dll']
   :
