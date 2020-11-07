@@ -13,7 +13,7 @@
 			"libuiohook/src/x11/system_properties.c"
 		],
 		"cflags": [
-			"-std=c99"
+			"-std=c99",
 			"-fPIC"
 		],
 		"defines": [

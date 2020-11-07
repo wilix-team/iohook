@@ -11,7 +11,7 @@
 			"./uiohook.gyp:uiohook"
 		],
 		"cflags": [
-			"-std=c99"
+			"-std=c99",
 			"-fPIC"
 		],
 		"defines": [
