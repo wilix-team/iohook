@@ -24,8 +24,7 @@
 				"-framework IOKit",
 				"-framework Carbon",
 				"-framework ApplicationServices",
-				"-lobjc",
-				"-lv8"
+				"-lobjc"
 			]
 		},
 		"include_dirs": [
