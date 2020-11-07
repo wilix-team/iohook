@@ -24,7 +24,8 @@
 				"-framework IOKit",
 				"-framework Carbon",
 				"-framework ApplicationServices",
-				"-lobjc"
+				"-lobjc",
+				"-Wl,-rpath,<!(pwd)/build/Release/"
 			]
 		},
 		"include_dirs": [

@@ -16,6 +16,12 @@
 			"-std=c99",
 			"-fPIC"
 		],
+		"link_settings": {
+				"libraries": [
+						"-Wl,-rpath,<!(pwd)/build/Release/",
+						"-lX11"
+				]
+		},
 		"defines": [
 			"USE_XKBCOMMON"
 		],

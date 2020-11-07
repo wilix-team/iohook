@@ -13,6 +13,11 @@
 		"cflags": [
 			"-std=c99"
 		],
+		"link_settings": {
+				"libraries": [
+						"-Wl,-rpath,<!(pwd)/build/Release/"
+				]
+		},
 		"include_dirs": [
 			"<!(node -e \"require('nan')\")",
 			"libuiohook/include"

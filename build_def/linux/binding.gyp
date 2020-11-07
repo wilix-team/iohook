@@ -17,6 +17,11 @@
 		"defines": [
 			"USE_XKBCOMMON"
 		],
+		"link_settings": {
+				"libraries": [
+						"-Wl,-rpath,<!(pwd)/build/Release/"
+				]
+		},
 		"include_dirs": [
 			"<!(node -e \"require('nan')\")",
 			"libuiohook/include"
