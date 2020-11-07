@@ -15,6 +15,12 @@
 		"cflags": [
 			"-std=c99"
 		],
+		"link_settings": {
+			"libraries": [
+				"-framework", "IOKit",
+				"-framework", "Carbon"
+			]
+		},
 		"include_dirs": [
 			'node_modules/nan',
 			'libuiohook/include',
