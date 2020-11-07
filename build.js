@@ -155,7 +155,7 @@ function tarGz(runtime, abi) {
   }
 
   fs.copySync(
-  	path.join(__dirname, "build", "Release", process.platform === 'win32' ? "iohook.dll" : "iohook.lib"),
+  	path.join(__dirname, "build", "Release", process.platform === 'win32' ? "iohook.dll" : "iohook.so"),
   	path.join(__dirname, "build", "Release", "iohook.node")
   );
 

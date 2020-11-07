@@ -12,6 +12,10 @@
 		],
 		"cflags": [
 			"-std=c99"
+			"-fPIC"
+		],
+		"defines": [
+			"USE_XKBCOMMON"
 		],
 		"include_dirs": [
 			"<!(node -e \"require('nan')\")",
