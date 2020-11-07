@@ -2,7 +2,7 @@
 	"targets": [{
 		"target_name": "iohook",
 		"win_delay_load_hook": "true",
-		"type": "shared_library",
+		"type": "loadable_module",
 		"sources": [
 			"src/iohook.cc",
 			"src/iohook.h"

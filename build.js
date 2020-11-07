@@ -155,29 +155,12 @@ function tarGz(runtime, abi) {
     ['build/Release/iohook.node']
 
   const tarPath = 'prebuilds/' + pkg.name + '-v' + pkg.version + '-' + runtime + '-v' + abi + '-' + process.platform + '-' + arch + '.tar.gz';
-  var srcLibName = "";
-  switch (process.platform) {
-    case 'win32':
-        srcLibName = "iohook.dll";
-        break;
-    case 'darwin':
-        srcLibName = "iohook.dylib";
-        break;
-    default:
-        srcLibName = "iohook.so";
-        break;
-  }
-	  
+
   files.push(tarPath)
 
   if (!fs.existsSync(path.dirname(tarPath))) {
 	fs.mkdirSync(path.dirname(tarPath));
   }
-
-  fs.copySync(
-  	path.join(__dirname, "build", "Release", srcLibName),
-  	path.join(__dirname, "build", "Release", "iohook.node")
-  );
 
   tar.c(
     {
