@@ -22,7 +22,8 @@
 		"link_settings": {
 			"libraries": [
 				"-framework IOKit",
-				"-framework Carbon"
+				"-framework Carbon",
+				"-framework ApplicationServices"
 			]
 		},
 		"include_dirs": [
