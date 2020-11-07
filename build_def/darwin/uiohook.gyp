@@ -1,7 +1,7 @@
 {
 	"targets": [{
 		"target_name": "uiohook",
-		"type": "shared_library",
+		"type": "loadable_module",
 		"sources": [
 			"libuiohook/include/uiohook.h",
 			"libuiohook/src/logger.c",
