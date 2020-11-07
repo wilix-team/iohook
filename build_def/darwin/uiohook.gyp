@@ -15,7 +15,7 @@
 		"cflags": [
 			"-std=c99"
 		],
-		"definees": [
+		"defines": [
 			'USE_IOKIT=1',
 			'USE_OBJC=1'
 		],
