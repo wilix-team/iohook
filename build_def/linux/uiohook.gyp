@@ -12,6 +12,9 @@
 			"libuiohook/src/x11/post_event.c",
 			"libuiohook/src/x11/system_properties.c"
 		],
+		"cflags": [
+			"-std=c99"
+		],
 		"include_dirs": [
 			'node_modules/nan',
 			'libuiohook/include',

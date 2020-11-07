@@ -12,6 +12,9 @@
 			"libuiohook/src/darwin/post_event.c",
 			"libuiohook/src/darwin/system_properties.c"
 		],
+		"cflags": [
+			"-std=c99"
+		],
 		"include_dirs": [
 			'node_modules/nan',
 			'libuiohook/include',

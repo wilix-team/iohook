@@ -10,6 +10,9 @@
 		"dependencies": [
 			"./uiohook.gyp:uiohook"
 		],
+		"cflags": [
+			"-std=c99"
+		],
 		"include_dirs": [
 			"<!(node -e \"require('nan')\")",
 			"libuiohook/include"
