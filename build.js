@@ -64,7 +64,7 @@ function initBuild() {
 	});
 
 	chain = chain.then(function () {
-	  if ("upload" in argv && argv["upload"] == false) {
+	  if ("upload" in argv && argv["upload"] === 'false') {
 	    // If no upload has been specified, don't attempt to upload
 	    return;
 	  }

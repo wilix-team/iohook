@@ -7,7 +7,7 @@
   "scripts": {
     "install": "node install.js",
     "install-all": "node install.js --all",
-    "build": "cmake-js compile",
+    "build": "node build.js --upload=false",
     "deploy": "node build.js",
     "test": "jest",
     "docs:dev": "vuepress dev docs",
