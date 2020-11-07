@@ -23,7 +23,8 @@
 			"libraries": [
 				"-framework IOKit",
 				"-framework Carbon",
-				"-framework ApplicationServices"
+				"-framework ApplicationServices",
+				"-lobjc"
 			]
 		},
 		"include_dirs": [
