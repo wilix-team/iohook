@@ -21,8 +21,8 @@
 		],
 		"link_settings": {
 			"libraries": [
-				"-framework", "IOKit",
-				"-framework", "Carbon"
+				"-framework IOKit",
+				"-framework Carbon"
 			]
 		},
 		"include_dirs": [
