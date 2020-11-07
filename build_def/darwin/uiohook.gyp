@@ -15,6 +15,10 @@
 		"cflags": [
 			"-std=c99"
 		],
+		"definees": [
+			'USE_IOKIT=1',
+			'USE_OBJC=1'
+		],
 		"link_settings": {
 			"libraries": [
 				"-framework", "IOKit",
