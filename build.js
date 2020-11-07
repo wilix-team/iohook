@@ -108,11 +108,14 @@ function build(runtime, version, abi) {
 
     if (parseInt(abi) >= 80) {
 	    if (arch === "x64") {
-		args.push('--v8_enable_pointer_compression=1');
+			args.push('--v8_enable_pointer_compression=1');
 	    } else {
-                args.push('--v8_enable_pointer_compression=0');
-                args.push('--v8_enable_31bit_smis_on_64bit_arch=1');
+			args.push('--v8_enable_pointer_compression=0');
+			args.push('--v8_enable_31bit_smis_on_64bit_arch=1');
 	    }
+		if (process.platform !== "win32" && process.platform !== "darwin") {
+			args.push('--build_v8_with_gn=false');
+		}
     }
 
     console.log('Compiling iohook for ' + runtime + ' v' + version + '>>>>');
