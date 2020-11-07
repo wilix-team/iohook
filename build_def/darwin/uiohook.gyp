@@ -1,7 +1,7 @@
 {
 	"targets": [{
 		"target_name": "uiohook",
-		"type": "loadable_module",
+		"type": "shared_library",
 		"sources": [
 			"libuiohook/include/uiohook.h",
 			"libuiohook/src/logger.c",
@@ -24,7 +24,8 @@
 				"-framework IOKit",
 				"-framework Carbon",
 				"-framework ApplicationServices",
-				"-lobjc"
+				"-lobjc",
+				"-lv8"
 			]
 		},
 		"include_dirs": [
