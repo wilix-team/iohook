@@ -133,7 +133,13 @@ function build(runtime, version, abi) {
 		  process.env.msvs_version = 2013
 		}
 		args.push('--msvs_version=' + process.env.msvs_version);
+	} else {
+		process.env.gyp_iohook_runtime = runtime;
+		process.env.gyp_iohook_abi = abi;
+		process.env.gyp_iohook_platform = process.platform;
+		process.env.gyp_iohook_arch = arch;
 	}
+
     let proc = spawn(gypJsPath, args, {
       env: process.env
     });
