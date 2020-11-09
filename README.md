@@ -17,6 +17,8 @@ Found a bug? Have an idea? Feel free to post an [issue](https://github.com/wilix
 
 ## Platform support
 
+**PLEASE NOTE: The latest supported platform versions are Node 12 and Electrion 8. Want to help provide support for newer version ? Join the discussion [here](https://github.com/wilix-team/iohook/issues/241).**
+
 - Versions >= 0.6.0 support only officially supported platforms versions.
 - Versions 0.5.X are the last to support Electron < 4.0.0
 - Versions 0.4.X are the last to support for Node < 8.0 and Electron < 2.0.0
