@@ -5,9 +5,23 @@ sudo: true
 matrix:
   include:
     - os: linux
-      env: ARCH=ia32
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+      env:
+        - MATRIX_EVAL="export CC=gcc-5 && export CXX=g++-5 && export ARCH=ia32"
     - os: linux
-      env: ARCH=x64
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+      env:
+        - MATRIX_EVAL="export CC=gcc-5 && export CXX=g++-5 && export ARCH=x64"
     - os: osx
 
 node_js:
