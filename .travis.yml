@@ -48,7 +48,7 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "ia32" ]]; then wget http://nodejs.org/dist/${NVER}/node-${NVER}-linux-x86.tar.gz; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "ia32" ]]; then tar xf node-${NVER}-linux-x86.tar.gz; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "ia32" ]]; then export PATH=$(pwd)/node-${NVER}-linux-x86/bin:$PATH; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "ia32" ]]; then sudo apt-get -y install gcc-multilib g++-multilib; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "ia32" ]]; then sudo apt-get -y install gcc-5-multilib g++-5-multilib; fi
 
 install:
   - npm i --ignore-scripts
