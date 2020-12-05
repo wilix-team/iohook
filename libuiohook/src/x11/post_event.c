@@ -336,13 +336,14 @@ UIOHOOK_API void hook_post_event(uiohook_event * const event) {
 	#ifdef USE_XTEST
 	// XTest does not have modifier support, so we fake it by depressing the
 	// appropriate modifier keys.
-	for (unsigned int i = 0; i < sizeof(keymask_lookup) / sizeof(KeySym); i++) {
+	unsigned int i = 0;
+	for (i = 0; i < sizeof(keymask_lookup) / sizeof(KeySym); i++) {
 		if (event->mask & 1 << i) {
 			XTestFakeKeyEvent(properties_disp, XKeysymToKeycode(properties_disp, keymask_lookup[i]), True, 0);
 		}
 	}
 
-	for (unsigned int i = 0; i < sizeof(btnmask_lookup) / sizeof(unsigned int); i++) {
+	for (i = 0; i < sizeof(btnmask_lookup) / sizeof(unsigned int); i++) {
 		if (event->mask & btnmask_lookup[i]) {
 			XTestFakeButtonEvent(properties_disp, i + 1, True, 0);
 		}
@@ -381,13 +382,13 @@ UIOHOOK_API void hook_post_event(uiohook_event * const event) {
 
 	#ifdef USE_XTEST
 	// Release the previously held modifier keys used to fake the event mask.
-	for (unsigned int i = 0; i < sizeof(keymask_lookup) / sizeof(KeySym); i++) {
+	for (i = 0; i < sizeof(keymask_lookup) / sizeof(KeySym); i++) {
 		if (event->mask & 1 << i) {
 			XTestFakeKeyEvent(properties_disp, XKeysymToKeycode(properties_disp, keymask_lookup[i]), False, 0);
 		}
 	}
 
-	for (unsigned int i = 0; i < sizeof(btnmask_lookup) / sizeof(unsigned int); i++) {
+	for (i = 0; i < sizeof(btnmask_lookup) / sizeof(unsigned int); i++) {
 		if (event->mask & btnmask_lookup[i]) {
 			XTestFakeButtonEvent(properties_disp, i + 1, False, 0);
 		}
