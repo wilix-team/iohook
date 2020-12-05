@@ -11,8 +11,7 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - g++-5
-      env:
-        - MATRIX_EVAL="export CC=gcc-5 && export CXX=g++-5 && export ARCH=ia32"
+      env: ARCH=ia32
     - os: linux
       addons:
         apt:
@@ -20,8 +19,7 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - g++-5
-      env:
-        - MATRIX_EVAL="export CC=gcc-5 && export CXX=g++-5 && export ARCH=x64"
+      env: ARCH=x64
     - os: osx
 
 node_js:
@@ -43,6 +41,7 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libxcb-xkb-dev; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libxkbfile-dev; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libxinerama-dev; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5; fi
 #  Linux 32 bits version
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "ia32" ]]; then sudo dpkg --add-architecture i386; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "ia32" ]]; then NVER=`node -v`; fi
