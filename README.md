@@ -17,8 +17,6 @@ Found a bug? Have an idea? Feel free to post an [issue](https://github.com/wilix
 
 ## Platform support
 
-**PLEASE NOTE: The latest supported platform versions are Node 12 and Electrion 8. Want to help provide support for newer version ? Join the discussion [here](https://github.com/wilix-team/iohook/issues/241).**
-
 - Versions >= 0.6.0 support only officially supported platforms versions.
 - Versions 0.5.X are the last to support Electron < 4.0.0
 - Versions 0.4.X are the last to support for Node < 8.0 and Electron < 2.0.0
@@ -58,4 +56,5 @@ Thanks to _kwhat_ for the [libuiohook](https://github.com/kwhat/libuiohook) proj
 - [djiit](https://github.com/djiit) (project & community help)
 - [ezain](https://github.com/eboukamza) (add feature enable/disable mouse click propagation)
 - [anoadragon453](https://github.com/anoadragon453) (electron 4+ support)
+- [ykhwong](https://github.com/ykhwong) (node-gyp usage, electron 9+ support)
 - All the other contributors. Feel free to extend this list !
