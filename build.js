@@ -1,8 +1,6 @@
 const spawn = require('child_process').spawn;
 const fs = require('fs-extra');
 const path = require('path');
-const mkdirp = require('mkdirp');
-const zlib = require('zlib');
 const tar = require('tar');
 const argv = require('minimist')(
     process.argv.slice(2), {
