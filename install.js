@@ -67,7 +67,7 @@ function install(runtime, abi, platform, arch, cb) {
         console.error('Prebuild for current platform (' + currentPlatform + ') not found!');
         console.error('Try to compile for your platform:');
         console.error('# cd node_modules/iohook;');
-        console.error('# npm run compile');
+        console.error('# npm run install');
         console.error('');
         onerror('Prebuild for current platform (' + currentPlatform + ') not found!');
       }
