@@ -156,7 +156,7 @@ function tarGz(runtime, abi) {
   const filesToArchive = process.platform == 'win32' ? 
     ['build/Release/iohook.node', 'build/Release/uiohook.dll']
   :
-    ['build/Release/iohook.node']
+    ['build/Release/iohook.node', 'build/Release/uiohook.dylib']
 
   const tarPath = 'prebuilds/' + pkg.name + '-v' + pkg.version + '-' + runtime + '-v' + abi + '-' + process.platform + '-' + arch + '.tar.gz';
 
