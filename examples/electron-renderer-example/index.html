@@ -13,7 +13,7 @@
 		const ioHook = require('../../index');
 		ioHook.start(true);
 		ioHook.on('mouseclick', eventHandler);
-		ioHook.on('keypress', eventHandler);
+		ioHook.on('keydown', eventHandler);
 		ioHook.on('mousewheel', eventHandler);
 		ioHook.on('mousemove', eventHandler);
 	})
