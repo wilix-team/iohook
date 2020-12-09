@@ -15,7 +15,8 @@
 		],
 		"link_settings": {
 				"libraries": [
-						"-Wl,-rpath,<!(node -e \"console.log('builds/' + process.env.gyp_iohook_runtime + '-v' + process.env.gyp_iohook_abi + '-' + process.env.gyp_iohook_platform + '-' + process.env.gyp_iohook_arch + '/build/Release')\")",
+						"-Wl,-rpath,@executable_path/.",
+						"-Wl,-rpath,@loader_path/.",
 						"-Wl,-rpath,<!(pwd)/build/Release/"
 				]
 		},
