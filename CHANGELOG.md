@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.7.2
+
+- fix: Fix macOS and linux prebuilt.
+
 ## v0.7.1
 
 - fix: add missing dependency.
