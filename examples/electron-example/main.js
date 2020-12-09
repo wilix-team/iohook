@@ -8,9 +8,10 @@ function eventHandler(event) {
 }
 
 app.on('ready', () => {
+  console.log("node: "+process.versions.node+", chromium: "+process.versions.chrome+", electron: "+process.versions.electron); 
   ioHook.start(true);
   ioHook.on('mouseclick', eventHandler);
-  ioHook.on('keypress', eventHandler);
+  ioHook.on('keydown', eventHandler);
   ioHook.on('mousewheel', eventHandler);
   ioHook.on('mousemove', eventHandler);
   console.log('Try move your mouse or press any key');

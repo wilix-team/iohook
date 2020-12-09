@@ -45,6 +45,7 @@ Are you using iohook in your project ? Please tell us in a [PR](https://github.c
 
 - [Cortex](https://crtx.gg/)
 - [Tracklify](https://tracklify.com/)
+- [CrewLink](https://github.com/ottomated/CrewLink)
 
 ## Contributors
 
@@ -55,4 +56,5 @@ Thanks to _kwhat_ for the [libuiohook](https://github.com/kwhat/libuiohook) proj
 - [djiit](https://github.com/djiit) (project & community help)
 - [ezain](https://github.com/eboukamza) (add feature enable/disable mouse click propagation)
 - [anoadragon453](https://github.com/anoadragon453) (electron 4+ support)
+- [ykhwong](https://github.com/ykhwong) (node-gyp usage, electron 9+ support)
 - All the other contributors. Feel free to extend this list !

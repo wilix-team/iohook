@@ -1,6 +1,6 @@
 {
   "name": "iohook",
-  "version": "0.6.6",
+  "version": "0.7.1",
   "description": "Node.js global keyboard and mouse hook",
   "main": "index.js",
   "types": "index.d.ts",
@@ -44,14 +44,13 @@
   },
   "devDependencies": {
     "@types/node": "^7.0.62",
-    "cmake-js": "github:crtxgg/cmake-js#anoa/delay_generator",
-    "jest": "^22.4.3",
+    "fs-extra": "^9.0.1",
+    "jest": "^26.6.3",
     "minimist": "^1.2.0",
-    "mkdirp": "^0.5.1",
     "nan": "^2.13.2",
-    "node-gyp": "^6.1.0",
+    "node-gyp": "^7.1.2",
     "prebuild": "^6.2.2",
-    "robotjs": "^0.5.1",
+    "robotjs": "^0.6.0",
     "tar": "^6.0.5",
     "vuepress": "^0.14.4"
   },
@@ -130,6 +129,11 @@
       "node",
       "14.0.0",
       "83"
+    ],
+    [
+      "node",
+      "15.0.0",
+      "88"
     ]
   ]
 }
