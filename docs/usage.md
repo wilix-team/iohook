@@ -1,16 +1,16 @@
 # Usage
 ## Usage with Electron
-Before installing this module, you will need to set a runtime version.
+Before installing this module, you will need to set a runtime version in your `package.json`.
 
 When developing with webpack, you will need the Node.js runtime. In production, your Electron app will need the Electron version.
 
-Checkout your ABI for [node.js](https://nodejs.org/en/download/releases/) or [electron](https://www.npmjs.com/package/electron-abi). The example below uses Node.js v9.X and Electron v1.8.X.
+Checkout your ABI for [node.js](https://nodejs.org/en/download/releases/) or [electron](https://www.npmjs.com/package/electron-abi). The example below uses Node.js v12.X and Electron v11.X.
 
 ```json
 "iohook": {
   "targets": [
-    "node-59",
-    "electron-57"
+    "node-72",
+    "electron-85"
   ],
   "platforms": [
     "win32",
