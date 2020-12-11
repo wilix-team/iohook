@@ -13,3 +13,5 @@ examples/
 libuiohook/
 prebuilds/
 test/
+/binding.gyp
+/uiohook.gyp
