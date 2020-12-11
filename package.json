@@ -6,7 +6,6 @@
   "types": "index.d.ts",
   "scripts": {
     "install": "node install.js",
-    "install-all": "node install.js --all",
     "build": "node build.js --upload=false",
     "deploy": "node build.js",
     "test": "jest",
@@ -46,6 +45,7 @@
     "jest": "^26.6.3",
     "minimist": "^1.2.5",
     "nan": "^2.13.2",
+    "node-abi": "^2.19.3",
     "node-gyp": "^7.1.2",
     "prebuild": "^10.0.1",
     "robotjs": "^0.6.0",

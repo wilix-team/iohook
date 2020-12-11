@@ -9,10 +9,8 @@ const argv = require('minimist')(
     }
 );
 const pkg = require('./package.json');
-
-function mode(octal) {
-  return parseInt(octal, 8)
-}
+const nodeAbi = require('node-abi')
+const { optionsFromPackage } = require('./helpers');
 
 let arch = process.env.ARCH
   ? process.env.ARCH
@@ -39,9 +37,35 @@ function initBuild() {
       targets = [[argv["runtime"],
       argv["version"],
       argv["abi"]]];
-  } else {
-      // If not, use those defined in package.json
+  } else if ("all" in argv) {
+      // If "--all", use those defined in package.json
       targets = require('./package.json').supportedTargets;
+  } else {
+    const options = optionsFromPackage();
+    if (process.env.npm_config_targets) {
+      options.targets = options.targets.concat(process.env.npm_config_targets.split(','));
+    }
+    options.targets = options.targets.map(targetStr => targetStr.split('-'));
+    if (process.env.npm_config_targets === 'all') {
+      options.targets = supportedTargets.map(arr => [arr[0], arr[2]]);
+      options.platforms = ['win32', 'darwin', 'linux'];
+      options.arches = ['x64', 'ia32']
+    }
+    if (process.env.npm_config_platforms) {
+      options.platforms = options.platforms.concat(process.env.npm_config_platforms.split(','));
+    }
+    if (process.env.npm_config_arches) {
+      options.arches = options.arches.concat(process.env.npm_config_arches.split(','));
+    }
+
+    if (options.targets.length > 0) {
+      targets = options.targets.map(e => ([e[0], nodeAbi.getTarget(e[1], e[0]), e[1], ]))
+    } else {
+      const runtime = process.versions['electron'] ? 'electron' : 'node';
+      const version = process.versions.node;
+      const abi = process.versions.modules;
+      targets = [[runtime, version, abi]]
+    }
   }
 
   targets.forEach(parts => {
