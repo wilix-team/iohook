@@ -25,6 +25,15 @@ Found a bug? Have an idea? Feel free to post an [issue](https://github.com/wilix
 
 iohook provides prebuilt version for a bunch of OSes and platforms.
 
+### Linux (including WSL)
+
+```bash
+# On Linux (including WSL) platform, you will need libxkbcommon-x11 installed
+sudo apt-get install -y libxkbcommon-x11-0
+```
+
+### All platforms
+
 ```bash
 npm install iohook --save # or yarn add iohook
 ```
