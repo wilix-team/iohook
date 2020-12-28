@@ -10,6 +10,7 @@ const tfs = require('tar-fs');
 const zlib = require('zlib');
 const pkg = require('./package.json');
 const supportedTargets = require('./package.json').supportedTargets;
+const { optionsFromPackage } = require('./helpers');
 
 function onerror(err) {
   throw err;
@@ -67,9 +68,8 @@ function install(runtime, abi, platform, arch, cb) {
         console.error('Prebuild for current platform (' + currentPlatform + ') not found!');
         console.error('Try to compile for your platform:');
         console.error('# cd node_modules/iohook;');
-        console.error('# npm run install');
+        console.error('# npm run build');
         console.error('');
-        onerror('Prebuild for current platform (' + currentPlatform + ') not found!');
       }
     }
 
@@ -93,36 +93,6 @@ function install(runtime, abi, platform, arch, cb) {
       cb()
     });
   });
-}
-
-/**
- * Return options for iohook from package.json
- * @return {Object}
- */
-function optionsFromPackage(attempts) {
-  attempts = attempts || 2;
-  if (attempts > 5) {
-    console.log('Can\'t resolve main package.json file');
-    return {
-      targets: [],
-      platforms: [process.platform],
-      arches: [process.arch]
-    }
-  }
-  let mainPath = Array(attempts).join("../");
-  try {
-    const content = fs.readFileSync(path.join(__dirname, mainPath, 'package.json'), 'utf-8');
-    const packageJson = JSON.parse(content);
-    const opts = packageJson.iohook || {};
-    if (!opts.targets) {
-      opts.targets = []
-    }
-    if (!opts.platforms) opts.platforms = [process.platform];
-    if (!opts.arches) opts.arches = [process.arch];
-    return opts
-  } catch (e) {
-    return optionsFromPackage(attempts + 1);
-  }
 }
 
 const options = optionsFromPackage();
