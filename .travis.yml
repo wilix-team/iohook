@@ -39,7 +39,5 @@ install:
   - npm i --ignore-scripts
 
 script:
-  # Compiles libuiohook
-  - npm run build
-  # Builds iohook and optionnaly upload prebuilt binaries to Github
-  - npm run deploy
+  # Builds iohook and upload prebuilt binaries to Github
+  - npm run build:ci

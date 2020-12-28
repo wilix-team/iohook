@@ -24,8 +24,6 @@ install:
   #- npm i -D --ignore-scripts
   - npm i -D --ignore-scripts --expose-internals
   - for /f %%i in ('node -v') do set exact_nodejs_version=%%i
-  - npm run build
-  # - npm run test || travis_terminate 1
-  - npm run deploy
+  - npm run build:ci
 #on_success:
 # - for %%i in (prebuilds\*) do appveyor PushArtifact %%i

@@ -7,7 +7,7 @@
   "scripts": {
     "install": "node install.js",
     "build": "node build.js --upload=false",
-    "deploy": "node build.js",
+    "build:ci": "node build.js --all",
     "test": "jest",
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs"
