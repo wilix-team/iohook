@@ -9,7 +9,7 @@ When you run `npm run build`, it will try to download a prebuilt for your platfo
 :::
 
 ## Linux
-- `sudo apt-get install -y libxkbcommon-x11-0 # Needed on WSL`
+- `sudo apt-get install -y libx11-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev`
 - `npm run build`
 
 ## macOS
