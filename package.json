@@ -1,6 +1,6 @@
 {
   "name": "iohook",
-  "version": "0.8.0",
+  "version": "1.0.0",
   "description": "Node.js global keyboard and mouse hook",
   "main": "index.js",
   "types": "index.d.ts",
