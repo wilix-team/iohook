@@ -5,43 +5,33 @@ sudo: true
 matrix:
   include:
     - os: linux
-      env: ARCH=ia32
-    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
       env: ARCH=x64
     - os: osx
 
 node_js:
-  - 9
+  - 14
 
 before_script:
-#  MacOS 64 bits version
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew list cmake &>/dev/null || brew install cmake; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew list automake &>/dev/null || brew install automake; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew list libtool &>/dev/null || brew install libtool; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew list pkg-config &>/dev/null || brew install pkg-config; fi
 #  Linux 64 bits versions
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get -qq update; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libx11-dev libxtst-dev libxt-dev libx11-xcb-dev; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libx11-dev libx11-dev:i386 libxtst-dev libxt-dev libx11-xcb-dev; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libxkbcommon-dev; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libxkbcommon-x11-dev; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y xorg-dev; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libxcb-xkb-dev; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libxkbfile-dev; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libxinerama-dev; fi
-#  Linux 32 bits version
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "ia32" ]]; then sudo dpkg --add-architecture i386; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "ia32" ]]; then NVER=`node -v`; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "ia32" ]]; then wget http://nodejs.org/dist/${NVER}/node-${NVER}-linux-x86.tar.gz; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "ia32" ]]; then tar xf node-${NVER}-linux-x86.tar.gz; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "ia32" ]]; then export PATH=$(pwd)/node-${NVER}-linux-x86/bin:$PATH; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$ARCH" == "ia32" ]]; then sudo apt-get -y install gcc-multilib g++-multilib; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5; fi
 
 install:
   - npm i --ignore-scripts
 
 script:
-  # Compiles libuiohook
-  - npm run build
-  # Builds iohook and optionnaly upload prebuilt binaries to Github
-  - npm run deploy
+  # Builds iohook and upload prebuilt binaries to Github
+  - npm run build:ci

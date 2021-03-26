@@ -370,7 +370,8 @@ void hook_event_proc(XPointer closeure, XRecordInterceptData *recorded_data) {
 
 			// If the pressed event was not consumed...
 			if (event.reserved ^ 0x01) {
-				for (unsigned int i = 0; i < count; i++) {
+				unsigned int i = 0;
+				for (i = 0; i < count; i++) {
 					// Populate key typed event.
 					event.time = timestamp;
 					event.reserved = 0x00;

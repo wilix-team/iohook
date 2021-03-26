@@ -25,6 +25,15 @@ Found a bug? Have an idea? Feel free to post an [issue](https://github.com/wilix
 
 iohook provides prebuilt version for a bunch of OSes and platforms.
 
+### Linux (including WSL)
+
+```bash
+# On Linux (including WSL) platform, you will need libxkbcommon-x11 installed
+sudo apt-get install -y libxkbcommon-x11-0
+```
+
+### All platforms
+
 ```bash
 npm install iohook --save # or yarn add iohook
 ```
@@ -44,6 +53,9 @@ A. We try to match the currently supported version of both [Node](https://nodejs
 Are you using iohook in your project ? Please tell us in a [PR](https://github.com/wilix-team/iohook/pulls) so we an add it to the list !
 
 - [Cortex](https://crtx.gg/)
+- [Tracklify](https://tracklify.com/)
+- [CrewLink](https://github.com/ottomated/CrewLink)
+- [Runtime](https://github.com/yikuansun/desktopspeedruntools#runtime-speedrun-tools)
 
 ## Contributors
 
@@ -54,4 +66,5 @@ Thanks to _kwhat_ for the [libuiohook](https://github.com/kwhat/libuiohook) proj
 - [djiit](https://github.com/djiit) (project & community help)
 - [ezain](https://github.com/eboukamza) (add feature enable/disable mouse click propagation)
 - [anoadragon453](https://github.com/anoadragon453) (electron 4+ support)
+- [ykhwong](https://github.com/ykhwong) (node-gyp usage, electron 9+ support)
 - All the other contributors. Feel free to extend this list !
