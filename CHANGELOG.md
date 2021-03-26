@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## v0.7.2
+
+- fix: Fix macOS and linux prebuilt.
+
+## v0.7.1
+
+- fix: add missing dependency.
+
+## v0.7.0
+
+- feat: Add support for Electron 9+ and Node 12+.
+- fix: drop cmake-js for node-gyp.
+
+## v0.6.6
+
+- feat: Add support for Electron 9.
+
+## v0.6.5
+
+- feat: Add support for Electron 8.
+
 ## v0.6.4
 
 - feat: Add support for Node 13.
