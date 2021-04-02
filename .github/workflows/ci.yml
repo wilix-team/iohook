@@ -56,8 +56,6 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: 14
-    - name: install Visual Studio 2017 (MSBuild 14.0)
-      run: npm install --global windows-build-tools@4
     - run: dir "C:\Program Files (x86)\MSBuild"
     - run: npm install
     - run: npm run build -- --all
