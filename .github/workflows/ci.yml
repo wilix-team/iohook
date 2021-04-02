@@ -53,6 +53,7 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+    - run: dir "C:\Program Files (x86)\MSBuild"
     - name: setup MSBuild
       uses: microsoft/setup-msbuild@v1
       with:
