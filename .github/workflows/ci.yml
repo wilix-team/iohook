@@ -57,8 +57,7 @@ jobs:
       with:
         node-version: 14
     - name: install Visual Studio 2017
-      run: |
-        choco upgrade visualstudio2017buildtools visualstudio2017-workload-vctools
+      run: choco upgrade visualstudio2017buildtools --version 15.9.34.0 --package-parameters "--allWorkloads"
     - run: npm i --ignore-scripts
     - run: |
         npm config set msvs_version 2017
