@@ -56,7 +56,10 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: 14
-    - run: dir "C:\Program Files (x86)\MSBuild"
+    - run: |
+        dir "C:\Program Files (x86)" || echo ignore error
+        dir "C:\Program Files (x86)\MSBuild" || echo ignore error
+        dir "C:\Program Files (x86)\Microsoft Visual Studio" || echo ignore error
     - run: npm install
     - run: |
         npm config set msbuild_path "C:\Program Files (x86)\MSBuild\15.0\Bin\MSBuild.exe"
