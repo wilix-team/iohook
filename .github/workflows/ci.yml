@@ -15,18 +15,18 @@ jobs:
         node-version: 14
     - name: apt install
       run: |
-        sudo apt update -qq
-        sudo apt install -y software-properties-common
+        sudo apt-get update -qq
+        sudo apt-get install -y software-properties-common
         sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-        sudo apt update -qq
-        sudo apt install -y gcc-5 g++-5
+        sudo apt-get update -qq
+        sudo apt-get install -y gcc-5 g++-5
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
-        sudo apt install -y libx11-dev libx11-dev:i386 libxtst-dev libxt-dev libx11-xcb-dev
-        sudo apt install -y libxkbcommon-dev
-        sudo apt install -y libxkbcommon-x11-dev
-        sudo apt install -y xorg-dev
-        sudo apt install -y libxcb-xkb-dev
-        sudo apt install -y libxkbfile-dev
-        sudo apt install -y libxinerama-dev
+        sudo apt-get install -y libx11-dev libxtst-dev libxt-dev libx11-xcb-dev
+        sudo apt-get install -y libxkbcommon-dev
+        sudo apt-get install -y libxkbcommon-x11-dev
+        sudo apt-get install -y xorg-dev
+        sudo apt-get install -y libxcb-xkb-dev
+        sudo apt-get install -y libxkbfile-dev
+        sudo apt-get install -y libxinerama-dev
     - run: npm i --ignore-scripts
     - run: npm run build
