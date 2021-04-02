@@ -57,7 +57,7 @@ jobs:
       with:
         node-version: 14
     - name: install Visual Studio 2017
-      run: npm install --global windows-build-tools@4
+      run: npm --vs2017 install --global windows-build-tools@4
     - run: npm i --ignore-scripts
     - run: |
         npm config set msvs_version 2017
