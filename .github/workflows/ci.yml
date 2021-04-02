@@ -63,6 +63,7 @@ jobs:
     - run: |
         set PATH=C:\Program Files (x86)\MSBuild\14.0\Bin;%PATH%
         npm run build -- --all
+      shell: cmd
     - name: artifacts
       uses: actions/upload-artifact@v2
       with:
