@@ -56,15 +56,21 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: 14
-    - run: choco install visualstudio2017community --version 15.9.34.0
-    - run: choco install visualstudio2017buildtools --version 15.9.34.0
-    - run: choco install visualstudio2017-workload-vctools --version 1.3.3
+    - name: install Visual Studio 2017
+      run: |
+        choco install visualstudio2017community --version 15.9.34.0
+        choco install visualstudio2017buildtools --version 15.9.34.0
+        choco install visualstudio2017-workload-vctools --version 1.3.3
     - run: |
         dir "C:\Program Files (x86)" || echo ignore error
         dir "C:\Program Files (x86)\MSBuild" || echo ignore error
         dir "C:\Program Files (x86)\Microsoft Visual Studio" || echo ignore error
+        dir "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community" || echo ignore error
+        dir "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild" || echo ignore error
     - run: npm i --ignore-scripts
-    - run: npm run build --loglevel silly -- --all
+    - run: |
+        npm config set msbuild_path "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\MSBuild.exe"
+        npm run build --loglevel silly -- --all
     - name: artifacts
       uses: actions/upload-artifact@v2
       with:
