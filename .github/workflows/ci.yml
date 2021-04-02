@@ -30,3 +30,8 @@ jobs:
         sudo apt-get install -y libxinerama-dev
     - run: npm i --ignore-scripts
     - run: npm run build
+    - name: artifacts
+      uses: actions/upload-artifact@v2
+        with:
+          name: linux-prebuilds
+          path: prebuilds
