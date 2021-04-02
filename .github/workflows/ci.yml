@@ -62,6 +62,7 @@ jobs:
     - run: npm i --ignore-scripts
     - run: |
         set PATH=C:\Program Files (x86)\MSBuild\14.0\Bin;%PATH%
+        for /f %%i in ('node -v') do set exact_nodejs_version=%%i
         npm run build -- --all
       shell: cmd
     - name: artifacts
