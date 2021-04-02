@@ -65,8 +65,10 @@ jobs:
         dir "C:\Program Files (x86)" || echo ignore error
         dir "C:\Program Files (x86)\MSBuild" || echo ignore error
         dir "C:\Program Files (x86)\Microsoft Visual Studio" || echo ignore error
+        dir "C:\Program Files (x86)\Microsoft Visual Studio\2017" || echo ignore error
         dir "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community" || echo ignore error
         dir "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild" || echo ignore error
+      shell: cmd
     - run: npm i --ignore-scripts
     - run: |
         npm config set msbuild_path "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\MSBuild.exe"
