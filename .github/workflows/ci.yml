@@ -49,6 +49,25 @@ jobs:
       with:
         name: macos-prebuilds
         path: prebuilds
+  windows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: setup MSBuild
+      uses: microsoft/setup-msbuild@v1
+      with:
+        vs-version: '[14.0]'    
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 14
+    - run: npm i --ignore-scripts
+    - run: npm run build -- --all
+    - name: artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: windows-latest
+        path: prebuilds
+    
 
 
 
