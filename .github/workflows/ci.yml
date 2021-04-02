@@ -60,9 +60,9 @@ jobs:
       run: npm install --global windows-build-tools@4
     - run: dir "C:\Program Files (x86)\MSBuild"
     - run: npm i --ignore-scripts
-      env:
-        PATH: 'C:\Program Files (x86)\MSBuild\14.0\Bin;${{ env:PATH }}'
-    - run: npm run build -- --all
+    - run: |
+        set PATH=C:\Program Files (x86)\MSBuild\14.0\Bin;%PATH%
+        npm run build -- --all
     - name: artifacts
       uses: actions/upload-artifact@v2
       with:
