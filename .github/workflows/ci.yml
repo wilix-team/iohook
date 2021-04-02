@@ -57,12 +57,10 @@ jobs:
       with:
         node-version: 14
     - run: dir "C:\Program Files (x86)\MSBuild"
-    - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v1.0.2
-      with:
-        vs-version: '[15,)'
     - run: npm install
-    - run: npm run build -- --all
+    - run: |
+        npm config set msbuild_path "C:\Program Files (x86)\MSBuild\15.0\Bin\MSBuild.exe"
+        npm run build -- --all
     - name: artifacts
       uses: actions/upload-artifact@v2
       with:
