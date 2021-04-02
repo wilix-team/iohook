@@ -6,7 +6,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  linux:
     runs-on: ubuntu-16.04
     steps:
     - uses: actions/checkout@v2
@@ -29,11 +29,25 @@ jobs:
         sudo apt-get install -y libxkbfile-dev
         sudo apt-get install -y libxinerama-dev
     - run: npm i --ignore-scripts
-    - run: npm run build
+    - run: npm run build -- --all
     - name: artifacts
       uses: actions/upload-artifact@v2
       with:
         name: linux-prebuilds
+        path: prebuilds
+  macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 14
+    - run: npm i --ignore-scripts
+    - run: npm run build -- --all
+    - name: artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: macos-prebuilds
         path: prebuilds
 
 
