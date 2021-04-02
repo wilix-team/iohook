@@ -59,11 +59,9 @@ jobs:
     - name: install Visual Studio 2017 (MSBuild 14.0)
       run: npm install --global windows-build-tools@4
     - run: dir "C:\Program Files (x86)\MSBuild"
-    - name: setup MSBuild
-      uses: microsoft/setup-msbuild@v1
-      with:
-        vs-version: '[14.0,)'
     - run: npm i --ignore-scripts
+      env:
+        PATH: 'C:\Program Files (x86)\MSBuild\14.0\Bin;${{ env:PATH }}'
     - run: npm run build -- --all
     - name: artifacts
       uses: actions/upload-artifact@v2
