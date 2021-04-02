@@ -53,14 +53,16 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 14
+    - name: setup VS 2017
+      run: npm install --global windows-build-tools@4
     - run: dir "C:\Program Files (x86)\MSBuild"
     - name: setup MSBuild
       uses: microsoft/setup-msbuild@v1
       with:
         vs-version: '[14.0]'    
-    - uses: actions/setup-node@v1
-      with:
-        node-version: 14
     - run: npm i --ignore-scripts
     - run: npm run build -- --all
     - name: artifacts
