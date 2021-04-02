@@ -58,7 +58,6 @@ jobs:
         node-version: 14
     - name: install Visual Studio 2017
       run: |
-        choco install visualstudio2017buildtools --version 15.9.34.0
         npm i -g windows-build-tools
     - run: npm i --ignore-scripts
     - run: |
