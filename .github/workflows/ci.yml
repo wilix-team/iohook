@@ -57,6 +57,7 @@ jobs:
       with:
         node-version: 14
     - run: choco install visualstudio2017community --version 15.9.34.0
+    - run: choco install visualstudio2017buildtools --version 15.9.34.0
     - run: choco install visualstudio2017-workload-vctools --version 1.3.3
     - run: |
         dir "C:\Program Files (x86)" || echo ignore error
