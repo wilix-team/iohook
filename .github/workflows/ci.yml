@@ -57,7 +57,7 @@ jobs:
       with:
         node-version: 14
     - name: install Visual Studio 2017
-      run: choco install visualstudio2017buildtools --version 15.9.34.0 --package-parameters "--allWorkloads --includeRecommended --includeOptional --passive --locale en-US"
+      run: choco install visualstudio2017buildtools --version 15.9.34.0 --params "--allWorkloads --includeRecommended --includeOptional --passive --locale en-US"
     - run: npm i --ignore-scripts
     - run: npm run build --loglevel silly -- --all
     - name: artifacts
