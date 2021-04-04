@@ -56,13 +56,13 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: 14
-    - name: install Visual Studio 2017
-      run: |
-        choco install visualstudio2017buildtools --version 15.9.34.0
-        choco uninstall visualstudio-installer
-        choco install visualstudio2017-workload-vctools --version 1.3.3
+    # - name: install Visual Studio 2017
+    #   run: |
+    #     choco install visualstudio2017buildtools --version 15.9.34.0
+    #     choco uninstall visualstudio-installer
+    #     choco install visualstudio2017-workload-vctools --version 1.3.3
     - run: npm i --ignore-scripts
-    - run: npm run build --loglevel silly -- --all
+    - run: npm run build --loglevel silly -- --all --msvs_version=2019
     - name: artifacts
       uses: actions/upload-artifact@v2
       with:
