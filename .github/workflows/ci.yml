@@ -53,15 +53,16 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        bits: [x86, x64]
+        arch: [i686, x86_64]
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v1
       with:
         node-version: 14
-        architecture: ${{ matrix.bits }}
     - run: npm i --ignore-scripts
-    - run: npm run build --loglevel silly -- --all --msvs_version=2019
+    - run: npm run build -- --all --msvs_version=2019
+      env:
+        ARCH: ${{ matrix.arch }}
     - name: artifacts
       uses: actions/upload-artifact@v2
       with:
