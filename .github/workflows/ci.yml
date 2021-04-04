@@ -51,8 +51,9 @@ jobs:
         path: prebuilds
   windows:
     runs-on: windows-latest
-    matrix:
-      bits: [x86, x64]
+    strategy:
+      matrix:
+        bits: [x86, x64]
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v1
