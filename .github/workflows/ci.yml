@@ -9,7 +9,7 @@ jobs:
   ci:
     strategy:
       matrix:
-        os: [ubuntu-16.04, mac-latest, windows-latest]
+        os: [ubuntu-16.04, macos-latest, windows-latest]
         arch: [x86_64]
         include:
           - os: windows-latest
