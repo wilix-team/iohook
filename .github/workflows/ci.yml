@@ -15,6 +15,7 @@ jobs:
           - os: windows-latest
             arch: i686
     runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }} (${{matrix.arch}})
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v1
