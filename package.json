@@ -1,6 +1,6 @@
 {
   "name": "iohook",
-  "version": "0.7.2",
+  "version": "0.9.0",
   "description": "Node.js global keyboard and mouse hook",
   "main": "index.js",
   "types": "index.d.ts",
@@ -92,16 +92,6 @@
       "electron",
       "11.0.0",
       "85"
-    ],
-    [
-      "node",
-      "8.9.3",
-      "57"
-    ],
-    [
-      "node",
-      "9.2.0",
-      "59"
     ],
     [
       "node",
