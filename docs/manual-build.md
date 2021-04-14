@@ -8,6 +8,11 @@ This is not required for regular users. You should follow this page only if you 
 When you run `npm run build`, it will try to download a prebuilt for your platform/target, and sometime fail if you are building for a recent target. You can safely ignore this step and the associated warning.
 :::
 
+You can build own modules directly in your node_modules under the project. Go to ~/my_project/node_modules/iohook path via terminal.
+Or you can just clone iohook repository and working on it, then copy binnary files to project's node_modules or change download path in iohook and make you own version of module.
+
+Before start, you need install required dependencies for build: 
+
 ## Linux
 - `sudo apt-get install -y libx11-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev`
 - `npm run build`
@@ -18,6 +23,8 @@ When you run `npm run build`, it will try to download a prebuilt for your platfo
 ## Windows
 - Install: msys2 with autotools, pkg-config, libtool, gcc, clang, glib, C++ Build Tools
 - `npm run build`
+
+::: tip NOTICE Build system don't have cross-compilation feature. If you build module on Windows and want run it in MacOS - you need build it on MacOS too. Same for linux and others :::
 
 ## Building for specific versions of node
 
