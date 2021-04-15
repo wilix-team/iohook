@@ -24,6 +24,8 @@ jobs:
     - name: setup linux dependencies
       if: startsWith(matrix.os, 'ubuntu')
       run: |
+        wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6B05F25D762E3157
         sudo apt-get update -qq
         sudo apt-get install -y software-properties-common
         sudo add-apt-repository ppa:ubuntu-toolchain-r/test
