@@ -24,7 +24,6 @@ Before start, you need install required dependencies for build:
 - Install: msys2 with autotools, pkg-config, libtool, gcc, clang, glib, C++ Build Tools
 - `npm run build`
 
-::: tip NOTICE Build system don't have cross-compilation feature. If you build module on Windows and want run it in MacOS - you need build it on MacOS too. Same for linux and others :::
 
 ## Building for specific versions of node
 
