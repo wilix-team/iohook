@@ -10,6 +10,6 @@
   "author": "Aloyan Dmitry",
   "license": "MIT",
   "dependencies": {
-    "electron": "^11.0.0"
+    "electron": "^11.1.0"
   }
 }
