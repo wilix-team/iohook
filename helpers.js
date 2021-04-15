@@ -34,4 +34,12 @@ function optionsFromPackage(attempts) {
   }
 }
 
-module.exports = { optionsFromPackage };
+function printManualBuildParams() {
+  const runtime = process.versions['electron'] ? 'electron' : 'node';
+  const essential = runtime + '-v' + process.versions.modules + '-' + process.platform + '-' + process.arch;
+  const modulePath = path.join(__dirname, 'builds', essential, 'build', 'Release', 'iohook.node');
+  console.info(`Runtime: ${runtime} ABI: ${process.versions.modules} Platform: ${process.platform} ARCH: ${process.arch}`);
+  console.info('The path is:', modulePath);
+}
+
+module.exports = { optionsFromPackage, printManualBuildParams };
