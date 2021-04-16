@@ -23,7 +23,8 @@
 						"-lX11",
 						"-lX11-xcb",
 						"-lxkbcommon-x11",
-						"-lxkbcommon"
+						"-lxkbcommon",
+						"-lXtst"
 				]
 		},
 		"defines": [
