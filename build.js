@@ -93,7 +93,7 @@ function initBuild() {
 
     return uploadFiles(files)
   });
-  
+
   cpGyp();
 }
 
@@ -145,7 +145,7 @@ function build(runtime, version, abi) {
       }
     }
 
-    console.log('Compiling iohook for ' + runtime + ' v' + version + '>>>>');
+    console.log('Building iohook for ' + runtime + ' v' + version + '>>>>');
   if (process.platform === 'win32') {
     if (version.split('.')[0] >= 4) {
       process.env.msvs_toolset = 15

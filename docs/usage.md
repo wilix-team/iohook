@@ -24,6 +24,26 @@ Checkout your ABI for [node.js](https://nodejs.org/en/download/releases/) or [el
 }
 ```
 
+Or you can specify targets as objects:
+
+```json
+"iohook": {
+  "targets": [
+    {
+      "target": "node",
+      "abi": "72", 
+      "platform": "darwin", 
+      "arch": "x64"
+    },
+    {
+      "target": "electron",
+      "abi": "85", 
+      "platform": "win32", 
+      "arch": "ia32"
+    },
+  ],
+```
+
 ::: tip
 if you use a two-package.json structure, add this to application package.json.
 :::
