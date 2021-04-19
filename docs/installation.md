@@ -17,6 +17,7 @@ iohook currently provides prebuilt versions for the following runtimes:
   - 9.X.X (ABI 80)
   - 10.X.X (ABI 82)
   - 11.X.X (ABI 85)
+  - 12.X.X (ABI 87)
 
 - Node.js:
   - 8.9.X (ABI 57)

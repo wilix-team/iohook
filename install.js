@@ -66,7 +66,7 @@ function install(runtime, abi, platform, arch, cb) {
         onerror(error);
       } else {
         console.error('Prebuild for current platform (' + currentPlatform + ') not found!');
-        console.error('Try to compile for your platform:');
+        console.error('Try to build for your platform manually:');
         console.error('# cd node_modules/iohook;');
         console.error('# npm run build');
         console.error('');
@@ -96,10 +96,10 @@ function install(runtime, abi, platform, arch, cb) {
 }
 
 const options = optionsFromPackage();
+
 if (process.env.npm_config_targets) {
   options.targets = options.targets.concat(process.env.npm_config_targets.split(','));
 }
-options.targets = options.targets.map(targetStr => targetStr.split('-'));
 if (process.env.npm_config_targets === 'all') {
   options.targets = supportedTargets.map(arr => [arr[0], arr[2]]);
   options.platforms = ['win32', 'darwin', 'linux'];
@@ -115,7 +115,17 @@ if (process.env.npm_config_arches) {
 // Choice prebuilds for install
 if (options.targets.length > 0) {
   let chain = Promise.resolve();
-  options.targets.forEach(function(parts) {
+  options.targets.forEach(function(target) {
+    if (typeof target === 'object') {
+      chain = chain.then(function() {
+        return new Promise(function(resolve) {
+          console.log(target.runtime, target.abi, target.platform, target.arch);
+          install(target.runtime, target.abi, target.platform, target.arch, resolve)
+        })
+      });
+      return;
+    }
+    let parts = target.split('-');
     let runtime = parts[0];
     let abi = parts[1];
     options.platforms.forEach(function(platform) {
