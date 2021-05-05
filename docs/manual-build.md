@@ -48,10 +48,10 @@ To see more examples of what values to use, view iohook's [package.json file](ht
 
 * `--all` tells the script to build all supported targets. Useful for CI.
 
-Typically `build.js` is used as part of iohook's CI in order to upload newly-built binaries to NPM. This is thus the default behavior of the script. To prevent this, supply the `--no-upload` flag:
+Typically `build.js` is used as part of iohook's CI in order to upload newly-built binaries to NPM. This is thus the default behavior of the script. To prevent this, supply the `--upload=false` flag:
 
 ```
-node build.js --no-upload
+node build.js --upload=false
 ```
 
 # Testing
