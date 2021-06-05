@@ -1,0 +1,82 @@
+on: [release, workflow_dispatch]
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y libx11-dev libxtst-dev libxt-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev xorg-dev libxcb-xkb-dev libxkbfile-dev libxinerama-dev
+          npm install --ignore-scripts
+      - name: Change repository
+        run: sed -i 's/wilix-team/${{ github.actor }}/g' package.json
+      - name: Build
+        run: npm run build:ci
+        env:
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  osx:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+      - name: Change repository
+        run: sed -i'.bak' 's/wilix-team/${{ github.actor }}/g' package.json
+      - name: Build
+        run: npm run build:ci
+        env:
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  windows:
+    runs-on: windows-2016
+    strategy:
+      matrix:
+        arch: [x86_64, i686]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - run: set ARCH=${{ matrix.arch }}
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+      - name: Change repository
+        run: ((Get-Content -path package.json -Raw) -replace 'wilix-team','${{ github.actor }}') | Set-Content -Path package.json
+      - name: Set Windows environment
+        run: |
+          echo 'GYP_MSVS_VERSION=2015' >> $Env:GITHUB_ENV
+          echo 'GYP_MSVS_OVERRIDE_PATH=C:\\Dummy' >> $Env:GITHUB_ENV
+      - name: Build
+        run: npm run build:ci
+        env:
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  npm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y libx11-dev libxtst-dev libxt-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev xorg-dev libxcb-xkb-dev libxkbfile-dev libxinerama-dev
+      - name: Build
+        run: |
+          npm install --ignore-scripts
+          npm run build
+      - uses: actions/setup-node@v2
+        with:
+          registry-url: https://npm.pkg.github.com
+          scope: "@${{ github.actor }}"
+      - name: Change repository
+        run: |
+          sed -i 's,"name": "iohook","name": "@${{ github.actor }}/iohook",' package.json
+          sed -i 's,wilix-team,${{ github.actor }},g' package.json
+          cat package.json
+      - name: Publish
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
