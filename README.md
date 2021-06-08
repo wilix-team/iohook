@@ -1,7 +1,6 @@
 # iohook
 
-[![Build status](https://ci.appveyor.com/api/projects/status/2ntnlh6k953he5is?svg=true)](https://ci.appveyor.com/project/Djiit/iohook)
-[![Build Status](https://travis-ci.org/wilix-team/iohook.svg?branch=master)](https://travis-ci.org/wilix-team/iohook)
+[![Publish workflow](https://github.com/let-value/iohook/actions/workflows/publish.yml/badge.svg)](https://github.com/let-value/iohook/actions/workflows/publish.yml)
 [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/iohookjs/Lobby)
 [![NPM version](https://img.shields.io/npm/v/iohook.svg)](https://www.npmjs.com/package/iohook)
 
@@ -11,15 +10,15 @@ Node.js global native keyboard and mouse listener.
 
 This module can handle keyboard and mouse events via native hooks inside and outside your JavaScript/TypeScript application.
 
-Found a bug? Have an idea? Feel free to post an [issue](https://github.com/wilix-team/iohook/issues) or submit a [PR](https://github.com/wilix-team/iohook/pulls).
+Found a bug? Have an idea? Feel free to post an [issue](https://github.com/let-value/iohook/issues) or submit a [PR](https://github.com/let-value/iohook/pulls).
 
-**Check out the [documentation](https://wilix-team.github.io/iohook).**
+**Check out the [documentation](https://let-value.github.io/iohook).**
 
 ## Platform support
 
-- Versions >= 0.6.0 support only officially supported platforms versions.
-- Versions 0.5.X are the last to support Electron < 4.0.0
-- Versions 0.4.X are the last to support for Node < 8.0 and Electron < 2.0.0
+-   Versions >= 0.6.0 support only officially supported platforms versions.
+-   Versions 0.5.X are the last to support Electron < 4.0.0
+-   Versions 0.4.X are the last to support for Node < 8.0 and Electron < 2.0.0
 
 ## Installation
 
@@ -50,21 +49,21 @@ A. We try to match the currently supported version of both [Node](https://nodejs
 
 ## Apps
 
-Are you using iohook in your project ? Please tell us in a [PR](https://github.com/wilix-team/iohook/pulls) so we an add it to the list !
+Are you using iohook in your project ? Please tell us in a [PR](https://github.com/let-value/iohook/pulls) so we an add it to the list !
 
-- [Cortex](https://crtx.gg/)
-- [Tracklify](https://tracklify.com/)
-- [CrewLink](https://github.com/ottomated/CrewLink)
-- [Runtime](https://github.com/yikuansun/desktopspeedruntools#runtime-speedrun-tools)
+-   [Cortex](https://crtx.gg/)
+-   [Tracklify](https://tracklify.com/)
+-   [CrewLink](https://github.com/ottomated/CrewLink)
+-   [Runtime](https://github.com/yikuansun/desktopspeedruntools#runtime-speedrun-tools)
 
 ## Contributors
 
 Thanks to _kwhat_ for the [libuiohook](https://github.com/kwhat/libuiohook) project and [ayoubserti](https://github.com/ayoubserti) for the first iohook prototype.
 
-- [vespakoen](https://github.com/vespakoen) (prebuild system implementation)
-- [matthewshirley](https://github.com/matthewshirley) (Windows prebuild fix)
-- [djiit](https://github.com/djiit) (project & community help)
-- [ezain](https://github.com/eboukamza) (add feature enable/disable mouse click propagation)
-- [anoadragon453](https://github.com/anoadragon453) (electron 4+ support)
-- [ykhwong](https://github.com/ykhwong) (node-gyp usage, electron 9+ support)
-- All the other contributors. Feel free to extend this list !
+-   [vespakoen](https://github.com/vespakoen) (prebuild system implementation)
+-   [matthewshirley](https://github.com/matthewshirley) (Windows prebuild fix)
+-   [djiit](https://github.com/djiit) (project & community help)
+-   [ezain](https://github.com/eboukamza) (add feature enable/disable mouse click propagation)
+-   [anoadragon453](https://github.com/anoadragon453) (electron 4+ support)
+-   [ykhwong](https://github.com/ykhwong) (node-gyp usage, electron 9+ support)
+-   All the other contributors. Feel free to extend this list !

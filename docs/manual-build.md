@@ -40,9 +40,9 @@ For example, to build for Electron v4.0.4, you would run:
 node build.js --runtime electron --version 4.0.4 --abi 69
 ```
 
-To see more examples of what values to use, view iohook's [package.json file](https://github.com/wilix-team/iohook/blob/master/package.json), under `supportedTargets`. The three values in each block are runtime, version and abi respectively.
+To see more examples of what values to use, view iohook's [package.json file](https://github.com/let-value/iohook/blob/master/package.json), under `supportedTargets`. The three values in each block are runtime, version and abi respectively.
 
-`--runtime`, `--version` and `--abi` must all be supplied to build for a specific node version. If they are not supplied, `build.js` will build for the versions specified under `supportedTargets` in your `package.json` (again, see iohook's [package.json file](https://github.com/wilix-team/iohook/blob/master/package.json) for details).
+`--runtime`, `--version` and `--abi` must all be supplied to build for a specific node version. If they are not supplied, `build.js` will build for the versions specified under `supportedTargets` in your `package.json` (again, see iohook's [package.json file](https://github.com/let-value/iohook/blob/master/package.json) for details).
 
 * `--no-upload` tells the script not to attempt to upload the built files to GitHub afterwards
 
