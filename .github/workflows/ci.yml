@@ -1,7 +1,8 @@
-name: Publish
+name: CI
 on:
-  release:
-  workflow_dispatch:
+  push:
+  pull_request:
+    branches: [master]
 
 jobs:
   publish:
@@ -25,7 +26,6 @@ jobs:
       - name: Install dependencies
         run: npm install --ignore-scripts
       - name: Build & publish
-        run: npm run build:ci
+        run: npm run build --all
         env:
           ARCH: ${{ matrix.arch }}
-          GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
