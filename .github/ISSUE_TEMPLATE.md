@@ -1,4 +1,4 @@
-<!--- Provide a general summary of the issue in the Title above -->
+<!--- Provide a good description of the issue in the Title -->
 
 ## Expected Behavior
 <!--- If you're describing a bug, tell us what should happen -->
@@ -9,8 +9,8 @@
 <!--- If suggesting a change/improvement, explain the difference from current behavior -->
 
 ## Possible Solution
-<!--- Not obligatory, but suggest a fix/reason for the bug, -->
-<!--- or ideas how to implement the addition or change -->
+<!--- Optional, but suggest a fix/reason for the bug, -->
+<!--- or your suggestions to implement the addition or change -->
 
 ## Steps to Reproduce (for bugs)
 <!--- Provide a link to a live example, or an unambiguous set of steps to -->
@@ -26,7 +26,7 @@
 
 ## Your Environment
 <!--- Include as many relevant details about the environment you experienced the bug in -->
-* Version used:
-* Environment name and version (e.g. Chrome 39, node.js 5.4):
+* IOHook Version:
+* Environment name and version (e.g. Chrome 39, node.js 5.4, electron 11.2):
 * Operating System and version (desktop or mobile):
-* Link to your project:
+* Optional Link to your project:

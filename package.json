@@ -2,20 +2,29 @@
   "name": "iohook",
   "version": "0.9.1",
   "description": "Node.js global keyboard and mouse hook",
+  "author": "Aloyan Dmitry",
+  "license": "MIT",
+  "homepage": "https://github.com/wilix-team/iohook",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wilix-team/iohook.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wilix-team/iohook/issues"
+  },
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
     "install": "node install.js",
     "build": "node build.js --upload=false",
     "build:ci": "node build.js --all",
+    "build:print": "node -e 'require(\"./helpers\").printManualBuildParams()'",
     "test": "jest",
+    "lint:dry": "eslint --ignore-path .gitignore .",
+    "lint:fix": "eslint --ignore-path .gitignore --fix . && prettier --ignore-path .gitignore --write .",
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs",
-    "build:print": "node -e 'require(\"./helpers\").printManualBuildParams()'"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/wilix-team/iohook.git"
+    "docs:deploy": "npm run docs:build && gh-pages -d docs/.vuepress/dist/"
   },
   "keywords": [
     "hook",
@@ -28,12 +37,29 @@
     "global keypress",
     "shortcut"
   ],
-  "author": "Aloyan Dmitry",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/wilix-team/iohook/issues"
+  "lint-staged": {
+    "examples/**/*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "docs/**/*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "test/**/*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   },
-  "homepage": "https://github.com/wilix-team/iohook#readme",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "dependencies": {
     "nugget": "^2.0.1",
     "pump": "^1.0.3",
@@ -51,7 +77,15 @@
     "prebuild": "^10.0.1",
     "robotjs": "^0.6.0",
     "tar": "^6.0.5",
-    "vuepress": "^1.7.1"
+    "gh-pages": "^3.2.0",
+    "vuepress": "^1.7.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-only-warn": "^1.0.2",
+    "eslint-plugin-prettier": "^3.4.0",
+    "htmlhint": "^0.15.1",
+    "husky": "^6.0.0",
+    "lint-staged": "^11.0.0",
+    "prettier": "^2.3.1"
   },
   "supportedTargets": [
     [

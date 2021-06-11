@@ -15,24 +15,30 @@ Before start, you need install required dependencies for build:
 
 ## Linux
 - `sudo apt-get install -y libx11-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev`
+- `sudo apt-get install libxtst-dev libpng++-dev`
+  - These dependencies belong to [robotjs]. You would only need them if there is no `robotjs` prebuilt for your platform. If so, the `npm install` command will fail without these dependencies.
+- `npm install`
 - `npm run build`
 
 ## macOS
+- Install: Xcode Command Line Tools. It is required for `robotjs`
+- `npm install`
 - `npm run build`
 
 ## Windows
-- Install: msys2 with autotools, pkg-config, libtool, gcc, clang, glib, C++ Build Tools
+- Install: `msys2` with `autotools`, `pkg-config`, `libtool`, `gcc`, `clang`, `glib`, `C++ Build Tools`
+- `npm install`
 - `npm run build`
 
 
 ## Building for specific versions of node
 
-Running `npm run build` will detect your platform and dump a build into `./builds`. You can also use `build.js` which features the following
-command line options:
+Running `npm run build` will detect your platform and build into `./builds`. You can also use `build.js` which features the following
+command line arguments:
 
-* `--runtime` specifies whether to build for Electron or plain node
-* `--version` specifies what version of Electron/node to build for
-* `--abi` specifies what [ABI version](https://nodejs.org/en/docs/guides/abi-stability/) of Electron/node to build against
+* `--runtime` specifies whether to build for Electron or plain node.
+* `--version` specifies which version of Electron/node to build for.
+* `--abi` specifies which [ABI version](https://nodejs.org/en/docs/guides/abi-stability/) of Electron/node to build against.
 
 For example, to build for Electron v4.0.4, you would run:
 
@@ -44,7 +50,7 @@ To see more examples of what values to use, view iohook's [package.json file](ht
 
 `--runtime`, `--version` and `--abi` must all be supplied to build for a specific node version. If they are not supplied, `build.js` will build for the versions specified under `supportedTargets` in your `package.json` (again, see iohook's [package.json file](https://github.com/wilix-team/iohook/blob/master/package.json) for details).
 
-* `--upload=false` tells the script not to attempt to upload the built files to GitHub afterwards
+* `--upload=false` tells the script not to attempt to upload the built files to GitHub afterwards.
 
 * `--all` tells the script to build all supported targets. Useful for CI.
 
@@ -59,5 +65,5 @@ node build.js --upload=false
 iohook uses Jest for automated testing. To execute tests, run `npm run test` in your console.
 
 ::: WARNING
-It is important you don't press any buttons on your keyboard, don't use your mouse nor the scroll wheel. Tests depend on native events fired by the real keyboard and mouse. Interrupting them will cause tests to fail.
+It is important you don't press any buttons on your keyboard, don't use your mouse, or the scroll wheel. Tests depend on native events fired by the real keyboard and mouse. Interrupting them will cause tests to fail.
 :::
