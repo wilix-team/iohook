@@ -1,5 +1,5 @@
 const path = require('path');
-const fs = require('fs')
+const fs = require('fs');
 
 /**
  * Return options for iohook from package.json
@@ -15,11 +15,11 @@ function optionsFromPackage(attempts) {
       arches: [process.arch],
     };
   }
-  let mainPath = Array(attempts).join("../");
+  let mainPath = Array(attempts).join('../');
   try {
     const content = fs.readFileSync(
-      path.join(__dirname, mainPath, "package.json"),
-      "utf-8"
+      path.join(__dirname, mainPath, 'package.json'),
+      'utf-8'
     );
     const packageJson = JSON.parse(content);
     const opts = packageJson.iohook || {};
@@ -36,9 +36,25 @@ function optionsFromPackage(attempts) {
 
 function printManualBuildParams() {
   const runtime = process.versions['electron'] ? 'electron' : 'node';
-  const essential = runtime + '-v' + process.versions.modules + '-' + process.platform + '-' + process.arch;
-  const modulePath = path.join(__dirname, 'builds', essential, 'build', 'Release', 'iohook.node');
-  console.info(`Runtime: ${runtime} ABI: ${process.versions.modules} Platform: ${process.platform} ARCH: ${process.arch}`);
+  const essential =
+    runtime +
+    '-v' +
+    process.versions.modules +
+    '-' +
+    process.platform +
+    '-' +
+    process.arch;
+  const modulePath = path.join(
+    __dirname,
+    'builds',
+    essential,
+    'build',
+    'Release',
+    'iohook.node'
+  );
+  console.info(
+    `Runtime: ${runtime} ABI: ${process.versions.modules} Platform: ${process.platform} ARCH: ${process.arch}`
+  );
   console.info('The path is:', modulePath);
 }
 

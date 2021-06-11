@@ -1,6 +1,6 @@
 'use strict';
 
-const {app} = require('electron');
+const { app } = require('electron');
 const ioHook = require('../../index');
 
 function eventHandler(event) {
@@ -8,7 +8,14 @@ function eventHandler(event) {
 }
 
 app.on('ready', () => {
-  console.log("node: "+process.versions.node+", chromium: "+process.versions.chrome+", electron: "+process.versions.electron); 
+  console.log(
+    'node: ' +
+      process.versions.node +
+      ', chromium: ' +
+      process.versions.chrome +
+      ', electron: ' +
+      process.versions.electron
+  );
   ioHook.start(true);
   ioHook.on('mouseclick', eventHandler);
   ioHook.on('keydown', eventHandler);

@@ -1,5 +1,7 @@
 # Usage
+
 ## Usage with Electron
+
 Before installing this module, you will need to set a runtime version in your `package.json`.
 
 When developing with webpack, you will need the Node.js runtime. In production, your Electron app will need the Electron version.
@@ -31,14 +33,14 @@ Or you can specify targets as objects:
   "targets": [
     {
       "target": "node",
-      "abi": "72", 
-      "platform": "darwin", 
+      "abi": "72",
+      "platform": "darwin",
       "arch": "x64"
     },
     {
       "target": "electron",
-      "abi": "85", 
-      "platform": "win32", 
+      "abi": "85",
+      "platform": "win32",
       "arch": "ia32"
     },
   ],
@@ -49,6 +51,7 @@ if you use a two-package.json structure, add this to application package.json.
 :::
 
 ## Usage in a generic Node application
+
 Here is a simple example :
 
 ```javascript
@@ -56,7 +59,7 @@ Here is a simple example :
 
 const ioHook = require('iohook');
 
-ioHook.on('mousemove', event => {
+ioHook.on('mousemove', (event) => {
   console.log(event); // { type: 'mousemove', x: 700, y: 400 }
 });
 
@@ -104,6 +107,7 @@ Triggered when user releases a key.
 ### mouseclick
 
 Triggered when user clicks a mouse button.
+
 ```js
 { button: 1, clicks: 1, x: 545, y: 696, type: 'mouseclick' }
 ```
@@ -162,18 +166,22 @@ In the next example we register CTRL+F7 shortcut (in MacOS. For other OSes, the 
 
 ```js
 const id = ioHook.registerShortcut([29, 65], (keys) => {
-  console.log('Shortcut called with keys:', keys)
+  console.log('Shortcut called with keys:', keys);
 });
 ```
 
 We can also specify a callback to run when our shortcut has been released by specifying a third function argument.
 
 ```js
-const id = ioHook.registerShortcut([29, 65], (keys) => {
-  console.log('Shortcut called with keys:', keys)
-}, (keys) => {
-  console.log('Shortcut has been released!')
-});
+const id = ioHook.registerShortcut(
+  [29, 65],
+  (keys) => {
+    console.log('Shortcut called with keys:', keys);
+  },
+  (keys) => {
+    console.log('Shortcut has been released!');
+  }
+);
 ```
 
 ### unregisterShortcut(shortcutId)
@@ -195,6 +203,7 @@ ioHook.unregisterShortcutByKeys(keys);
 ### unregisterAllShortcuts()
 
 You can also unregister all shortcuts.
+
 ```js
 ioHook.unregisterAllShortcuts();
 ```

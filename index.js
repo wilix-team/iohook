@@ -2,8 +2,22 @@ const EventEmitter = require('events');
 const path = require('path');
 
 const runtime = process.versions['electron'] ? 'electron' : 'node';
-const essential = runtime + '-v' + process.versions.modules + '-' + process.platform + '-' + process.arch;
-const modulePath = path.join(__dirname, 'builds', essential, 'build', 'Release', 'iohook.node');
+const essential =
+  runtime +
+  '-v' +
+  process.versions.modules +
+  '-' +
+  process.platform +
+  '-' +
+  process.arch;
+const modulePath = path.join(
+  __dirname,
+  'builds',
+  essential,
+  'build',
+  'Release',
+  'iohook.node'
+);
 if (process.env.DEBUG) {
   console.info('Loading native binary:', modulePath);
 }
@@ -18,7 +32,7 @@ const events = {
   8: 'mouseup',
   9: 'mousemove',
   10: 'mousedrag',
-  11: 'mousewheel'
+  11: 'mousewheel',
 };
 
 class IOHook extends EventEmitter {
@@ -68,9 +82,9 @@ class IOHook extends EventEmitter {
   registerShortcut(keys, callback, releaseCallback) {
     let shortcut = {};
     let shortcutId = Date.now() + Math.random();
-    keys.forEach(keyCode => {
+    keys.forEach((keyCode) => {
       shortcut[keyCode] = false;
-    })
+    });
     shortcut.id = shortcutId;
     shortcut.callback = callback;
     shortcut.releaseCallback = releaseCallback;
@@ -105,10 +119,10 @@ class IOHook extends EventEmitter {
           // Convert to string
           keyCodes[index] = key.toString();
         }
-      })
+      });
 
       // Check if this is our shortcut
-      Object.keys(shortcut).every(key => {
+      Object.keys(shortcut).every((key) => {
         if (key === 'callback' || key === 'id') return;
 
         // Remove all given keys from keyCodes
@@ -211,7 +225,10 @@ class IOHook extends EventEmitter {
       this.emit(events[msg.type], event);
 
       // If there is any registered shortcuts then handle them.
-      if ((event.type === 'keydown' || event.type === 'keyup') && iohook.shortcuts.length > 0) {
+      if (
+        (event.type === 'keydown' || event.type === 'keyup') &&
+        iohook.shortcuts.length > 0
+      ) {
         this._handleShortcut(event);
       }
     }
@@ -311,7 +328,7 @@ class IOHook extends EventEmitter {
     let activatedShortcuts = this.activatedShortcuts;
 
     if (event.type === 'keydown') {
-      this.shortcuts.forEach(shortcut => {
+      this.shortcuts.forEach((shortcut) => {
         if (shortcut[event[this.eventProperty]] !== undefined) {
           // Mark this key as currently being pressed
           shortcut[event[this.eventProperty]] = true;
@@ -320,8 +337,9 @@ class IOHook extends EventEmitter {
           let callme = true;
 
           // Iterate through each keyboard key in this shortcut
-          Object.keys(shortcut).forEach(key => {
-            if (key === 'callback' || key === 'releaseCallback' || key === 'id') return;
+          Object.keys(shortcut).forEach((key) => {
+            if (key === 'callback' || key === 'releaseCallback' || key === 'id')
+              return;
 
             // If one of the keys aren't pressed...
             if (shortcut[key] === false) {
@@ -350,7 +368,7 @@ class IOHook extends EventEmitter {
       });
     } else if (event.type === 'keyup') {
       // Mark this key as currently not being pressed in all of our shortcuts
-      this.shortcuts.forEach(shortcut => {
+      this.shortcuts.forEach((shortcut) => {
         if (shortcut[event[this.eventProperty]] !== undefined) {
           shortcut[event[this.eventProperty]] = false;
         }
@@ -359,14 +377,15 @@ class IOHook extends EventEmitter {
       // Check if any of our currently pressed shortcuts have been released
       // "released" means that all of the keys that the shortcut defines are no
       // longer being pressed
-      this.activatedShortcuts.forEach(shortcut => {
+      this.activatedShortcuts.forEach((shortcut) => {
         if (shortcut[event[this.eventProperty]] === undefined) return;
 
         let shortcutReleased = true;
         let keysTmpArray = [];
-        Object.keys(shortcut).forEach(key => {
-          if (key === 'callback' || key === 'releaseCallback' || key === 'id') return;
-          keysTmpArray.push(key)
+        Object.keys(shortcut).forEach((key) => {
+          if (key === 'callback' || key === 'releaseCallback' || key === 'id')
+            return;
+          keysTmpArray.push(key);
 
           // If any key is true, and thus still pressed, the shortcut is still
           // being held

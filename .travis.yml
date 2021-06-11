@@ -18,7 +18,7 @@ node_js:
   - 14
 
 before_script:
-#  Linux 64 bits versions
+  #  Linux 64 bits versions
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6B05F25D762E3157; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get -qq update; fi

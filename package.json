@@ -20,8 +20,8 @@
     "build:ci": "node build.js --all",
     "build:print": "node -e 'require(\"./helpers\").printManualBuildParams()'",
     "test": "jest",
-    "lint:dry": "eslint --ignore-path .gitignore .",
-    "lint:fix": "eslint --ignore-path .gitignore --fix . && prettier --ignore-path .gitignore --write .",
+    "lint:dry": "eslint --ignore-path .lintignore .",
+    "lint:fix": "eslint --ignore-path .lintignore --fix . && prettier --ignore-path .lintignore --write .",
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs",
     "docs:deploy": "npm run docs:build && gh-pages -d docs/.vuepress/dist/"
@@ -79,6 +79,7 @@
     "tar": "^6.0.5",
     "gh-pages": "^3.2.0",
     "vuepress": "^1.7.1",
+    "eslint": "^7.28.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-only-warn": "^1.0.2",
     "eslint-plugin-prettier": "^3.4.0",

@@ -1,5 +1,5 @@
 os: Visual Studio 2017
-version: "{build}"
+version: '{build}'
 build: off
 skip_tags: true
 
