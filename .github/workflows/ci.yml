@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  ci:
+    strategy:
+      matrix:
+        os: [ubuntu-16.04, macos-latest, windows-latest]
+        arch: [x86_64]
+        include:
+          - os: windows-latest
+            arch: i686
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }} (${{matrix.arch}})
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 14
+    - name: setup linux dependencies
+      if: startsWith(matrix.os, 'ubuntu')
+      run: |
+        wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6B05F25D762E3157
+        sudo apt-get update -qq
+        sudo apt-get install -y software-properties-common
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+        sudo apt-get update -qq
+        sudo apt-get install -y gcc-5 g++-5
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
+        sudo apt-get install -y libx11-dev libxtst-dev libxt-dev libx11-xcb-dev
+        sudo apt-get install -y libxkbcommon-dev
+        sudo apt-get install -y libxkbcommon-x11-dev
+        sudo apt-get install -y xorg-dev
+        sudo apt-get install -y libxcb-xkb-dev
+        sudo apt-get install -y libxkbfile-dev
+        sudo apt-get install -y libxinerama-dev
+    - run: npm i --ignore-scripts
+    - name: build all prebuilds
+      run: npm run build -- --all --msvs_version=2019
+      if: startsWith(github.ref, 'refs/tags') != true
+      env:
+        ARCH: ${{ matrix.arch }}
+    - name: build and publish all prebuilds on tags
+      run: npm run build:ci -- --msvs_version=2019
+      if: startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request'
+      env:
+        GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: prebuilds
+        path: prebuilds
+
+
+
+
+
+
