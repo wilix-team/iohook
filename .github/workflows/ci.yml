@@ -29,13 +29,7 @@ jobs:
       - name: Setup Linux Dependencies
         if: startsWith(matrix.os, 'ubuntu')
         run: |
-          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6B05F25D762E3157
-          sudo apt-get update -qq
-          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-          sudo apt-get update -qq
-          sudo apt-get install -y software-properties-common gcc-5 g++-5 libx11-dev libxtst-dev libxt-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev xorg-dev libxcb-xkb-dev libxkbfile-dev libxinerama-dev
-          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
+          sudo apt-get install -y software-properties-common libx11-dev libxtst-dev libxt-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev xorg-dev libxcb-xkb-dev libxkbfile-dev libxinerama-dev
 
       - name: Install Packages
         run: npm i --ignore-scripts
