@@ -1,0 +1,31 @@
+name: Publish
+on:
+  release:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-2016]
+        arch: [x86_64]
+        include:
+          - os: windows-2016
+            arch: i686
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }} (${{matrix.arch}})
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - name: Install linux dependencies
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y libx11-dev libxtst-dev libxt-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev xorg-dev libxcb-xkb-dev libxkbfile-dev libxinerama-dev
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+      - name: Build & publish
+        run: npm run build:ci
+        env:
+          ARCH: ${{ matrix.arch }}
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}

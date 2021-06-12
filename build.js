@@ -194,24 +194,11 @@ function build(runtime, version, abi) {
 
 function tarGz(runtime, abi) {
   const FILES_TO_ARCHIVE = {
-    win32: ['build/Release/iohook.node', 'build/Release/uiohook.dll'],
-    linux: ['build/Release/iohook.node', 'build/Release/uiohook.so'],
-    darwin: ['build/Release/iohook.node', 'build/Release/uiohook.dylib'],
-  };
-  const tarPath =
-    'prebuilds/' +
-    pkg.name +
-    '-v' +
-    pkg.version +
-    '-' +
-    runtime +
-    '-v' +
-    abi +
-    '-' +
-    process.platform +
-    '-' +
-    arch +
-    '.tar.gz';
+    "win32": ['build/Release/iohook.node', 'build/Release/uiohook.dll'],
+    "linux": ['build/Release/iohook.node', 'build/Release/uiohook.so'],
+    "darwin": ['build/Release/iohook.node', 'build/Release/uiohook.dylib'],
+  }
+  const tarPath = 'prebuilds/iohook-v' + pkg.version + '-' + runtime + '-v' + abi + '-' + process.platform + '-' + arch + '.tar.gz';
 
   files.push(tarPath);
 
@@ -238,7 +225,8 @@ function uploadFiles(files) {
     let opts = {
       pkg: pkg,
       files: files,
-      upload: process.env.GITHUB_ACCESS_TOKEN,
+      "tag-prefix": "v",
+      upload: process.env.GITHUB_ACCESS_TOKEN
     };
     upload(opts, function (err, result) {
       if (err) {

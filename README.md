@@ -2,8 +2,7 @@
 
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 [![GitHub Super-Linter](https://github.com/wilix-team/iohook/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
-[![Build status](https://ci.appveyor.com/api/projects/status/2ntnlh6k953he5is?svg=true)](https://ci.appveyor.com/project/Djiit/iohook)
-[![Build Status](https://travis-ci.org/wilix-team/iohook.svg?branch=master)](https://travis-ci.org/wilix-team/iohook)
+[![Publish workflow](https://github.com/wilix-team/iohook/actions/workflows/publish.yml/badge.svg)](https://github.com/wilix-team/iohook/actions/workflows/publish.yml)
 [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/iohookjs/Lobby)
 [![NPM version](https://img.shields.io/npm/v/iohook.svg)](https://www.npmjs.com/package/iohook)
 
