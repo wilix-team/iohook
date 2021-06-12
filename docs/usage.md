@@ -1,10 +1,12 @@
 # Usage
 
-## Usage with Electron
+## Electron 
 
 Before installing this module, you will need to set a runtime version in your `package.json`.
 
-When developing with webpack, you will need the Node.js runtime. In production, your Electron app will need the Electron version.
+When developing with webpack, you will need the Node.js runtime.
+
+In production, your Electron app will need the Electron version.
 
 Checkout your ABI for [node.js](https://nodejs.org/en/download/releases/) or [electron](https://www.npmjs.com/package/electron-abi). The example below uses Node.js v12.X and Electron v11.X.
 
@@ -50,7 +52,7 @@ Or you can specify targets as objects:
 if you use a two-package.json structure, add this to application package.json.
 :::
 
-## Usage in a generic Node application
+## Generic Node application
 
 Here is a simple example :
 
@@ -68,6 +70,9 @@ ioHook.start();
 
 // Alternatively, pass true to start in DEBUG mode.
 ioHook.start(true);
+
+// False to disable DEBUG. Cleaner terminal output.
+ioHook.start(false);
 ```
 
 ## Available events
