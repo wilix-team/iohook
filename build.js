@@ -199,9 +199,7 @@ function tarGz(runtime, abi) {
     darwin: ['build/Release/iohook.node', 'build/Release/uiohook.dylib'],
   };
   const tarPath =
-    'prebuilds/' +
-    pkg.name +
-    '-v' +
+    'prebuilds/iohook-v' +
     pkg.version +
     '-' +
     runtime +
@@ -238,6 +236,7 @@ function uploadFiles(files) {
     let opts = {
       pkg: pkg,
       files: files,
+      'tag-prefix': 'v',
       upload: process.env.GITHUB_ACCESS_TOKEN,
     };
     upload(opts, function (err, result) {
