@@ -1,4 +1,4 @@
-const iohook = require('../index.js');
+const iohook = require('iohook');
 
 iohook.on('mouseup', (event) => console.log(event));
 

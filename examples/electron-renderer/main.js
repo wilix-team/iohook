@@ -1,12 +1,8 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, Menu } = require('electron');
+const { app, BrowserWindow } = require('electron');
 app.allowRendererProcessReuse = false;
-const path = require('path');
 
 function createWindow() {
-  //remove application menu on Windows
-  //if (process.platform == "win32") Menu.setApplicationMenu(null);
-
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 1000,

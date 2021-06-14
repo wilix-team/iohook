@@ -1,7 +1,7 @@
 'use strict';
 
 const { app } = require('electron');
-const ioHook = require('../../index');
+const ioHook = require('iohook');
 
 function eventHandler(event) {
   console.log(event);

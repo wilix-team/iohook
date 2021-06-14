@@ -7,6 +7,7 @@
     "start": "electron ."
   },
   "devDependencies": {
-    "electron": ">=11.1.0"
+    "electron": ">=11.1.0",
+    "iohook": "^0.9.2"
   }
 }
