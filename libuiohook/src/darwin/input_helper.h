@@ -88,6 +88,15 @@
 #define kCGEventFlagMaskXButton1		1 << 3
 #define kCGEventFlagMaskXButton2		1 << 4
 
+// System Key Codes
+#define KEY_SOUND_UP                   0x48
+#define KEY_SOUND_DOWN                 0x49
+#define KEY_SOUND_MUTE                 0x4A
+#define KEY_EJECT                      0x92
+#define KEY_PLAY                       0xF0
+#define KEY_FAST                       0xF1
+#define KEY_REWIND                     0xF2
+
 
 /* Check for access to Apples accessibility API.
  */

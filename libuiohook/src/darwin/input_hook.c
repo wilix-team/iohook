@@ -94,6 +94,9 @@ static dispatcher_t dispatcher = NULL;
 
 static unsigned short int grab_mouse_click_event = 0x00;
 
+// To prevent crash on System Keys
+static bool system_key_pressed = false;
+
 UIOHOOK_API void hook_set_dispatch_proc(dispatcher_t dispatch_proc) {
 	logger(LOG_LEVEL_DEBUG,	"%s [%u]: Setting new dispatch callback to %#p.\n",
 			__FUNCTION__, __LINE__, dispatch_proc);
@@ -446,9 +449,122 @@ static inline void process_key_pressed(uint64_t timestamp, CGEventRef event_ref)
 	}
 }
 
+static inline void process_system_key_pressed(uint64_t timestamp, int keycode) {
+	// Populate key pressed event.
+	event.time = timestamp;
+	event.reserved = 0x00;
+
+	event.type = EVENT_KEY_PRESSED;
+	event.mask = get_modifiers();
+
+	event.data.keyboard.keycode = keycode_to_scancode(keycode);
+	event.data.keyboard.rawcode = keycode;
+	event.data.keyboard.keychar = CHAR_UNDEFINED;
+
+	logger(LOG_LEVEL_INFO,	"%s [%u]: Key %#X pressed. (%#X)\n",
+			__FUNCTION__, __LINE__, event.data.keyboard.keycode, event.data.keyboard.rawcode);
+
+	// Fire key pressed event.
+	dispatch_event(&event);
+
+	// If the pressed event was not consumed...
+	if (event.reserved ^ 0x01) {
+		tis_message->length = 0;
+		bool is_runloop_main = CFEqual(event_loop, CFRunLoopGetMain());
+		
+		if (dispatch_sync_f_f != NULL && dispatch_main_queue_s != NULL && !is_runloop_main) {
+			logger(LOG_LEVEL_DEBUG,	"%s [%u]: Using dispatch_sync_f for key typed events.\n", __FUNCTION__, __LINE__);
+			(*dispatch_sync_f_f)(dispatch_main_queue_s, tis_message, &keycode_to_lookup);
+		}
+		#if ! defined(USE_CARBON_LEGACY) && defined(USE_COREFOUNDATION)
+		else if (! is_runloop_main) {
+			logger(LOG_LEVEL_DEBUG,	"%s [%u]: Using CFRunLoopWakeUp for key typed events.\n", __FUNCTION__, __LINE__);
+
+			// Lock for code dealing with the main runloop.
+			pthread_mutex_lock(&msg_port_mutex);
+
+			// Check to see if the main runloop is still running.
+			// TOOD I would rather this be a check on hook_enable(),
+			// but it makes the usage complicated by requiring a separate
+			// thread for the main runloop and hook registration.
+			CFStringRef mode = CFRunLoopCopyCurrentMode(CFRunLoopGetMain());
+			if (mode != NULL) {
+				CFRelease(mode);
+
+				// Lookup the Unicode representation for this event.
+				//CFRunLoopSourceContext context = { .version = 0 };
+				//CFRunLoopSourceGetContext(src_msg_port, &context);
+
+				// Get the run loop context info pointer.
+				//TISMessage *info = (TISMessage *) context.info;
+
+				// Set the event pointer.
+				//info->event = event_ref;
+
+				// Signal the custom source and wakeup the main runloop.
+				CFRunLoopSourceSignal(src_msg_port);
+				CFRunLoopWakeUp(CFRunLoopGetMain());
+
+				// Wait for a lock while the main runloop processes they key typed event.
+				pthread_cond_wait(&msg_port_cond, &msg_port_mutex);
+			}
+			else {
+				logger(LOG_LEVEL_WARN,	"%s [%u]: Failed to signal RunLoop main!\n",
+						__FUNCTION__, __LINE__);
+			}
+
+			// Unlock for code dealing with the main runloop.
+			pthread_mutex_unlock(&msg_port_mutex);
+		}
+		#endif
+		else {
+			keycode_to_lookup(tis_message);
+		}
+		
+		for (unsigned int i = 0; i < tis_message->length; i++) {
+			// Populate key typed event.
+			event.time = timestamp;
+			event.reserved = 0x00;
+
+			event.type = EVENT_KEY_TYPED;
+			event.mask = get_modifiers();
+
+			event.data.keyboard.keycode = VC_UNDEFINED;
+			event.data.keyboard.rawcode = keycode;
+			event.data.keyboard.keychar = tis_message->buffer[i];
+
+			logger(LOG_LEVEL_INFO,	"%s [%u]: Key %#X typed. (%lc)\n",
+					__FUNCTION__, __LINE__, event.data.keyboard.keycode,
+					(wint_t) event.data.keyboard.keychar);
+
+			// Populate key typed event.
+			dispatch_event(&event);
+		}
+	}
+}
+
 static inline void process_key_released(uint64_t timestamp, CGEventRef event_ref) {
 	UInt64 keycode = CGEventGetIntegerValueField(event_ref, kCGKeyboardEventKeycode);
 
+	// Populate key released event.
+	event.time = timestamp;
+	event.reserved = 0x00;
+
+	event.type = EVENT_KEY_RELEASED;
+	event.mask = get_modifiers();
+
+	event.data.keyboard.keycode = keycode_to_scancode(keycode);
+	event.data.keyboard.rawcode = keycode;
+	event.data.keyboard.keychar = CHAR_UNDEFINED;
+
+	logger(LOG_LEVEL_INFO,	"%s [%u]: Key %#X released. (%#X)\n",
+			__FUNCTION__, __LINE__, event.data.keyboard.keycode, event.data.keyboard.rawcode);
+
+	// Fire key released event.
+	dispatch_event(&event);
+}
+
+static inline void process_system_key_released(uint64_t timestamp, int keycode) {
 	// Populate key released event.
 	event.time = timestamp;
 	event.reserved = 0x00;
@@ -634,117 +750,61 @@ static inline void process_system_key(uint64_t timestamp, CGEventRef event_ref) 
 				CFRelease(src);
 			}
 			else if (key_code == NX_KEYTYPE_SOUND_UP) {
-				// It doesn't appear like we can modify the event coming in, so we will fabricate a new event.
-				CGEventSourceRef src = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
-				CGEventRef ns_event = CGEventCreateKeyboardEvent(src, kVK_VolumeUp, key_down);
-				CGEventSetFlags(ns_event, CGEventGetFlags(event_ref));
-
 				if (key_down) {
-					process_key_pressed(timestamp, ns_event);
+					process_system_key_pressed(timestamp, KEY_SOUND_UP);
 				}
 				else {
-					process_key_released(timestamp, ns_event);
+					process_system_key_released(timestamp, KEY_SOUND_UP);
 				}
-
-				CFRelease(ns_event);
-				CFRelease(src);
 			}
 			else if (key_code == NX_KEYTYPE_SOUND_DOWN) {
-				// It doesn't appear like we can modify the event coming in, so we will fabricate a new event.
-				CGEventSourceRef src = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
-				CGEventRef ns_event = CGEventCreateKeyboardEvent(src, kVK_VolumeDown, key_down);
-				CGEventSetFlags(ns_event, CGEventGetFlags(event_ref));
-
 				if (key_down) {
-					process_key_pressed(timestamp, ns_event);
+					process_system_key_pressed(timestamp, KEY_SOUND_DOWN);
 				}
 				else {
-					process_key_released(timestamp, ns_event);
+					process_system_key_released(timestamp, KEY_SOUND_DOWN);
 				}
-
-				CFRelease(ns_event);
-				CFRelease(src);
 			}
 			else if (key_code == NX_KEYTYPE_MUTE) {
-				// It doesn't appear like we can modify the event coming in, so we will fabricate a new event.
-				CGEventSourceRef src = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
-				CGEventRef ns_event = CGEventCreateKeyboardEvent(src, kVK_Mute, key_down);
-				CGEventSetFlags(ns_event, CGEventGetFlags(event_ref));
-
 				if (key_down) {
-					process_key_pressed(timestamp, ns_event);
+					process_system_key_pressed(timestamp, KEY_SOUND_MUTE);
 				}
 				else {
-					process_key_released(timestamp, ns_event);
+					process_system_key_released(timestamp, KEY_SOUND_MUTE);
 				}
-
-				CFRelease(ns_event);
-				CFRelease(src);
 			}
 
 			else if (key_code == NX_KEYTYPE_EJECT) {
-				// It doesn't appear like we can modify the event coming in, so we will fabricate a new event.
-				CGEventSourceRef src = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
-				CGEventRef ns_event = CGEventCreateKeyboardEvent(src, kVK_NX_Eject, key_down);
-				CGEventSetFlags(ns_event, CGEventGetFlags(event_ref));
-
 				if (key_down) {
-					process_key_pressed(timestamp, ns_event);
+					process_system_key_pressed(timestamp, KEY_EJECT);
 				}
 				else {
-					process_key_released(timestamp, ns_event);
+					process_system_key_released(timestamp, KEY_EJECT);
 				}
-
-				CFRelease(ns_event);
-				CFRelease(src);
 			}
 			else if (key_code == NX_KEYTYPE_PLAY) {
-				// It doesn't appear like we can modify the event coming in, so we will fabricate a new event.
-				CGEventSourceRef src = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
-				CGEventRef ns_event = CGEventCreateKeyboardEvent(src, kVK_MEDIA_Play, key_down);
-				CGEventSetFlags(ns_event, CGEventGetFlags(event_ref));
-
 				if (key_down) {
-					process_key_pressed(timestamp, ns_event);
+					process_system_key_pressed(timestamp, KEY_PLAY);
 				}
 				else {
-					process_key_released(timestamp, ns_event);
+					process_system_key_released(timestamp, KEY_PLAY);
 				}
-
-				CFRelease(ns_event);
-				CFRelease(src);
 			}
 			else if (key_code == NX_KEYTYPE_FAST) {
-				// It doesn't appear like we can modify the event coming in, so we will fabricate a new event.
-				CGEventSourceRef src = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
-				CGEventRef ns_event = CGEventCreateKeyboardEvent(src, kVK_MEDIA_Next, key_down);
-				CGEventSetFlags(ns_event, CGEventGetFlags(event_ref));
-
 				if (key_down) {
-					process_key_pressed(timestamp, ns_event);
+					process_system_key_pressed(timestamp, KEY_FAST);
 				}
 				else {
-					process_key_released(timestamp, ns_event);
+					process_system_key_released(timestamp, KEY_FAST);
 				}
-
-				CFRelease(ns_event);
-				CFRelease(src);
 			}
 			else if (key_code == NX_KEYTYPE_REWIND) {
-				// It doesn't appear like we can modify the event coming in, so we will fabricate a new event.
-				CGEventSourceRef src = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
-				CGEventRef ns_event = CGEventCreateKeyboardEvent(src, kVK_MEDIA_Previous, key_down);
-				CGEventSetFlags(ns_event, CGEventGetFlags(event_ref));
-
 				if (key_down) {
-					process_key_pressed(timestamp, ns_event);
+					process_system_key_pressed(timestamp, KEY_REWIND);
 				}
 				else {
-					process_key_released(timestamp, ns_event);
+					process_system_key_released(timestamp, KEY_REWIND);
 				}
-
-				CFRelease(ns_event);
-				CFRelease(src);
 			}
 		}
 
@@ -975,10 +1035,12 @@ CGEventRef hook_event_proc(CGEventTapProxy tap_proxy, CGEventType type, CGEventR
 	// Get the event class.
 	switch (type) {
 		case kCGEventKeyDown:
+			system_key_pressed = false;
 			process_key_pressed(timestamp, event_ref);
 			break;
 
 		case kCGEventKeyUp:
+			system_key_pressed = false;
 			process_key_released(timestamp, event_ref);
 			break;
 
@@ -987,21 +1049,27 @@ CGEventRef hook_event_proc(CGEventTapProxy tap_proxy, CGEventType type, CGEventR
 			break;
 
 		case NX_SYSDEFINED:
-			process_system_key(timestamp, event_ref);
+			if(system_key_pressed == false) {
+				system_key_pressed = true;
+				process_system_key(timestamp, event_ref);
+			}
 			break;
 
 		case kCGEventLeftMouseDown:
+			system_key_pressed = false;
 			set_modifier_mask(MASK_BUTTON1);
 			process_button_pressed(timestamp, event_ref, MOUSE_BUTTON1);
 			break;
 
 		case kCGEventRightMouseDown:
+			system_key_pressed = false;
 			set_modifier_mask(MASK_BUTTON2);
 			process_button_pressed(timestamp, event_ref, MOUSE_BUTTON2);
 			break;
 
 		case kCGEventOtherMouseDown:
 			// Extra mouse buttons.
+			system_key_pressed = false;
 			if (CGEventGetIntegerValueField(event_ref, kCGMouseEventButtonNumber) < UINT16_MAX) {
 				uint16_t button = (uint16_t) CGEventGetIntegerValueField(event_ref, kCGMouseEventButtonNumber) + 1;
 
@@ -1018,17 +1086,20 @@ CGEventRef hook_event_proc(CGEventTapProxy tap_proxy, CGEventType type, CGEventR
 			break;
 
 		case kCGEventLeftMouseUp:
+			system_key_pressed = false;
 			unset_modifier_mask(MASK_BUTTON1);
 			process_button_released(timestamp, event_ref, MOUSE_BUTTON1);
 			break;
 
 		case kCGEventRightMouseUp:
+			system_key_pressed = false;
 			unset_modifier_mask(MASK_BUTTON2);
 			process_button_released(timestamp, event_ref, MOUSE_BUTTON2);
 			break;
 
 		case kCGEventOtherMouseUp:
 			// Extra mouse buttons.
+			system_key_pressed = false;
 			if (CGEventGetIntegerValueField(event_ref, kCGMouseEventButtonNumber) < UINT16_MAX) {
 				uint16_t button = (uint16_t) CGEventGetIntegerValueField(event_ref, kCGMouseEventButtonNumber) + 1;
 
@@ -1050,24 +1121,28 @@ CGEventRef hook_event_proc(CGEventTapProxy tap_proxy, CGEventType type, CGEventR
 		case kCGEventOtherMouseDragged:
 			// FIXME The drag flag is confusing.  Use prev x,y to determine click.
 			// Set the mouse dragged flag.
+			system_key_pressed = false;
 			mouse_dragged = true;
 			process_mouse_moved(timestamp, event_ref);
 			break;
 
 		case kCGEventMouseMoved:
 			// Set the mouse dragged flag.
+			system_key_pressed = false;
 			mouse_dragged = false;
 			process_mouse_moved(timestamp, event_ref);
 			break;
 
 
 		case kCGEventScrollWheel:
+			system_key_pressed = false;
 			process_mouse_wheel(timestamp, event_ref);
 			break;
 
 
 		#ifdef USE_DEBUG
 		case kCGEventNull:
+			system_key_pressed = false;
 			logger(LOG_LEVEL_DEBUG, "%s [%u]: Ignoring kCGEventNull.\n",
 					__FUNCTION__, __LINE__);
 			break;
@@ -1076,6 +1151,7 @@ CGEventRef hook_event_proc(CGEventTapProxy tap_proxy, CGEventType type, CGEventR
 		default:
 			// Check for an old OS X bug where the tap seems to timeout for no reason.
 			// See: http://stackoverflow.com/questions/2969110/cgeventtapcreate-breaks-down-mysteriously-with-key-down-events#2971217
+				system_key_pressed = false;
 			if (type == (CGEventType) kCGEventTapDisabledByTimeout) {
 				logger(LOG_LEVEL_WARN, "%s [%u]: CGEventTap timeout!\n",
 						__FUNCTION__, __LINE__);
