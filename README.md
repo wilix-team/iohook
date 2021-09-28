@@ -28,6 +28,22 @@ Found a bug? Have an idea? Feel free to post an [issue](https://github.com/wilix
 
 iohook provides prebuilt version for a bunch of OSes and platforms.
 
+## Binary installation parameters
+
+iohook supports configuration parameters to change settings related the iohook binary. Following parameters are supported:
+
+| Variable name      | .npmrc parameter   | Process argument | Value |
+| ------------------ | ------------------ | ---------------- | ----- |
+| IOHOOK_BINARY_SITE | iohook_binary_site | N/A              | URL   |
+
+These parameters can be used as environment variable:
+
+* E.g. `export IOHOOK_BINARY_SITE=http://example.com/`
+
+As local or global [.npmrc](https://docs.npmjs.com/misc/config) configuration file:
+
+* E.g. `iohook_binary_site=http://example.com/`
+
 ### Linux (including WSL)
 
 ```bash

@@ -17,6 +17,37 @@ function onerror(err) {
 }
 
 /**
+ * Determine the URL to fetch binary file from.
+ * By default fetch from the iohook distribution
+ * site on GitHub.
+ *
+ * The default URL can be overwrite using the environment variable IOHOOK_BINARY_SITE,
+ * .npmrc variable iohook_binary_site
+ *
+ * The URL should to be the mirror of the repository
+ * laid out as follows:
+ *
+ * IOHOOK_BINARY_SITE/
+ *
+ * v0.9.3
+ * v0.9.3/iohook-v0.9.3-electron-v69-linux-x64.tar.gz
+ * ...
+ * v0.9.3/iohook-v0.9.3-electron-v87-darwin-x64.tar.gz
+ * ... etc. for all supported versions and platforms
+ *
+ * @param {string} pkgVersion
+ * @param {string} currentPlatform
+ * @returns {string}
+ */
+function getBinaryUrl(pkgVersion, currentPlatform) {
+  const site =
+    process.env.IOHOOK_BINARY_SITE ||
+    process.env.npm_config_iohook_binary_site ||
+    'https://github.com/wilix-team/iohook/releases/download';
+  return [site, 'v' + pkgVersion, currentPlatform + '.tar.gz'].join('/');
+}
+
+/**
  * Download and Install prebuild
  * @param runtime
  * @param abi
@@ -30,12 +61,7 @@ function install(runtime, abi, platform, arch, cb) {
   const currentPlatform = 'iohook-v' + pkgVersion + '-' + essential;
 
   console.log('Downloading prebuild for platform:', currentPlatform);
-  let downloadUrl =
-    'https://github.com/wilix-team/iohook/releases/download/v' +
-    pkgVersion +
-    '/' +
-    currentPlatform +
-    '.tar.gz';
+  let downloadUrl = getBinaryUrl(pkgVersion, currentPlatform);
 
   let nuggetOpts = {
     dir: os.tmpdir(),
