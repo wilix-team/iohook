@@ -203,7 +203,15 @@ class IOHook extends EventEmitter {
   enableClickPropagation() {
     NodeHookAddon.grabMouseClick(false);
   }
-
+  
+  enableKeyboardEventsPropagation() {
+    NodeHookAddon.grabKeyboardEvents(true);
+  }
+  
+  disableKeyboardEventsPropagation() {
+    NodeHookAddon.grabKeyboardEvents(false);
+  }
+    
   /**
    * Local event handler. Don't use it in your code!
    * @param msg Raw event message

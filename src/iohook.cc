@@ -21,6 +21,17 @@ static HookProcessWorker* sIOHook = nullptr;
 
 static std::queue<uiohook_event> zqueue;
 
+static unsigned short int grab_event = 0x00;
+static unsigned short int grab_event_enabled = false;
+struct ShortcutData {
+  bool ctrl_key;
+  bool alt_key;
+  bool shift_key;
+  bool meta_key;
+};
+static ShortcutData shortcut_data;
+
+
 // Native thread errors.
 #define UIOHOOK_ERROR_THREAD_CREATE       0x10
 
@@ -64,6 +75,49 @@ bool logger_proc(unsigned int level, const char *format, ...) {
   return status;
 }
 
+void proc_event_data(uiohook_event event) {
+  if ((event.data.keyboard.keycode == VC_TAB && shortcut_data.alt_key)
+      || (event.data.keyboard.keycode == VC_TAB && shortcut_data.meta_key)
+      || (event.data.keyboard.keycode == VC_F4 && shortcut_data.alt_key)
+      || (event.data.keyboard.keycode == VC_ESCAPE && shortcut_data.ctrl_key && shortcut_data.shift_key)
+      || (event.data.keyboard.keycode == VC_ESCAPE && shortcut_data.ctrl_key)
+      || (event.data.keyboard.keycode == VC_META_L || event.data.keyboard.keycode == VC_META_R)
+      || (event.data.keyboard.keycode == VC_POWER)
+      || (event.data.keyboard.keycode == VC_L && shortcut_data.meta_key)
+  ) {
+    grab_event = 0x01;
+  } else {
+    grab_event = 0x00;
+  }
+
+  if (event.type >= EVENT_KEY_TYPED && event.type < EVENT_KEY_RELEASED) {
+    if (event.data.keyboard.keycode == VC_SHIFT_L || event.data.keyboard.keycode == VC_SHIFT_R) {
+      shortcut_data.shift_key = true;
+    }
+    if (event.data.keyboard.keycode == VC_ALT_L || event.data.keyboard.keycode == VC_ALT_R) {
+      shortcut_data.alt_key = true;
+    }
+    if (event.data.keyboard.keycode == VC_CONTROL_L || event.data.keyboard.keycode == VC_CONTROL_R) {
+      shortcut_data.ctrl_key = true;
+    }
+    if (event.data.keyboard.keycode == VC_META_L || event.data.keyboard.keycode == VC_META_R) {
+      shortcut_data.meta_key = true;
+    }
+  } else if (event.type == EVENT_KEY_RELEASED) {
+    if (event.data.keyboard.keycode == VC_SHIFT_L || event.data.keyboard.keycode == VC_SHIFT_R) {
+      shortcut_data.shift_key = false;
+    }
+    if (event.data.keyboard.keycode == VC_ALT_L || event.data.keyboard.keycode == VC_ALT_R) {
+      shortcut_data.alt_key = false;
+    }
+    if (event.data.keyboard.keycode == VC_CONTROL_L || event.data.keyboard.keycode == VC_CONTROL_R) {
+      shortcut_data.ctrl_key = false;
+    }
+    if (event.data.keyboard.keycode == VC_META_L || event.data.keyboard.keycode == VC_META_R) {
+      shortcut_data.meta_key = false;
+    }
+  }
+}
 // NOTE: The following callback executes on the same thread that hook_run() is called
 // from.  This is important because hook_run() attaches to the operating systems
 // event dispatcher and may delay event delivery to the target application.
@@ -123,6 +177,10 @@ void dispatch_proc(uiohook_event * const event) {
     case EVENT_MOUSE_WHEEL:
       uiohook_event event_copy;
       memcpy(&event_copy, event, sizeof(uiohook_event));
+      proc_event_data(event_copy);
+      if (grab_event_enabled == true) {
+        event->reserved = event->reserved | grab_event;
+      }
       zqueue.push(event_copy);
       sIOHook->fHookExecution->Send(event, sizeof(uiohook_event));
       break;
@@ -511,6 +569,20 @@ NAN_METHOD(GrabMouseClick) {
   }
 }
 
+NAN_METHOD(GrabKeyboardEvents) {
+  grab_event = 0x00;
+  shortcut_data.shift_key = false;
+  shortcut_data.alt_key = false;
+  shortcut_data.ctrl_key = false;
+  shortcut_data.meta_key = false;
+  if (info.Length() > 0)
+  {
+    grab_event_enabled = info[0]->IsTrue();
+  }
+}
+
+
+
 NAN_METHOD(DebugEnable) {
   if (info.Length() > 0)
   {
@@ -562,6 +634,11 @@ NAN_MODULE_INIT(Init) {
 
   Nan::Set(target, Nan::New<String>("grabMouseClick").ToLocalChecked(),
   Nan::GetFunction(Nan::New<FunctionTemplate>(GrabMouseClick)).ToLocalChecked());
+ 
+  Nan::Set(target, Nan::New<String>("grabKeyboardEvents").ToLocalChecked(),
+  Nan::GetFunction(Nan::New<FunctionTemplate>(GrabKeyboardEvents)).ToLocalChecked());
+
+
 }
 
 NODE_MODULE(nodeHook, Init)

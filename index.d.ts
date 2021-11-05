@@ -46,6 +46,10 @@ declare class IOHook extends EventEmitter {
    * The click event are emitted and propagated.
    */
   enableClickPropagation(): void;
+  
+  enableKeyboardEventsPropagation(): void
+  disableKeyboardEventsPropagation(): void
+  
 
   /**
    * Disable mouse click propagation.
