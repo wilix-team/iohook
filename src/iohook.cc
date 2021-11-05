@@ -21,10 +21,6 @@ static HookProcessWorker* sIOHook = nullptr;
 
 static std::queue<uiohook_event> zqueue;
 
-static unsigned short int grab_event = 0x00;
-static unsigned short int grab_event_enabled = false;
-
-
 // Native thread errors.
 #define UIOHOOK_ERROR_THREAD_CREATE       0x10
 
@@ -32,9 +28,9 @@ static unsigned short int grab_event_enabled = false;
 #ifdef _WIN32
 static HANDLE hook_thread;
 
-static HANDLE hook_running_mutex;
-static HANDLE hook_control_mutex;
-static HANDLE hook_control_cond;
+static CRITICAL_SECTION hook_running_mutex;
+static CRITICAL_SECTION hook_control_mutex;
+static CONDITION_VARIABLE hook_control_cond;
 #else
 static pthread_t hook_thread;
 
@@ -79,15 +75,15 @@ void dispatch_proc(uiohook_event * const event) {
     case EVENT_HOOK_ENABLED:
       // Lock the running mutex so we know if the hook is enabled.
       #ifdef _WIN32
-      WaitForSingleObject(hook_running_mutex, INFINITE);
+      EnterCriticalSection(&hook_running_mutex);
       #else
       pthread_mutex_lock(&hook_running_mutex);
       #endif
 
-
+      // Unlock the control mutex so hook_enable() can continue.
       #ifdef _WIN32
-      // Signal the control event.
-      SetEvent(hook_control_cond);
+      WakeConditionVariable(&hook_control_cond);
+      LeaveCriticalSection(&hook_control_mutex);
       #else
       // Unlock the control mutex so hook_enable() can continue.
       pthread_cond_signal(&hook_control_cond);
@@ -98,15 +94,14 @@ void dispatch_proc(uiohook_event * const event) {
     case EVENT_HOOK_DISABLED:
       // Lock the control mutex until we exit.
       #ifdef _WIN32
-      WaitForSingleObject(hook_control_mutex, INFINITE);
+      EnterCriticalSection(&hook_control_mutex);
       #else
       pthread_mutex_lock(&hook_control_mutex);
       #endif
 
       // Unlock the running mutex so we know if the hook is disabled.
       #ifdef _WIN32
-      ReleaseMutex(hook_running_mutex);
-      ResetEvent(hook_control_cond);
+      LeaveCriticalSection(&hook_running_mutex);
       #else
       #if defined(__APPLE__) && defined(__MACH__)
       // Stop the main runloop so that this program ends.
@@ -128,9 +123,6 @@ void dispatch_proc(uiohook_event * const event) {
     case EVENT_MOUSE_WHEEL:
       uiohook_event event_copy;
       memcpy(&event_copy, event, sizeof(uiohook_event));
-      if (grab_event_enabled == true) {
-        event->reserved = event->reserved | grab_event;
-      }
       zqueue.push(event_copy);
       sIOHook->fHookExecution->Send(event, sizeof(uiohook_event));
       break;
@@ -155,7 +147,8 @@ void *hook_thread_proc(void *arg) {
   // Make sure we signal that we have passed any exception throwing code for
   // the waiting hook_enable().
   #ifdef _WIN32
-  SetEvent(hook_control_cond);
+  WakeConditionVariable(&hook_control_cond);
+  LeaveCriticalSection(&hook_control_mutex);
 
   return status;
   #else
@@ -172,7 +165,7 @@ int hook_enable() {
   // Lock the thread control mutex.  This will be unlocked when the
   // thread has finished starting, or when it has fully stopped.
   #ifdef _WIN32
-  WaitForSingleObject(hook_control_mutex, INFINITE);
+  EnterCriticalSection(&hook_control_mutex);
   #else
   pthread_mutex_lock(&hook_control_mutex);
   #endif
@@ -229,13 +222,13 @@ int hook_enable() {
     // event is received or the thread terminates.
     // NOTE This unlocks the hook_control_mutex while we wait.
     #ifdef _WIN32
-    WaitForSingleObject(hook_control_cond, INFINITE);
+    SleepConditionVariableCS(&hook_control_cond, &hook_control_mutex, INFINITE);
     #else
     pthread_cond_wait(&hook_control_cond, &hook_control_mutex);
     #endif
 
     #ifdef _WIN32
-    if (WaitForSingleObject(hook_running_mutex, 0) != WAIT_TIMEOUT) {
+    if (TryEnterCriticalSection(&hook_running_mutex) != FALSE) {
     #else
     if (pthread_mutex_trylock(&hook_running_mutex) == 0) {
     #endif
@@ -269,7 +262,7 @@ int hook_enable() {
 
   // Make sure the control mutex is unlocked.
   #ifdef _WIN32
-  ReleaseMutex(hook_control_mutex);
+  LeaveCriticalSection(&hook_control_mutex);
   #else
   pthread_mutex_unlock(&hook_control_mutex);
   #endif
@@ -282,9 +275,9 @@ void run() {
   // thread has finished starting, or when it has fully stopped.
   #ifdef _WIN32
   // Create event handles for the thread hook.
-  hook_running_mutex = CreateMutex(NULL, FALSE, TEXT("hook_running_mutex"));
-  hook_control_mutex = CreateMutex(NULL, FALSE, TEXT("hook_control_mutex"));
-  hook_control_cond = CreateEvent(NULL, TRUE, FALSE, TEXT("hook_control_cond"));
+  InitializeCriticalSection(&hook_running_mutex);
+  InitializeCriticalSection(&hook_control_mutex);
+  InitializeConditionVariable(&hook_control_cond);
   #else
   pthread_mutex_init(&hook_running_mutex, NULL);
   pthread_mutex_init(&hook_control_mutex, NULL);
@@ -401,9 +394,8 @@ void stop() {
   #ifdef _WIN32
   // Create event handles for the thread hook.
   CloseHandle(hook_thread);
-  CloseHandle(hook_running_mutex);
-  CloseHandle(hook_control_mutex);
-  CloseHandle(hook_control_cond);
+  DeleteCriticalSection(&hook_running_mutex);
+  DeleteCriticalSection(&hook_control_mutex);
   #else
   pthread_mutex_destroy(&hook_running_mutex);
   pthread_mutex_destroy(&hook_control_mutex);
@@ -519,19 +511,6 @@ NAN_METHOD(GrabMouseClick) {
   }
 }
 
-NAN_METHOD(GrabKeyboardEvents) {
-  grab_event = 0x00;
-  shortcut_data.shift_key = false;
-  shortcut_data.alt_key = false;
-  shortcut_data.ctrl_key = false;
-  shortcut_data.meta_key = false;
-  if (info.Length() > 0)
-  {
-    grab_event_enabled = info[0]->IsTrue();
-  }
-}
-
-
 NAN_METHOD(DebugEnable) {
   if (info.Length() > 0)
   {
@@ -583,10 +562,6 @@ NAN_MODULE_INIT(Init) {
 
   Nan::Set(target, Nan::New<String>("grabMouseClick").ToLocalChecked(),
   Nan::GetFunction(Nan::New<FunctionTemplate>(GrabMouseClick)).ToLocalChecked());
-  
-  Nan::Set(target, Nan::New<String>("grabKeyboardEvents").ToLocalChecked(),
-  Nan::GetFunction(Nan::New<FunctionTemplate>(GrabKeyboardEvents)).ToLocalChecked());
-
 }
 
 NODE_MODULE(nodeHook, Init)

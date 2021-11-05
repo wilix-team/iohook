@@ -1,0 +1,19 @@
+{
+  "env": {
+    "browser": true,
+    "node": true,
+    "shared-node-browser": true,
+    "commonjs": true,
+    "es2021": true
+  },
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 12
+  },
+  "extends": ["eslint:recommended", "prettier"],
+  "plugins": ["only-warn", "prettier"],
+  "reportUnusedDisableDirectives": true,
+  "rules": {
+    "prettier/prettier": "error"
+  }
+}

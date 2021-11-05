@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World!</title>
+
+    <script>
+      window.addEventListener('DOMContentLoaded', () => {
+        for (const type of ['chrome', 'node', 'electron']) {
+          document.getElementById(`${type}-version`).innerText =
+            process.versions[type];
+        }
+
+        const ioHook = require('iohook');
+        ioHook.start(true);
+        ioHook.on('mouseclick', eventHandler);
+        ioHook.on('keydown', eventHandler);
+        ioHook.on('mousewheel', eventHandler);
+        ioHook.on('mousemove', eventHandler);
+      });
+
+      function eventHandler(event) {
+        console.log(event);
+        document.getElementById('ioHookEvent').innerText =
+          JSON.stringify(event);
+      }
+    </script>
+  </head>
+
+  <body>
+    We are using Node.js <span id="node-version"></span>, Chromium
+    <span id="chrome-version"></span>, and Electron
+    <span id="electron-version"></span>. <br /><br />
+    Try to move your mouse or press any key!
+    <p id="ioHookEvent"></p>
+  </body>
+</html>

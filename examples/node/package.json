@@ -1,0 +1,13 @@
+{
+  "name": "electron-quick-start",
+  "version": "1.0.0",
+  "description": "A minimal Electron application",
+  "main": "main.js",
+  "scripts": {
+    "start": "node example.js",
+    "start:propagation": "node mouse-click-propagation.js"
+  },
+  "devDependencies": {
+    "iohook": "^0.9.2"
+  }
+}

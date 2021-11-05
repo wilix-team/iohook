@@ -20,7 +20,7 @@ describe('Keyboard events', () => {
       { keycode: 24, value: 'o' },
       { keycode: 19, value: 'r' },
       { keycode: 38, value: 'l' },
-      { keycode: 32, value: 'd' }
+      { keycode: 32, value: 'd' },
     ];
     let i = 0;
 
@@ -31,7 +31,7 @@ describe('Keyboard events', () => {
         shiftKey: false,
         altKey: false,
         ctrlKey: false,
-        metaKey: false
+        metaKey: false,
       });
     });
     ioHook.on('keyup', (event) => {
@@ -41,7 +41,7 @@ describe('Keyboard events', () => {
         shiftKey: false,
         altKey: false,
         ctrlKey: false,
-        metaKey: false
+        metaKey: false,
       });
 
       if (i === chars.length - 1) {
@@ -52,7 +52,8 @@ describe('Keyboard events', () => {
     });
     ioHook.start();
 
-    setTimeout(() => { // Make sure ioHook starts before anything gets typed
+    setTimeout(() => {
+      // Make sure ioHook starts before anything gets typed
       for (const char of chars) {
         robot.keyTap(char.value);
       }
@@ -68,7 +69,7 @@ describe('Keyboard events', () => {
         shiftKey: true,
         altKey: false,
         ctrlKey: false,
-        metaKey: false
+        metaKey: false,
       });
     });
     ioHook.on('keyup', (event) => {
@@ -77,12 +78,13 @@ describe('Keyboard events', () => {
         shiftKey: true,
         altKey: false,
         ctrlKey: false,
-        metaKey: false
+        metaKey: false,
       });
     });
     ioHook.start();
 
-    setTimeout(() => { // Make sure ioHook starts before anything gets typed
+    setTimeout(() => {
+      // Make sure ioHook starts before anything gets typed
       robot.keyToggle('shift', 'down');
       robot.keyTap('1');
       robot.keyToggle('shift', 'up');
@@ -98,7 +100,7 @@ describe('Keyboard events', () => {
         shiftKey: false,
         altKey: true,
         ctrlKey: false,
-        metaKey: false
+        metaKey: false,
       });
     });
     ioHook.on('keyup', (event) => {
@@ -107,12 +109,13 @@ describe('Keyboard events', () => {
         shiftKey: false,
         altKey: true,
         ctrlKey: false,
-        metaKey: false
+        metaKey: false,
       });
     });
     ioHook.start();
 
-    setTimeout(() => { // Make sure ioHook starts before anything gets typed
+    setTimeout(() => {
+      // Make sure ioHook starts before anything gets typed
       robot.keyToggle('alt', 'down');
       robot.keyTap('1');
       robot.keyToggle('alt', 'up');
@@ -128,7 +131,7 @@ describe('Keyboard events', () => {
         shiftKey: false,
         altKey: false,
         ctrlKey: true,
-        metaKey: false
+        metaKey: false,
       });
     });
     ioHook.on('keyup', (event) => {
@@ -137,12 +140,13 @@ describe('Keyboard events', () => {
         shiftKey: false,
         altKey: false,
         ctrlKey: true,
-        metaKey: false
+        metaKey: false,
       });
     });
     ioHook.start();
 
-    setTimeout(() => { // Make sure ioHook starts before anything gets typed
+    setTimeout(() => {
+      // Make sure ioHook starts before anything gets typed
       robot.keyToggle('control', 'down');
       robot.keyTap('1');
       robot.keyToggle('control', 'up');
@@ -158,7 +162,7 @@ describe('Keyboard events', () => {
         shiftKey: false,
         altKey: false,
         ctrlKey: false,
-        metaKey: true
+        metaKey: true,
       });
     });
     ioHook.on('keyup', (event) => {
@@ -167,12 +171,13 @@ describe('Keyboard events', () => {
         shiftKey: false,
         altKey: false,
         ctrlKey: false,
-        metaKey: true
+        metaKey: true,
       });
     });
     ioHook.start();
 
-    setTimeout(() => { // Make sure ioHook starts before anything gets typed
+    setTimeout(() => {
+      // Make sure ioHook starts before anything gets typed
       robot.keyToggle('command', 'down');
       robot.keyTap('1');
       robot.keyToggle('command', 'up');
@@ -184,13 +189,18 @@ describe('Keyboard events', () => {
 
     let shortcut = [42, 30];
 
-    ioHook.registerShortcut(shortcut, keys => {
-      expect(shortcut.sort()).toEqual(keys.sort());
-    }, keys => {
-      expect(shortcut.sort()).toEqual(keys.sort());
-    });
+    ioHook.registerShortcut(
+      shortcut,
+      (keys) => {
+        expect(shortcut.sort()).toEqual(keys.sort());
+      },
+      (keys) => {
+        expect(shortcut.sort()).toEqual(keys.sort());
+      }
+    );
 
-    setTimeout(() => { // Make sure ioHook starts before anything gets typed
+    setTimeout(() => {
+      // Make sure ioHook starts before anything gets typed
       robot.keyToggle('shift', 'down');
       robot.keyTap('a');
       robot.keyToggle('shift', 'up');
@@ -213,7 +223,8 @@ describe('Keyboard events', () => {
 
     ioHook.start();
 
-    setTimeout(() => { // Make sure ioHook starts before anything gets typed
+    setTimeout(() => {
+      // Make sure ioHook starts before anything gets typed
       robot.keyToggle('shift', 'down');
       robot.keyTap('a');
       robot.keyToggle('shift', 'up');
@@ -233,7 +244,8 @@ describe('Keyboard events', () => {
     ioHook.useRawcode(true);
     ioHook.start();
 
-    setTimeout(() => { // Make sure ioHook starts before anything gets typed
+    setTimeout(() => {
+      // Make sure ioHook starts before anything gets typed
       robot.keyToggle('shift', 'down');
       robot.keyTap('a');
       robot.keyToggle('shift', 'up');

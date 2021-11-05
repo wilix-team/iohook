@@ -1,9 +1,12 @@
 # iohook
 
-[![Build status](https://ci.appveyor.com/api/projects/status/2ntnlh6k953he5is?svg=true)](https://ci.appveyor.com/project/Djiit/iohook)
-[![Build Status](https://travis-ci.org/wilix-team/iohook.svg?branch=master)](https://travis-ci.org/wilix-team/iohook)
+[![NPM version](https://img.shields.io/npm/v/iohook?color=%230088FF)](https://www.npmjs.com/package/iohook)
+[![Release date](https://img.shields.io/github/release-date/wilix-team/iohook?color=%230088FF)](https://github.com/wilix-team/iohook/releases/latest)
+[![GitHub Super-Linter](https://github.com/wilix-team/iohook/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
+[![CI](https://github.com/wilix-team/iohook/actions/workflows/ci.yml/badge.svg)](https://github.com/wilix-team/iohook/actions/workflows/ci.yml)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?color=%23008880)](https://github.com/prettier/prettier)
 [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/iohookjs/Lobby)
-[![NPM version](https://img.shields.io/npm/v/iohook.svg)](https://www.npmjs.com/package/iohook)
+[![Issues](https://img.shields.io/github/issues-raw/wilix-team/iohook)](https://github.com/wilix-team/iohook/issues)
 
 ## About
 
@@ -24,6 +27,15 @@ Found a bug? Have an idea? Feel free to post an [issue](https://github.com/wilix
 ## Installation
 
 iohook provides prebuilt version for a bunch of OSes and platforms.
+
+### Linux (including WSL)
+
+```bash
+# On Linux (including WSL) platform, you will need libxkbcommon-x11 installed
+sudo apt-get install -y libxkbcommon-x11-0
+```
+
+### All platforms
 
 ```bash
 npm install iohook --save # or yarn add iohook
@@ -46,6 +58,7 @@ Are you using iohook in your project ? Please tell us in a [PR](https://github.c
 - [Cortex](https://crtx.gg/)
 - [Tracklify](https://tracklify.com/)
 - [CrewLink](https://github.com/ottomated/CrewLink)
+- [Runtime](https://github.com/yikuansun/desktopspeedruntools#runtime-speedrun-tools)
 
 ## Contributors
 
