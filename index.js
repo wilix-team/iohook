@@ -40,7 +40,7 @@ class IOHook extends EventEmitter {
 
   /**
    * Start hook process
-   * @param enableLogger Turn on debug logging
+   * @param {boolean} [enableLogger] Turn on debug logging
    */
   start(enableLogger) {
     if (!this.active) {
@@ -83,7 +83,7 @@ class IOHook extends EventEmitter {
    * @param shortcutId
    */
   unregisterShortcut(shortcutId) {
-    this.shortcuts.forEach((shortcut,i) => {
+    this.shortcuts.forEach((shortcut, i) => {
       if (shortcut.id === shortcutId) {
         this.shortcuts.splice(i, 1);
       }
@@ -193,7 +193,6 @@ class IOHook extends EventEmitter {
   enableKeyboardEventsPropagation() {
     NodeHookAddon.grabKeyboardEvents(true);
   }
-
   disableKeyboardEventsPropagation() {
     NodeHookAddon.grabKeyboardEvents(false);
   }
@@ -385,7 +384,7 @@ class IOHook extends EventEmitter {
 
         if (shortcutReleased) {
           // Call the released function handler
-          if(shortcut.releaseCallback) {
+          if (shortcut.releaseCallback) {
             shortcut.releaseCallback(keysTmpArray);
           }
 

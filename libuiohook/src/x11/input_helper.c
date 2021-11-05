@@ -1941,7 +1941,8 @@ void load_input_helper(Display *disp) {
 			keysym_per_keycode--;
 
 			// Loop over the modifier map to find out if/where shift and caps locks are set.
-			for (int i = LockMapIndex; i < LockMapIndex + modifierMap->max_keypermod && !is_caps_lock; i++) {
+			int i = 0;
+			for (i = LockMapIndex; i < LockMapIndex + modifierMap->max_keypermod && !is_caps_lock; i++) {
 				if (capsLock != 0 && modifierMap->modifiermap[i] == capsLock) {
 					is_caps_lock = true;
 					is_shift_lock = false;

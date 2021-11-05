@@ -1,5 +1,33 @@
 # CHANGELOG
 
+## v0.7.0
+
+- feat: Add support for Electron 9+ and Node 12+.
+- fix: drop cmake-js for node-gyp.
+
+## v0.6.6
+
+- feat: Add support for Electron 9.
+
+## v0.6.5
+
+- feat: Add support for Electron 8.
+
+## v0.6.4
+
+- feat: Add support for Node 13.
+- chore: Fix npm vulnerabilities with audit.
+
+## v0.6.3
+
+- fix: depreacated use of objc_msgSend.
+- fix: Update start() types.
+- feat: improve x11 use.
+
+## v0.6.2
+
+- feat: Add support for Electron 7.
+
 ## v0.6.1
 
 - fix: Update repo name.

@@ -1,101 +1,60 @@
-<!-- PROJECT LOGO -->
-<br />
-<p align="center">
+# iohook
 
-  <h3 align="center">Nito Security Browser keyboard hook module</h3>
+[![Build status](https://ci.appveyor.com/api/projects/status/2ntnlh6k953he5is?svg=true)](https://ci.appveyor.com/project/Djiit/iohook)
+[![Build Status](https://travis-ci.org/wilix-team/iohook.svg?branch=master)](https://travis-ci.org/wilix-team/iohook)
+[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/iohookjs/Lobby)
+[![NPM version](https://img.shields.io/npm/v/iohook.svg)](https://www.npmjs.com/package/iohook)
 
-  <p align="center">
-    Nito Security Browser keyboard hook module
-    <br />
-    <a href="https://github.com/ComptiaVertigo/iohook"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/ComptiaVertigo/iohook">View Demo</a>
-    ·
-    <a href="https://github.com/ComptiaVertigo/iohook/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/ComptiaVertigo/iohook/issues">Request Feature</a>
-  </p>
-</p>
+## About
 
+Node.js global native keyboard and mouse listener.
 
+This module can handle keyboard and mouse events via native hooks inside and outside your JavaScript/TypeScript application.
 
-<!-- TABLE OF CONTENTS -->
-## Table of Contents
+Found a bug? Have an idea? Feel free to post an [issue](https://github.com/wilix-team/iohook/issues) or submit a [PR](https://github.com/wilix-team/iohook/pulls).
 
-* [About the Project](#about-the-project)
-  * [Built With](#built-with)
-* [Getting Started](#getting-started)
-  * [Prerequisites](#prerequisites)
-  * [Installation](#installation)
-* [Build Instructions](#build-instructions)
-* [Roadmap](#roadmap)
-* [Contributing](#contributing)
+**Check out the [documentation](https://wilix-team.github.io/iohook).**
 
-<!-- ABOUT THE PROJECT -->
-## About The Project
+## Platform support
 
-This module can handle keyboard and mouse events via native hooks in Nito Security Browser application.
+- Versions >= 0.6.0 support only officially supported platforms versions.
+- Versions 0.5.X are the last to support Electron < 4.0.0
+- Versions 0.4.X are the last to support for Node < 8.0 and Electron < 2.0.0
 
-The package is using for [Nito Security Browser](https://github.com/ComptiaVertigo/player-app). 
+## Installation
 
-The package is a fork of [iohook](https://github.com/wilix-team/iohook).
+iohook provides prebuilt version for a bunch of OSes and platforms.
 
-### Built With
-
-* [nodejs](https://nodejs.org/en/)
-* [nanjs](https://github.com/nodejs/nan)
-* [cmake.js](https://github.com/cmake-js/cmake-js)
-* [typescript](https://www.typescriptlang.org/)
-
-<!-- GETTING STARTED -->
-## Getting Started
-
-To get a local copy up and running follow these simple steps.
-
-### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-```sh
-npm install npm@latest -g
+```bash
+npm install iohook --save # or yarn add iohook
 ```
 
-### Installation
+## FAQ
 
-```sh
-npm i git+https://github.com/ComptiaVertigo/iohook.git#feature/grab-keyboard-events
-```
+Q. _Does this module require Java ?_
 
+A. No, this module doesn't require Java (like jnativehook) or any other runtimes.
 
-<!-- ROADMAP -->
-## Roadmap
+Q. _Is iohook compatible with Node/Electron version X.Y.Z ?_
 
-See the [open issues](https://github.com/ComptiaVertigo/iohook/issues) for a list of proposed features (and known issues).
+A. We try to match the currently supported version of both [Node](https://nodejs.org/en/about/releases/) and [Electron](https://electronjs.org/docs/tutorial/support#currently-supported-versions).
 
+## Apps
 
+Are you using iohook in your project ? Please tell us in a [PR](https://github.com/wilix-team/iohook/pulls) so we an add it to the list !
 
-<!-- CONTRIBUTING -->
-## Contributing
+- [Cortex](https://crtx.gg/)
+- [Tracklify](https://tracklify.com/)
+- [CrewLink](https://github.com/ottomated/CrewLink)
 
-Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+## Contributors
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+Thanks to _kwhat_ for the [libuiohook](https://github.com/kwhat/libuiohook) project and [ayoubserti](https://github.com/ayoubserti) for the first iohook prototype.
 
-
-<!-- CONTACT -->
-## Contact
-
-Omega - develop@omega-r.com
-
-Dmitriy Dubavov - dmitriy.dubavov@omega-r.com
-
-Project Link: [https://github.com/ComptiaVertigo/player-app](https://github.com/ComptiaVertigo/iohook)
-
-
-
-
+- [vespakoen](https://github.com/vespakoen) (prebuild system implementation)
+- [matthewshirley](https://github.com/matthewshirley) (Windows prebuild fix)
+- [djiit](https://github.com/djiit) (project & community help)
+- [ezain](https://github.com/eboukamza) (add feature enable/disable mouse click propagation)
+- [anoadragon453](https://github.com/anoadragon453) (electron 4+ support)
+- [ykhwong](https://github.com/ykhwong) (node-gyp usage, electron 9+ support)
+- All the other contributors. Feel free to extend this list !
