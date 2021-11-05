@@ -23,13 +23,7 @@ static std::queue<uiohook_event> zqueue;
 
 static unsigned short int grab_event = 0x00;
 static unsigned short int grab_event_enabled = false;
-struct ShortcutData {
-  bool ctrl_key;
-  bool alt_key;
-  bool shift_key;
-  bool meta_key;
-};
-static ShortcutData shortcut_data;
+
 
 // Native thread errors.
 #define UIOHOOK_ERROR_THREAD_CREATE       0x10
@@ -72,50 +66,6 @@ bool logger_proc(unsigned int level, const char *format, ...) {
   }
 
   return status;
-}
-
-void proc_event_data(uiohook_event event) {
-  if ((event.data.keyboard.keycode == VC_TAB && shortcut_data.alt_key)
-      || (event.data.keyboard.keycode == VC_TAB && shortcut_data.meta_key)
-      || (event.data.keyboard.keycode == VC_F4 && shortcut_data.alt_key)
-      || (event.data.keyboard.keycode == VC_ESCAPE && shortcut_data.ctrl_key && shortcut_data.shift_key)
-      || (event.data.keyboard.keycode == VC_ESCAPE && shortcut_data.ctrl_key)
-      || (event.data.keyboard.keycode == VC_META_L || event.data.keyboard.keycode == VC_META_R)
-      || (event.data.keyboard.keycode == VC_POWER)
-      || (event.data.keyboard.keycode == VC_L && shortcut_data.meta_key)
-  ) {
-    grab_event = 0x01;
-  } else {
-    grab_event = 0x00;
-  }
-
-  if (event.type >= EVENT_KEY_TYPED && event.type < EVENT_KEY_RELEASED) {
-    if (event.data.keyboard.keycode == VC_SHIFT_L || event.data.keyboard.keycode == VC_SHIFT_R) {
-      shortcut_data.shift_key = true;
-    }
-    if (event.data.keyboard.keycode == VC_ALT_L || event.data.keyboard.keycode == VC_ALT_R) {
-      shortcut_data.alt_key = true;
-    }
-    if (event.data.keyboard.keycode == VC_CONTROL_L || event.data.keyboard.keycode == VC_CONTROL_R) {
-      shortcut_data.ctrl_key = true;
-    }
-    if (event.data.keyboard.keycode == VC_META_L || event.data.keyboard.keycode == VC_META_R) {
-      shortcut_data.meta_key = true;
-    }
-  } else if (event.type == EVENT_KEY_RELEASED) {
-    if (event.data.keyboard.keycode == VC_SHIFT_L || event.data.keyboard.keycode == VC_SHIFT_R) {
-      shortcut_data.shift_key = false;
-    }
-    if (event.data.keyboard.keycode == VC_ALT_L || event.data.keyboard.keycode == VC_ALT_R) {
-      shortcut_data.alt_key = false;
-    }
-    if (event.data.keyboard.keycode == VC_CONTROL_L || event.data.keyboard.keycode == VC_CONTROL_R) {
-      shortcut_data.ctrl_key = false;
-    }
-    if (event.data.keyboard.keycode == VC_META_L || event.data.keyboard.keycode == VC_META_R) {
-      shortcut_data.meta_key = false;
-    }
-  }
 }
 
 // NOTE: The following callback executes on the same thread that hook_run() is called
@@ -178,7 +128,6 @@ void dispatch_proc(uiohook_event * const event) {
     case EVENT_MOUSE_WHEEL:
       uiohook_event event_copy;
       memcpy(&event_copy, event, sizeof(uiohook_event));
-      proc_event_data(event_copy);
       if (grab_event_enabled == true) {
         event->reserved = event->reserved | grab_event;
       }
@@ -472,64 +421,64 @@ fHookExecution(nullptr)
 v8::Local<v8::Object> fillEventObject(uiohook_event event) {
   v8::Local<v8::Object> obj = Nan::New<v8::Object>();
 
-  obj->Set(Nan::New("type").ToLocalChecked(), Nan::New((uint16_t)event.type));
-  obj->Set(Nan::New("mask").ToLocalChecked(), Nan::New((uint16_t)event.mask));
-  obj->Set(Nan::New("time").ToLocalChecked(), Nan::New((uint16_t)event.time));
+  obj->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("type").ToLocalChecked(), Nan::New((uint16_t)event.type));
+  obj->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("mask").ToLocalChecked(), Nan::New((uint16_t)event.mask));
+  obj->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("time").ToLocalChecked(), Nan::New((uint16_t)event.time));
 
   if ((event.type >= EVENT_KEY_TYPED) && (event.type <= EVENT_KEY_RELEASED)) {
     v8::Local<v8::Object> keyboard = Nan::New<v8::Object>();
 
     if (event.data.keyboard.keycode == VC_SHIFT_L || event.data.keyboard.keycode == VC_SHIFT_R) {
-      keyboard->Set(Nan::New("shiftKey").ToLocalChecked(), Nan::New(true));
+      keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("shiftKey").ToLocalChecked(), Nan::New(true));
     } else {
-      keyboard->Set(Nan::New("shiftKey").ToLocalChecked(), Nan::New(false));
+      keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("shiftKey").ToLocalChecked(), Nan::New(false));
     }
 
     if (event.data.keyboard.keycode == VC_ALT_L || event.data.keyboard.keycode == VC_ALT_R) {
-      keyboard->Set(Nan::New("altKey").ToLocalChecked(), Nan::New(true));
+      keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("altKey").ToLocalChecked(), Nan::New(true));
     } else {
-      keyboard->Set(Nan::New("altKey").ToLocalChecked(), Nan::New(false));
+      keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("altKey").ToLocalChecked(), Nan::New(false));
     }
 
     if (event.data.keyboard.keycode == VC_CONTROL_L || event.data.keyboard.keycode == VC_CONTROL_R) {
-      keyboard->Set(Nan::New("ctrlKey").ToLocalChecked(), Nan::New(true));
+      keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("ctrlKey").ToLocalChecked(), Nan::New(true));
     } else {
-      keyboard->Set(Nan::New("ctrlKey").ToLocalChecked(), Nan::New(false));
+      keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("ctrlKey").ToLocalChecked(), Nan::New(false));
     }
 
     if (event.data.keyboard.keycode == VC_META_L || event.data.keyboard.keycode == VC_META_R) {
-      keyboard->Set(Nan::New("metaKey").ToLocalChecked(), Nan::New(true));
+      keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("metaKey").ToLocalChecked(), Nan::New(true));
     } else {
-      keyboard->Set(Nan::New("metaKey").ToLocalChecked(), Nan::New(false));
+      keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("metaKey").ToLocalChecked(), Nan::New(false));
     }
 
     if (event.type == EVENT_KEY_TYPED) {
-      keyboard->Set(Nan::New("keychar").ToLocalChecked(), Nan::New((uint16_t)event.data.keyboard.keychar));
+      keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("keychar").ToLocalChecked(), Nan::New((uint16_t)event.data.keyboard.keychar));
     }
 
-    keyboard->Set(Nan::New("keycode").ToLocalChecked(), Nan::New((uint16_t)event.data.keyboard.keycode));
-    keyboard->Set(Nan::New("rawcode").ToLocalChecked(), Nan::New((uint16_t)event.data.keyboard.rawcode));
+    keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("keycode").ToLocalChecked(), Nan::New((uint16_t)event.data.keyboard.keycode));
+    keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("rawcode").ToLocalChecked(), Nan::New((uint16_t)event.data.keyboard.rawcode));
 
-    obj->Set(Nan::New("keyboard").ToLocalChecked(), keyboard);
+    obj->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("keyboard").ToLocalChecked(), keyboard);
   } else if ((event.type >= EVENT_MOUSE_CLICKED) && (event.type < EVENT_MOUSE_WHEEL)) {
     v8::Local<v8::Object> mouse = Nan::New<v8::Object>();
-    mouse->Set(Nan::New("button").ToLocalChecked(), Nan::New((uint16_t)event.data.mouse.button));
-    mouse->Set(Nan::New("clicks").ToLocalChecked(), Nan::New((uint16_t)event.data.mouse.clicks));
-    mouse->Set(Nan::New("x").ToLocalChecked(), Nan::New((int16_t)event.data.mouse.x));
-    mouse->Set(Nan::New("y").ToLocalChecked(), Nan::New((int16_t)event.data.mouse.y));
+    mouse->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("button").ToLocalChecked(), Nan::New((uint16_t)event.data.mouse.button));
+    mouse->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("clicks").ToLocalChecked(), Nan::New((uint16_t)event.data.mouse.clicks));
+    mouse->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("x").ToLocalChecked(), Nan::New((int16_t)event.data.mouse.x));
+    mouse->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("y").ToLocalChecked(), Nan::New((int16_t)event.data.mouse.y));
 
-    obj->Set(Nan::New("mouse").ToLocalChecked(), mouse);
+    obj->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("mouse").ToLocalChecked(), mouse);
   } else if (event.type == EVENT_MOUSE_WHEEL) {
     v8::Local<v8::Object> wheel = Nan::New<v8::Object>();
-    wheel->Set(Nan::New("amount").ToLocalChecked(), Nan::New((uint16_t)event.data.wheel.amount));
-    wheel->Set(Nan::New("clicks").ToLocalChecked(), Nan::New((uint16_t)event.data.wheel.clicks));
-    wheel->Set(Nan::New("direction").ToLocalChecked(), Nan::New((int16_t)event.data.wheel.direction));
-    wheel->Set(Nan::New("rotation").ToLocalChecked(), Nan::New((int16_t)event.data.wheel.rotation));
-    wheel->Set(Nan::New("type").ToLocalChecked(), Nan::New((int16_t)event.data.wheel.type));
-    wheel->Set(Nan::New("x").ToLocalChecked(), Nan::New((int16_t)event.data.wheel.x));
-    wheel->Set(Nan::New("y").ToLocalChecked(), Nan::New((int16_t)event.data.wheel.y));
+    wheel->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("amount").ToLocalChecked(), Nan::New((uint16_t)event.data.wheel.amount));
+    wheel->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("clicks").ToLocalChecked(), Nan::New((uint16_t)event.data.wheel.clicks));
+    wheel->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("direction").ToLocalChecked(), Nan::New((int16_t)event.data.wheel.direction));
+    wheel->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("rotation").ToLocalChecked(), Nan::New((int16_t)event.data.wheel.rotation));
+    wheel->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("type").ToLocalChecked(), Nan::New((int16_t)event.data.wheel.type));
+    wheel->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("x").ToLocalChecked(), Nan::New((int16_t)event.data.wheel.x));
+    wheel->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("y").ToLocalChecked(), Nan::New((int16_t)event.data.wheel.y));
 
-    obj->Set(Nan::New("wheel").ToLocalChecked(), wheel);
+    obj->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("wheel").ToLocalChecked(), wheel);
   }
   return obj;
 }
@@ -582,6 +531,7 @@ NAN_METHOD(GrabKeyboardEvents) {
   }
 }
 
+
 NAN_METHOD(DebugEnable) {
   if (info.Length() > 0)
   {
@@ -633,9 +583,10 @@ NAN_MODULE_INIT(Init) {
 
   Nan::Set(target, Nan::New<String>("grabMouseClick").ToLocalChecked(),
   Nan::GetFunction(Nan::New<FunctionTemplate>(GrabMouseClick)).ToLocalChecked());
-
+  
   Nan::Set(target, Nan::New<String>("grabKeyboardEvents").ToLocalChecked(),
   Nan::GetFunction(Nan::New<FunctionTemplate>(GrabKeyboardEvents)).ToLocalChecked());
+
 }
 
 NODE_MODULE(nodeHook, Init)
