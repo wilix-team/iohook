@@ -54,6 +54,6 @@ jobs:
 
       - name: Publish NPM Package
         if: startsWith(matrix.os, 'ubuntu')
-        run: npm publish --access public
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
