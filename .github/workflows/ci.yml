@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   release:
   push:
-    branches: [master, feature/v0.9.3]
+    branches: [master, v0.9.3b]
   pull_request:
     branches: [master]
 
