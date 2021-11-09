@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
   release:
   push:
-    branches: [feature/v0.9.3]
+    branches: [master, feature/v0.9.3]
   pull_request:
-    branches: [feature/v0.9.3]
+    branches: [master]
 
 jobs:
   ci:
