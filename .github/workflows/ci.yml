@@ -40,20 +40,20 @@ jobs:
       # Build only if version tag is not present
       - name: Build
         run: npm run build -- --all --msvs_version=2019
-        if: startsWith(github.ref, 'refs/tags/v') != true
+        # if: startsWith(github.ref, 'refs/tags/v') != true
         env:
           ARCH: ${{ matrix.arch }}
 
       # Build and publish if version tag is present
       - name: Build & Publish Prebuilds
         run: npm run build:ci -- --msvs_version=2019
-        if: startsWith(github.ref, 'refs/tags/v')
+        # if: startsWith(github.ref, 'refs/tags/v')
         env:
           ARCH: ${{ matrix.arch }}
           GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish NPM Package
-        if: startsWith(github.ref, 'refs/tags/v') && startsWith(matrix.os, 'ubuntu')
+        if: startsWith(matrix.os, 'ubuntu')
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
