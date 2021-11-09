@@ -4,7 +4,9 @@ on:
   workflow_dispatch:
   release:
   push:
-    branches: [master, v0.9.3b]
+    tags: 
+      - v*
+    # branches: [master, v*]
   pull_request:
     branches: [master]
 
@@ -38,16 +40,16 @@ jobs:
         run: npm i --ignore-scripts
 
       # Build only if version tag is not present
-      - name: Build
-        run: npm run build -- --all --msvs_version=2019
-        if: startsWith(github.ref, 'refs/tags/v') != true
-        env:
-          ARCH: ${{ matrix.arch }}
+      # - name: Build
+      #   run: npm run build -- --all --msvs_version=2019
+      #   if: startsWith(github.ref, 'refs/tags/v') 
+      #   env:
+      #     ARCH: ${{ matrix.arch }}
 
       # Build and publish if version tag is present
       - name: Build & Publish Prebuilds
         run: npm run build:ci -- --msvs_version=2019
-        if: startsWith(github.ref, 'refs/tags/v')
+        # if: startsWith(github.ref, 'refs/tags/v') != true
         env:
           ARCH: ${{ matrix.arch }}
           GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
