@@ -1,0 +1,21 @@
+name: iohook
+on:
+  push:
+    branches: [master, feature/v0.9.3]
+  release:
+    types: [created]
+    
+env:
+    NODE_AUTH_TOKEN: ${{secrets.EDRANSVERTIGOGITHUB_PERSONAL_ACCESS_TOKEN}}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '12.x'
+        registry-url: 'https://npm.pkg.github.com'
+    - run: npm install
+    - run: npm run build
+    - run: npm publish
