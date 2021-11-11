@@ -1,7 +1,7 @@
 name: release-iohook
 on:
   push:
-    branches: [master, feature/v0.9.3]
+    branches: [master]
   release:
     types: [created]
     
