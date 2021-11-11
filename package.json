@@ -1,5 +1,5 @@
 {
-  "name": "iohook",
+  "name": "@comptiavertigo/iohook",
   "version": "0.9.3-1",
   "description": "Node.js global keyboard and mouse hook",
   "author": "Aloyan Dmitry",
@@ -7,7 +7,7 @@
   "homepage": "https://github.com/ComptiaVertigo/iohook",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ComptiaVertigo/iohook.git"
+    "url": "https://github.com/ComptiaVertigo/iohook.git"
   },
   "publishConfig": {
     "registry":"https://npm.pkg.github.com"
