@@ -1,4 +1,4 @@
-name: ComptiaVertigo/iohook
+name: iohook
 on:
   push:
     branches: [master, feature/v0.9.3]
