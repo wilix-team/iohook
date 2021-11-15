@@ -17,7 +17,7 @@ jobs:
         node-version: '12.x'
         registry-url: 'https://npm.pkg.github.com'
     - run: |
-          sudo apt-get install -y software-properties-common libx11-dev libxtst-dev libxt-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev xorg-dev libxcb-xkb-dev libxkbfile-dev libxinerama-dev
+          sudo apt-get install --no-install-recommends -y software-properties-common libx11-dev libxtst-dev libxt-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev xorg-dev libxcb-xkb-dev libxkbfile-dev libxinerama-dev
     - name: Install Packages
       run: npm i --ignore-scripts
     - run: npm run build

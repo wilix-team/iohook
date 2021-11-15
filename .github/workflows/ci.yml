@@ -1,25 +1,27 @@
 name: CI
 
 on:
-  workflow_dispatch:
   release:
-  push:
-    tags: 
-      - v*
-    # branches: [master, v*]
   pull_request:
     branches: [master]
 
 jobs:
   ci:
+  
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         arch: [x86_64]
-        include:
-          - os: windows-latest
-            arch: i686
+
     runs-on: ${{ matrix.os }}
+
     name: ${{ matrix.os }} (${{matrix.arch}})
     steps:
       - name: Checkout Code
@@ -28,34 +30,19 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
-          # Set registry to NPM instead of github packages for publication
-          # registry-url: 'https://registry.npmjs.org'
           node-version: 14
 
       - name: Setup Linux Dependencies
         if: startsWith(matrix.os, 'ubuntu')
         run: |
-          sudo apt-get install -y software-properties-common libx11-dev libxtst-dev libxt-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev xorg-dev libxcb-xkb-dev libxkbfile-dev libxinerama-dev
+          sudo apt-get install --no-install-recommends -y software-properties-common libx11-dev libxtst-dev libxt-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev xorg-dev libxcb-xkb-dev libxkbfile-dev libxinerama-dev
       - name: Install Packages
         run: npm i --ignore-scripts
-
-      # Build only if version tag is not present
-      # - name: Build
-      #   run: npm run build -- --all --msvs_version=2019
-      #   if: startsWith(github.ref, 'refs/tags/v') 
-      #   env:
-      #     ARCH: ${{ matrix.arch }}
 
       # Build and publish if version tag is present
       - name: Build & Publish Prebuilds
         run: npm run build:ci -- --msvs_version=2019
-        # if: startsWith(github.ref, 'refs/tags/v') != true
+        if: startsWith(github.ref, 'refs/tags/v')
         env:
           ARCH: ${{ matrix.arch }}
           GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # - name: Publish NPM Package
-      #   if: startsWith(github.ref, 'refs/tags/v') && startsWith(matrix.os, 'ubuntu')
-      #   run: npm publish --access public
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
