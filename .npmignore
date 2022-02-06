@@ -18,6 +18,8 @@ test/
 *.log
 npm-debug.log*
 stacktrace*
+/binding.gyp
+/uiohook.gyp
 .lintignore
 .eslintrc.json
 .prettierrc.json
