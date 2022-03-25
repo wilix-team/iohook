@@ -9,7 +9,7 @@
   "author": "Aloyan Dmitry",
   "license": "MIT",
   "dependencies": {
-    "electron": ">=11.1.0",
+    "electron": ">=13.6.6",
     "iohook": "^0.9.2"
   }
 }
