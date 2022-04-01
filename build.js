@@ -138,6 +138,7 @@ function build(runtime, version, abi) {
       'rebuild',
       '--target=' + version,
       '--arch=' + arch,
+      '--openssl_fips=X'
     ];
 
     if (/^electron/i.test(runtime)) {
@@ -159,10 +160,6 @@ function build(runtime, version, abi) {
       if (parseInt(abi) >= 67) {
         args.push('--enable_lto=false');
       }
-    }
-
-    if (process.platform === 'darwin') {
-        args.push('--openssl_fips=X');
     }
 
     console.log('Building iohook for ' + runtime + ' v' + version + '>>>>');
