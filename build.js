@@ -161,6 +161,10 @@ function build(runtime, version, abi) {
       }
     }
 
+    if (process.platform === 'darwin') {
+        args.push('--openssl_fips=X');
+    }
+
     console.log('Building iohook for ' + runtime + ' v' + version + '>>>>');
     if (process.platform === 'win32') {
       if (version.split('.')[0] >= 4) {
