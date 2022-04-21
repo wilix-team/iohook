@@ -37,3 +37,4 @@ iohook currently provides prebuilt versions for the following runtimes:
   - 15.X.X (ABI 88)
   - 16.X.X (ABI 93)
   - 17.X.X (ABI 102)
+  - 18.X.X (ABI 108)
