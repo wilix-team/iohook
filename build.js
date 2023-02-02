@@ -7,6 +7,7 @@ const argv = require('minimist')(process.argv.slice(2), {
   string: ['version', 'runtime', 'abi'],
 });
 const pkg = require('./package.json');
+const supportedTargets = require('./package.json').supportedTargets;
 const nodeAbi = require('node-abi');
 const { optionsFromPackage } = require('./helpers');
 
@@ -105,7 +106,9 @@ function cpGyp() {
   try {
     fs.unlinkSync(path.join(__dirname, 'binding.gyp'));
     fs.unlinkSync(path.join(__dirname, 'uiohook.gyp'));
-  } catch (e) {}
+  } catch (e) {
+    // expected error
+  }
   switch (process.platform) {
     case 'win32':
     case 'darwin':
@@ -138,14 +141,15 @@ function build(runtime, version, abi) {
       'rebuild',
       '--target=' + version,
       '--arch=' + arch,
-      '--openssl_fips=X'
+      '--openssl_fips=X',
     ];
 
     if (/^electron/i.test(runtime)) {
       args.push('--dist-url=https://electronjs.org/headers');
+      args.push(`--devdir=${process.cwd()}/.electron-headers`);
     }
 
-    if (parseInt(abi) >= 80) {
+    if (parseInt(abi) >= 80 && parseInt(abi) <= 106) {
       if (arch === 'x64') {
         args.push('--v8_enable_pointer_compression=1');
       } else {
@@ -184,7 +188,7 @@ function build(runtime, version, abi) {
     });
     proc.stdout.pipe(process.stdout);
     proc.stderr.pipe(process.stderr);
-    proc.on('exit', function (code, sig) {
+    proc.on('exit', function (code) {
       if (code === 1) {
         return reject(new Error('Failed to build...'));
       }
