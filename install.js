@@ -86,12 +86,8 @@ function install(runtime, abi, platform, arch, cb) {
       hardlinkAsFilesFallback: true,
     };
 
-    let binaryName;
-    let updateName = function (entry) {
-      if (/\.node$/i.test(entry.name)) binaryName = entry.name;
-    };
     let targetFile = path.join(__dirname, 'builds', essential);
-    let extract = tfs.extract(targetFile, options).on('entry', updateName);
+    let extract = tfs.extract(targetFile, options);
     pump(
       fs.createReadStream(path.join(nuggetOpts.dir, nuggetOpts.target)),
       zlib.createGunzip(),
@@ -116,7 +112,7 @@ if (process.env.npm_config_targets) {
 if (process.env.npm_config_targets === 'all') {
   options.targets = supportedTargets.map((arr) => [arr[0], arr[2]]);
   options.platforms = ['win32', 'darwin', 'linux'];
-  options.arches = ['x64', 'ia32'];
+  options.arches = ['x64', 'ia32', 'arm64'];
 }
 if (process.env.npm_config_platforms) {
   options.platforms = options.platforms.concat(
