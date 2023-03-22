@@ -1,24 +1,21 @@
 #pragma once
 
-#include <nan.h>
-
-#include <nan_object_wrap.h>
+#include <napi.h>
 
 #include "uiohook.h"
 
-class HookProcessWorker : public Nan::AsyncProgressWorkerBase<uiohook_event>
+class HookProcessWorker : public Napi::AsyncProgressWorker<uiohook_event>
 {
-  public:
-  
-    typedef Nan::AsyncProgressWorkerBase<uiohook_event>::ExecutionProgress HookExecution;
-  
-    HookProcessWorker(Nan::Callback * callback);
-  
-    void Execute(const ExecutionProgress& progress);
-  
-    void HandleProgressCallback(const uiohook_event *event, size_t size);
-  
+public:
+    HookProcessWorker(const Napi::Function& callback);
+    
+protected:
+    void Execute(const ExecutionProgress& progress) override;
+    void OnProgress(const uiohook_event* event, size_t size) override;
+
+public:
+    void Send(const uiohook_event* event, size_t size);
     void Stop();
-  
-    const HookExecution* fHookExecution;
+private:
+    const ExecutionProgress* fHookExecution;
 };

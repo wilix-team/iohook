@@ -11,8 +11,8 @@
 			"./uiohook.gyp:uiohook"
 		],
 		"include_dirs": [
-			"<!(node -e \"require('nan')\")",
-			"libuiohook/include"
+			"<!@(node -p \"require('node-addon-api').include\")",
+			"libuiohook/include",
 		],
 		"configurations": {
 			"Release": {
