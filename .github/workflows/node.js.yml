@@ -30,8 +30,6 @@ jobs:
         npm-version: '8.x'
         cache: 'npm'
         
-    
-    - run: npm config set ignore-scripts true
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
