@@ -1,4 +1,7 @@
 {
+	"variables": {
+    	"openssl_fips" : "" 
+	},
 	"targets": [{
 		"target_name": "iohook",
 		"win_delay_load_hook": "true",
@@ -30,6 +33,6 @@
 		"configurations": {
 			"Release": {
 			}
-		}
+		},        
 	}]
 }
