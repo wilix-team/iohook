@@ -141,7 +141,7 @@ function build(runtime, version, abi) {
     ];
 
     if (/^electron/i.test(runtime)) {
-      args.push('--dist-url=https://atom.io/download/electron');
+      args.push('--dist-url=https://artifacts.electronjs.org/headers/dist');
     }
 
     if (parseInt(abi) >= 80) {
