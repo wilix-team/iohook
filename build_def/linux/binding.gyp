@@ -24,7 +24,7 @@
 				]
 		},
 		"include_dirs": [
-			"<!(node -e \"require('nan')\")",
+			"<!@(node -p \"require('node-addon-api').include\")",
 			"libuiohook/include"
 		],
 		"configurations": {
