@@ -18,6 +18,7 @@ jobs:
     name: ${{ matrix.os }} (${{matrix.arch}})
     steps:
       - uses: actions/checkout@v2
+
       - uses: actions/setup-node@v2
         with:
           node-version: 16
@@ -40,17 +41,21 @@ jobs:
           sudo apt-get install -y libxcb-xkb-dev
           sudo apt-get install -y libxkbfile-dev
           sudo apt-get install -y libxinerama-dev
-      - run: npm i --ignore-scripts
+
+      # - run: npm i --ignore-scripts
+
       - name: build all prebuilds
         run: npm run build -- --all --msvs_version=2019
         if: startsWith(github.ref, 'refs/tags') != true
         env:
           ARCH: ${{ matrix.arch }}
+
       - name: build and publish all prebuilds on tags
         run: npm run build:ci -- --msvs_version=2019
         if: startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request'
         env:
           GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: artifacts
         uses: actions/upload-artifact@v2
         with:
