@@ -18,12 +18,9 @@ jobs:
     name: ${{ matrix.os }} (${{matrix.arch}})
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
           node-version: 16
-
-      - name: Update npm
-        run: npm install -g npm@latest
 
       - name: setup linux dependencies
         if: startsWith(matrix.os, 'ubuntu')
