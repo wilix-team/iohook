@@ -34,9 +34,12 @@
 			"USE_XKBCOMMON"
 		],
 		"include_dirs": [
-			"<!(node -e \"require('nan')\")",
-			'libuiohook/include',
-			'libuiohook/src'
+			"<!(node -e \"require('node-addon-api').include\")",
+			"libuiohook/include",
+			"libuiohook/src"
+		],
+		"defines": [
+			"NAPI_VERSION=7"
 		]
 	}]
 }
