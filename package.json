@@ -1,30 +1,22 @@
 {
-  "name": "iohook",
-  "version": "0.9.3",
+  "name": "iohook_napi",
+  "version": "1.0.0",
   "description": "Node.js global keyboard and mouse hook",
   "author": "Aloyan Dmitry",
   "license": "MIT",
-  "homepage": "https://github.com/wilix-team/iohook",
+  "homepage": "https://github.com/stacew/iohook_napi",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wilix-team/iohook.git"
+    "url": "git+https://github.com/stacew/iohook_napi.git"
   },
   "bugs": {
-    "url": "https://github.com/wilix-team/iohook/issues"
+    "url": "https://github.com/stacew/iohook_napi/issues"
   },
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
-    "install": "node install.js",
-    "build": "node build.js --upload=false",
-    "build:ci": "node build.js --all",
-    "build:print": "node -e 'require(\"./helpers\").printManualBuildParams()'",
-    "test": "jest",
-    "lint:dry": "eslint --ignore-path .lintignore .",
-    "lint:fix": "eslint --ignore-path .lintignore --fix . && prettier --ignore-path .lintignore --write .",
-    "docs:dev": "vuepress dev docs",
-    "docs:build": "vuepress build docs",
-    "docs:deploy": "npm run docs:build && gh-pages -d docs/.vuepress/dist/"
+    "build": "node build.js",
+    "test": "jest"
   },
   "keywords": [
     "hook",
@@ -60,125 +52,12 @@
       "pre-commit": "lint-staged"
     }
   },
-  "dependencies": {
-    "nugget": "^2.0.1",
-    "pump": "^1.0.3",
-    "rc": "^1.2.8",
-    "tar-fs": "^1.16.3"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@types/node": "^7.0.62",
-    "eslint": "^7.28.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-only-warn": "^1.0.2",
-    "eslint-plugin-prettier": "^3.4.0",
     "fs-extra": "^9.0.1",
-    "gh-pages": "^3.2.0",
-    "htmlhint": "^0.15.1",
-    "husky": "^6.0.0",
-    "jest": "^26.6.3",
-    "lint-staged": "^11.0.0",
+    "jest": "^29.7.0",
     "minimist": "^1.2.5",
-    "nan": "^2.15.0",
-    "node-abi": "^2.19.3",
-    "node-gyp": "^7.1.2",
-    "prebuild": "^10.0.1",
-    "prettier": "^2.3.1",
-    "robotjs": "^0.6.0",
-    "tar": "^6.0.5",
-    "vuepress": "^1.7.1"
-  },
-  "supportedTargets": [
-    [
-      "electron",
-      "4.0.4",
-      "69"
-    ],
-    [
-      "electron",
-      "5.0.0",
-      "70"
-    ],
-    [
-      "electron",
-      "6.0.0",
-      "73"
-    ],
-    [
-      "electron",
-      "7.0.0",
-      "75"
-    ],
-    [
-      "electron",
-      "8.0.0",
-      "76"
-    ],
-    [
-      "electron",
-      "9.0.0",
-      "80"
-    ],
-    [
-      "electron",
-      "10.0.0",
-      "82"
-    ],
-    [
-      "electron",
-      "11.0.0",
-      "85"
-    ],
-    [
-      "electron",
-      "12.0.0",
-      "87"
-    ],
-    [
-      "electron",
-      "13.0.0",
-      "89"
-    ],
-    [
-      "electron",
-      "14.0.0",
-      "89"
-    ],
-    [
-      "node",
-      "10.0.0",
-      "64"
-    ],
-    [
-      "node",
-      "11.4.0",
-      "67"
-    ],
-    [
-      "node",
-      "12.0.0",
-      "72"
-    ],
-    [
-      "node",
-      "13.0.0",
-      "79"
-    ],
-    [
-      "node",
-      "14.0.0",
-      "83"
-    ],
-    [
-      "node",
-      "15.0.0",
-      "88"
-    ],
-    [
-      "node",
-      "16.0.0",
-      "93"
-    ]
-  ]
+    "node-addon-api": "^6.0.0",
+    "node-gyp": "^9.3.1"
+  }
 }
-

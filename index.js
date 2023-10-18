@@ -1,26 +1,12 @@
 const EventEmitter = require('events');
 const path = require('path');
 
-const runtime = process.versions['electron'] ? 'electron' : 'node';
-const essential =
-  runtime +
-  '-v' +
-  process.versions.modules +
-  '-' +
-  process.platform +
-  '-' +
-  process.arch;
-const modulePath = path.join(
-  __dirname,
-  'builds',
-  essential,
-  'build',
-  'Release',
-  'iohook.node'
-);
+const modulePath = path.join(__dirname, 'dist', 'iohook.node');
+
 if (process.env.DEBUG) {
   console.info('Loading native binary:', modulePath);
 }
+
 let NodeHookAddon = require(modulePath);
 
 const events = {
@@ -48,7 +34,6 @@ class IOHook extends EventEmitter {
     this.lastKeydownCtrl = false;
     this.lastKeydownMeta = false;
 
-    this.load();
     this.setDebug(false);
   }
 
@@ -164,7 +149,12 @@ class IOHook extends EventEmitter {
    */
   unload() {
     this.stop();
-    NodeHookAddon.stopHook();
+    try {
+      NodeHookAddon.stopHook();
+    } catch (e) {
+      // I can't build on MAC if I catch the resource internally.
+      // So I need to get the catch handling here.
+    }
   }
 
   /**

@@ -1,6 +1,7 @@
 .idea
 .vscode
 .scratch
+dist
 build
 builds
 docs/.vuepress/dist
