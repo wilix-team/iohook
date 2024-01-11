@@ -75,6 +75,7 @@ function install(runtime, abi, platform, arch, cb) {
         );
         console.error('Try to build for your platform manually:');
         console.error('# cd node_modules/iohook;');
+        console.error('# npm install');
         console.error('# npm run build');
         console.error('');
       }
