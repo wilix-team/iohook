@@ -18,3 +18,7 @@ Markus G. Kuhn <mkuhn@acm.org>
 	keysym_unicode_table lookup table in x11/input_helper.c
 	original version of the unicode_to_keysym function in x11/input_helper.c
 	original version of the keysym_to_unicode function in x11/input_helper.c
+
+Alex <universailp@web.de>
+	updated objc_msgSend for newer XCode versions in darwin/input_hook.c
+	added support for cmake

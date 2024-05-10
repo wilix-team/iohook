@@ -11,27 +11,33 @@ jobs:
   ci:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest, windows-2019]
         arch: [x86_64]
         include:
-          - os: windows-latest
-            arch: i686
+          - os: macos-latest
+            arch: arm64
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} (${{matrix.arch}})
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           # Set registry to NPM instead of github packages for publication
           registry-url: 'https://registry.npmjs.org'
           node-version: 14
 
+      - name: Setup macos Dependencies
+        if: startsWith(matrix.os, 'macos')
+        run: |
+          pip install --upgrade setuptools
+
       - name: Setup Linux Dependencies
         if: startsWith(matrix.os, 'ubuntu')
         run: |
+          sudo apt-get update
           sudo apt-get install -y software-properties-common libx11-dev libxtst-dev libxt-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev xorg-dev libxcb-xkb-dev libxkbfile-dev libxinerama-dev
 
       - name: Install Packages

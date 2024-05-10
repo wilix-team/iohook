@@ -189,22 +189,6 @@ class IOHook extends EventEmitter {
   }
 
   /**
-   * Disable mouse click propagation.
-   * The click event are captured and the event emitted but not propagated to the window.
-   */
-  disableClickPropagation() {
-    NodeHookAddon.grabMouseClick(true);
-  }
-
-  /**
-   * Enable mouse click propagation (enabled by default).
-   * The click event are emitted and propagated.
-   */
-  enableClickPropagation() {
-    NodeHookAddon.grabMouseClick(false);
-  }
-
-  /**
    * Local event handler. Don't use it in your code!
    * @param msg Raw event message
    * @private

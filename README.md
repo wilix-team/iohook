@@ -1,12 +1,14 @@
 # iohook
 
 [![NPM version](https://img.shields.io/npm/v/iohook?color=%230088FF)](https://www.npmjs.com/package/iohook)
-[![Release date](https://img.shields.io/github/release-date/wilix-team/iohook?color=%230088FF)](https://github.com/wilix-team/iohook/releases/latest)
-[![GitHub Super-Linter](https://github.com/wilix-team/iohook/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
-[![CI](https://github.com/wilix-team/iohook/actions/workflows/ci.yml/badge.svg)](https://github.com/wilix-team/iohook/actions/workflows/ci.yml)
+[![Release date](https://img.shields.io/github/release-date/SpaceK33z/iohook?color=%230088FF)](https://github.com/SpaceK33z/iohook/releases/latest)
+[![GitHub Super-Linter](https://github.com/SpaceK33z/iohook/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
+[![CI](https://github.com/SpaceK33z/iohook/actions/workflows/ci.yml/badge.svg)](https://github.com/SpaceK33z/iohook/actions/workflows/ci.yml)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?color=%23008880)](https://github.com/prettier/prettier)
 [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/iohookjs/Lobby)
-[![Issues](https://img.shields.io/github/issues-raw/wilix-team/iohook)](https://github.com/wilix-team/iohook/issues)
+[![Issues](https://img.shields.io/github/issues-raw/SpaceK33z/iohook)](https://github.com/SpaceK33z/iohook/issues)
+
+**Fork of [wilix-team/iohook](https://github.com/wilix-team/iohook) that supports Electron 17 and Node 16.**
 
 ## About
 
@@ -14,9 +16,9 @@ Node.js global native keyboard and mouse listener.
 
 This module can handle keyboard and mouse events via native hooks inside and outside your JavaScript/TypeScript application.
 
-Found a bug? Have an idea? Feel free to post an [issue](https://github.com/wilix-team/iohook/issues) or submit a [PR](https://github.com/wilix-team/iohook/pulls).
+Found a bug? Have an idea? Feel free to post an [issue](https://github.com/SpaceK33z/iohook/issues) or submit a [PR](https://github.com/SpaceK33z/iohook/pulls).
 
-**Check out the [documentation](https://wilix-team.github.io/iohook).**
+**Check out the [documentation](https://SpaceK33z.github.io/iohook).**
 
 ## Platform support
 

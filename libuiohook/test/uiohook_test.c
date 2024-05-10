@@ -1,5 +1,5 @@
-/* libUIOHook: Cross-platfrom userland keyboard and mouse hooking.
- * Copyright (C) 2006-2017 Alexander Barker.  All Rights Received.
+/* libUIOHook: Cross-platform keyboard and mouse hooking from userland.
+ * Copyright (C) 2006-2022 Alexander Barker.  All Rights Reserved.
  * https://github.com/kwhat/libuiohook/
  *
  * libUIOHook is free software: you can redistribute it and/or modify
@@ -35,55 +35,54 @@ static Display *disp;
 int tests_run = 0;
 
 static char * init_tests() {
-	#if !defined(__APPLE__) && !defined(__MACH__) && !defined(_WIN32)
-	// TODO Create our own AC_DEFINE for this value.  Currently defaults to X11 platforms.
-	Display *disp = XOpenDisplay(XDisplayName(NULL));
-	mu_assert("error, could not open X display", disp != NULL);
-	
-	load_input_helper(disp);
-	#else
-	load_input_helper();
-	#endif
+    #if !defined(__APPLE__) && !defined(__MACH__) && !defined(_WIN32)
+    // TODO Create our own AC_DEFINE for this value.  Currently defaults to X11 platforms.
+    Display *disp = XOpenDisplay(XDisplayName(NULL));
+    mu_assert("error, could not open X display", disp != NULL);
 
-	return NULL;
+    load_input_helper(disp);
+    #else
+    load_input_helper();
+    #endif
+
+    return NULL;
 }
 
 static char * cleanup_tests() {
-	#if !defined(__APPLE__) && !defined(__MACH__) && !defined(_WIN32)
-	if (disp != NULL) {
-		XCloseDisplay(disp);
-		disp = NULL;
-	}
-	#else
-	unload_input_helper();
-	#endif
+    #if !defined(__APPLE__) && !defined(__MACH__) && !defined(_WIN32)
+    if (disp != NULL) {
+        XCloseDisplay(disp);
+        disp = NULL;
+    }
+    #else
+    unload_input_helper();
+    #endif
 
-	return NULL;
+    return NULL;
 }
 
 static char * all_tests() {
-	mu_run_test(init_tests);
-	
-	mu_run_test(system_properties_tests);
-	mu_run_test(input_helper_tests);
-	
-	mu_run_test(cleanup_tests);
+    mu_run_test(init_tests);
 
-	return NULL;
+    mu_run_test(system_properties_tests);
+    mu_run_test(input_helper_tests);
+
+    mu_run_test(cleanup_tests);
+
+    return NULL;
 }
 
 int main() {
-	int status = 1;
-	
-	char *result = all_tests();
-	if (result != NULL) {
-		status = 0;
-		printf("%s\n", result);
-	}
-	else {
-		printf("ALL TESTS PASSED\n");
-	}
-	printf("Tests run: %d\n", tests_run);
+    int status = 1;
 
-	return status;
+    char *result = all_tests();
+    if (result != NULL) {
+        status = 0;
+        printf("%s\n", result);
+    } else {
+        printf("ALL TESTS PASSED\n");
+    }
+    printf("Tests run: %d\n", tests_run);
+
+    return status;
 }

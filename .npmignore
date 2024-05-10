@@ -7,6 +7,7 @@ docs/.vuepress/dist/
 logs/
 node_modules/
 prebuilds/
+libuiohook/
 .github/
 CMakeFiles/
 docs/

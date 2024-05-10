@@ -5,11 +5,11 @@ This is not required for regular users. You should follow this page only if you 
 :::
 
 ::: tip WARNING
-When you run `npm run build`, it will try to download a prebuild for your platform/target, and sometimes fail if you are building for a recent target with no prebuild yet available. You can safely ignore this step and the associated warning.
+When you run `npm run build`, it will try to download a prebuilt for your platform/target, and sometime fail if you are building for a recent target. You can safely ignore this step and the associated warning.
 :::
 
-You can build directly in your project's node_modules. Go to the ~/my_project/node_modules/iohook path via terminal. 
-Or you can just clone the iohook repository and work there, then copy the binary files to your project's node_modules/iohook/builds/ or change the download path in iohook and make your own version of the module.
+You can build own modules directly in your node_modules under the project. Go to ~/my_project/node_modules/iohook path via terminal.
+Or you can just clone iohook repository and working on it, then copy binnary files to project's node_modules or change download path in iohook and make you own version of module.
 
 Before start, you need install required dependencies for build:
 
@@ -29,7 +29,7 @@ Before start, you need install required dependencies for build:
 
 ## Windows
 
-- The build tools that are included with the Node.js for Windows installer are required, or manually install `windows-build-tools`
+- Install: `msys2` with `autotools`, `pkg-config`, `libtool`, `gcc`, `clang`, `glib`, `C++ Build Tools`
 - `npm install`
 - `npm run build`
 

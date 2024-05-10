@@ -31,7 +31,7 @@ function install(runtime, abi, platform, arch, cb) {
 
   console.log('Downloading prebuild for platform:', currentPlatform);
   let downloadUrl =
-    'https://github.com/wilix-team/iohook/releases/download/v' +
+    'https://github.com/SpaceK33z/iohook/releases/download/v' +
     pkgVersion +
     '/' +
     currentPlatform +
@@ -75,7 +75,6 @@ function install(runtime, abi, platform, arch, cb) {
         );
         console.error('Try to build for your platform manually:');
         console.error('# cd node_modules/iohook;');
-        console.error('# npm install');
         console.error('# npm run build');
         console.error('');
       }

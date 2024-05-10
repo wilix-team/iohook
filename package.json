@@ -1,16 +1,16 @@
 {
-  "name": "iohook",
-  "version": "0.9.3",
+  "name": "@spacek33z/iohook",
+  "version": "0.12.0",
   "description": "Node.js global keyboard and mouse hook",
   "author": "Aloyan Dmitry",
   "license": "MIT",
-  "homepage": "https://github.com/wilix-team/iohook",
+  "homepage": "https://github.com/SpaceK33z/iohook",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wilix-team/iohook.git"
+    "url": "git+https://github.com/SpaceK33z/iohook.git"
   },
   "bugs": {
-    "url": "https://github.com/wilix-team/iohook/issues"
+    "url": "https://github.com/SpaceK33z/iohook/issues"
   },
   "main": "index.js",
   "types": "index.d.ts",
@@ -61,7 +61,7 @@
     }
   },
   "dependencies": {
-    "nugget": "^2.0.2",
+    "nugget": "^2.0.1",
     "pump": "^1.0.3",
     "rc": "^1.2.8",
     "tar-fs": "^1.16.3"
@@ -80,8 +80,8 @@
     "lint-staged": "^11.0.0",
     "minimist": "^1.2.5",
     "nan": "^2.15.0",
-    "node-abi": "^2.19.3",
-    "node-gyp": "^7.1.2",
+    "node-abi": "^3.54.0",
+    "node-gyp": "^9.0.0",
     "prebuild": "^10.0.1",
     "prettier": "^2.3.1",
     "robotjs": "^0.6.0",
@@ -90,94 +90,24 @@
   },
   "supportedTargets": [
     [
-      "electron",
-      "4.0.4",
-      "69"
-    ],
-    [
-      "electron",
-      "5.0.0",
-      "70"
-    ],
-    [
-      "electron",
-      "6.0.0",
-      "73"
-    ],
-    [
-      "electron",
-      "7.0.0",
-      "75"
-    ],
-    [
-      "electron",
-      "8.0.0",
-      "76"
-    ],
-    [
-      "electron",
-      "9.0.0",
-      "80"
-    ],
-    [
-      "electron",
-      "10.0.0",
-      "82"
-    ],
-    [
-      "electron",
-      "11.0.0",
-      "85"
-    ],
-    [
-      "electron",
-      "12.0.0",
-      "87"
-    ],
-    [
-      "electron",
-      "13.0.0",
-      "89"
-    ],
-    [
-      "electron",
-      "14.0.0",
-      "89"
-    ],
-    [
-      "node",
-      "10.0.0",
-      "64"
-    ],
-    [
-      "node",
-      "11.4.0",
-      "67"
-    ],
-    [
-      "node",
-      "12.0.0",
-      "72"
-    ],
-    [
-      "node",
-      "13.0.0",
-      "79"
-    ],
-    [
-      "node",
-      "14.0.0",
-      "83"
-    ],
-    [
-      "node",
-      "15.0.0",
-      "88"
-    ],
-    [
       "node",
       "16.0.0",
       "93"
+    ],
+    [
+      "node",
+      "18.0.0",
+      "108"
+    ],
+    [
+      "electron",
+      "17.0.0",
+      "101"
+    ],
+    [
+      "electron",
+      "18.0.0",
+      "103"
     ]
   ]
 }

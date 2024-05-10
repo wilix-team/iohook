@@ -445,7 +445,10 @@ v8::Local<v8::Object> fillEventObject(uiohook_event event) {
     }
 
     if (event.type == EVENT_KEY_TYPED) {
+      char* character = (char*) &event.data.keyboard.keychar;
+
       keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("keychar").ToLocalChecked(), Nan::New((uint16_t)event.data.keyboard.keychar));
+      keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("key").ToLocalChecked(), Nan::New(character).ToLocalChecked());
     }
 
     keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("keycode").ToLocalChecked(), Nan::New((uint16_t)event.data.keyboard.keycode));
@@ -504,13 +507,6 @@ void HookProcessWorker::Stop()
   sIsRunning = false;
 }
 
-NAN_METHOD(GrabMouseClick) {
-  if (info.Length() > 0)
-  {
-    grab_mouse_click(info[0]->IsTrue());
-  }
-}
-
 NAN_METHOD(DebugEnable) {
   if (info.Length() > 0)
   {
@@ -559,9 +555,6 @@ NAN_MODULE_INIT(Init) {
 
   Nan::Set(target, Nan::New<String>("debugEnable").ToLocalChecked(),
   Nan::GetFunction(Nan::New<FunctionTemplate>(DebugEnable)).ToLocalChecked());
-
-  Nan::Set(target, Nan::New<String>("grabMouseClick").ToLocalChecked(),
-  Nan::GetFunction(Nan::New<FunctionTemplate>(GrabMouseClick)).ToLocalChecked());
 }
 
 NODE_MODULE(nodeHook, Init)

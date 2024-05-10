@@ -42,18 +42,6 @@ declare class IOHook extends EventEmitter {
   useRawcode(using: boolean): void;
 
   /**
-   * Enable mouse click propagation (enabled by default).
-   * The click event are emitted and propagated.
-   */
-  enableClickPropagation(): void;
-
-  /**
-   * Disable mouse click propagation.
-   * The click event are captured and the event emitted but not propagated to the window.
-   */
-  disableClickPropagation(): void;
-
-  /**
    * Register global shortcut. When all keys in keys array pressed, callback will be called
    * @param {Array<string|number>} keys Array of keycodes
    * @param {Function} callback Callback for when shortcut pressed
