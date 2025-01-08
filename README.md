@@ -53,7 +53,7 @@ A. We try to match the currently supported version of both [Node](https://nodejs
 
 ## Apps
 
-Are you using iohook in your project ? Please tell us in a [PR](https://github.com/wilix-team/iohook/pulls) so we an add it to the list !
+Are you using iohook in your project ? Please tell us in a [PR](https://github.com/wilix-team/iohook/pulls) so we can add it to the list !
 
 - [Cortex](https://crtx.gg/)
 - [Tracklify](https://tracklify.com/)
