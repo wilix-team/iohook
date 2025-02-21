@@ -35,7 +35,7 @@ static inline CGEventFlags get_key_event_mask(uiohook_event * const event) {
 
 	if (event->mask & (MASK_SHIFT))	{ native_mask |= kCGEventFlagMaskShift;		}
 	if (event->mask & (MASK_CTRL))	{ native_mask |= kCGEventFlagMaskControl;	}
-	if (event->mask & (MASK_META))	{ native_mask |= kCGEventFlagMaskControl;	}
+	if (event->mask & (MASK_META))	{ native_mask |= kCGEventFlagMaskCommand;	}
 	if (event->mask & (MASK_ALT))	{ native_mask |= kCGEventFlagMaskAlternate;	}
 	
 	if (event->type == EVENT_KEY_PRESSED || event->type == EVENT_KEY_RELEASED || event->type == EVENT_KEY_TYPED) {

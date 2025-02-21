@@ -158,6 +158,7 @@ void dispatch_proc(uiohook_event * const event) {
 						break;
 				}
 			}
+			break;
 		case EVENT_KEY_RELEASED:
 			snprintf(buffer + length, sizeof(buffer) - length, 
 				",keycode=%u,rawcode=0x%X",
